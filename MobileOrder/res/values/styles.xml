@@ -1,0 +1,32 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.NoActionBar"></style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="ProgressStyle_AppUpgrade_dialog" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@android:drawable/progress_horizontal</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
+        <item name="android:minHeight">30dip</item>
+        <item name="android:maxHeight">40dip</item>
+    </style>
+
+    <!-- 自定义title -->
+    <style name="WindowTitleBackground">
+        <item name="android:background">@color/TAB_TEXT_COLOR_SELECTED</item>
+    </style>
+
+    <style name="MyTheme" parent="AppBaseTheme">
+        <item name="android:windowTitleSize">60dp</item>
+        <item name="android:windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
+    </style>
+
+</resources>

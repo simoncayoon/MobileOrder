@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/order_phone_navi_left_bt_bg_foucs" android:state_selected="true"></item>
+    <item android:drawable="@drawable/order_phone_navi_left_bt_bg_default"></item>
+
+</selector>

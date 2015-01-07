@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="horizontal" >
+    
+    <ProgressBar
+        android:id="@+id/pb_dialog"
+        style="@style/ProgressStyle_AppUpgrade_dialog"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="40dip"
+        android:minHeight="30dip"
+        android:minWidth="120dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="27dp" />
+
+    <TextView
+        android:id="@+id/tv_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:text="0%" />
+
+</RelativeLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 全局 -->
+    <color name="COLOR_WHITE">#FFFFFF</color>
+    <color name="OPTION_TEXT_COLOR_DEFAULT">#504F4F</color>
+    <color name="GENERAL_VIEW_BG_COLOR">#EAEAEA</color>
+    
+    <!-- 主页相关 -->
+    
+    <color name="TAB_TEXT_COLOR_SELECTED">#df2203</color>
+    <color name="TAB_TEXT_COLOR_NORMAL">#000000</color>
+    
+    <!-- 电话订餐相关 -->
+    <color name="PHONE_ORDER_MENU_COLOR_DEFAULT">#5E5E5E</color>
+    <color name="PHONE_ORDER_MENU_COLOR_FOCUS">#EE0E0F</color>
+   	<color name="PHONE_ORDER_ITEM_COLOR_NAME">#504F4F</color>
+   	<color name="PHONE_ORDER_ITEM_COLOR_PRICE">#5E5E5E</color>
+  	<color name="PHONE_ORDER_REMARK_FOCUS_BG">#F65237</color>
+  	<color name="PHONE_ORDER_COLLOCATE_TEXT_COLOR">#EA3808</color>
+  	<color name="MAIN_FRAGMENT_HEADER_TEXT_COLOR">#444444</color>
+ 
+</resources>

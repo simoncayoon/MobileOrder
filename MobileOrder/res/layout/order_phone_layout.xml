@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/COLOR_WHITE" >
+    
+    <com.eteng.mobileorder.cusomview.TopNavigationBar
+        android:id="@+id/general_navi_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+
+    <com.shizhefei.view.indicator.ScrollIndicatorView
+        android:id="@+id/moretab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/moretab_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" />
+    
+    <Button
+        android:id="@+id/add_combolist_btn"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/general_verify_btn_selector"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:layout_margin="10dp"
+        android:text="@string/general_confirm_text"/>
+
+</LinearLayout>
