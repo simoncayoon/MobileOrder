@@ -15,10 +15,14 @@
     <string name="login_english_desc1">Copyright© 2014 Etenginfo</string>
     <string name="login_english_desc2">Allright Reservd</string>
     <string name="login_company_tel">0851&#8211;6850058</string>
-    
+
     <!-- 电话订单相关 -->
     <string name="header_tel_text">电话</string>
     <string name="header_date_text">时间</string>
     <string name="header_addr_text">地址</string>
     <string name="header_collocate">配餐</string>
+    <string name="title_each_item_dish_name">配餐：</string>
+    <string name="title_each_item_count">小计：</string>
+    <string name="title_each_item_remark">备注：</string>
+
 </resources>

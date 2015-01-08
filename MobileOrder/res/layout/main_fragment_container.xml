@@ -131,7 +131,7 @@
             android:contentDescription="@string/img_desc" />
 
         <ListView
-            android:id="@+id/phone_order_list"
+            android:id="@+id/phone_order_dish_combo_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@drawable/general_dotted_line"
