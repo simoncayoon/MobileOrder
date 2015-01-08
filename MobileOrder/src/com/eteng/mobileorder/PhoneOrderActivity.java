@@ -1,6 +1,7 @@
 package com.eteng.mobileorder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -52,7 +54,8 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	private ViewPager viewPager;
 	private ScrollIndicatorView indicator;
 	private Button addToComboList;
-
+	private MyAdapter mAdapter;
+	private LinkedHashSet<ArrayList<MenuItemModel>> allComboList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,23 +64,25 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		initView();
 		menuArray = new ArrayList<MenuCategory>();
 		comboList = new ArrayList<MenuItemModel>();
+		allComboList = new LinkedHashSet<ArrayList<MenuItemModel>>();
+		mAdapter = new MyAdapter(getSupportFragmentManager());
 		inflate = LayoutInflater.from(getApplicationContext());
 		getMenuCategory();// 获取菜单种类
 	}
-	
-	private void initView(){
+
+	private void initView() {
 		TopNavigationBar navi = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		navi.setRightImg(R.drawable.order_phone_navi_left_btn_selector);
-		navi.setTitle("电话订餐");//设置标题
+		navi.setTitle("电话订餐");// 设置标题
 		addToComboList = (Button) findViewById(R.id.add_combolist_btn);
 		addToComboList.setOnClickListener(this);
 		initMenuView();
 	}
-	
-	private void initMenuView(){
+
+	private void initMenuView() {
 		viewPager = (ViewPager) findViewById(R.id.moretab_viewPager);
 		indicator = (ScrollIndicatorView) findViewById(R.id.moretab_indicator);
-		
+
 		indicator.setScrollBar(new ColorBar(PhoneOrderActivity.this, Color.RED,
 				5));
 		// 设置滚动监听
@@ -111,30 +116,29 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			TextView textView = (TextView) convertView;
 			textView.setText(menuArray.get(position).getMenuName());
 			textView.setPadding(30, 0, 30, 0);
-			textView.setTextSize(DisplayMetrics.sp2px(PhoneOrderActivity.this, 12));
+			textView.setTextSize(DisplayMetrics.sp2px(PhoneOrderActivity.this,
+					12));
 			return convertView;
 		}
 
 		@Override
 		public Fragment getFragmentForPage(int position) {
-			
+
 			OrderPhoneFragment fragment = new OrderPhoneFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt(OrderPhoneFragment.INTENT_INT_CATEGORY_ID, menuArray.get(position).getMenuId());
-			bundle.putBoolean(OrderPhoneFragment.INTENT_IS_NOODLE, menuArray.get(position).isNoodle());
+			bundle.putInt(OrderPhoneFragment.INTENT_INT_CATEGORY_ID, menuArray
+					.get(position).getMenuId());
+			bundle.putBoolean(OrderPhoneFragment.INTENT_IS_NOODLE, menuArray
+					.get(position).isNoodle());
 			fragment.setArguments(bundle);
 			return fragment;
 		}
+
 	}
 
 	@Override
 	public void onItemSelected(int position) {
-		int id = indicatorViewPager.getCurrentItem();//当前的位置
-		int categoryId =  menuArray.get(id).getMenuId();
-		String categoryName = menuArray.get(id).getMenuName();
-		DebugFlags.logD(TAG, "d当前的种类是 " + categoryName + "(" + categoryId + ")" + "\n" 
-				+ "点击的位置是 " + position);
-		
+
 	};
 
 	/**
@@ -144,7 +148,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		DebugFlags.logD(TAG, "this url is " + url);
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);//测试ID，以后用shareperference保存
+		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -152,8 +156,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					@Override
 					public void onResponse(JSONObject respon) {
 						menuArray = getMenuList(respon);
-						indicatorViewPager.setAdapter(new MyAdapter(
-								getSupportFragmentManager()));
+						indicatorViewPager.setAdapter(mAdapter);
 					}
 				}, new Response.ErrorListener() {
 					@Override
@@ -175,7 +178,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				MenuCategory item = new MenuCategory();
 				item.setMenuId(tmp.getInt("classId"));
 				item.setMenuName(tmp.getString("className"));
-				if(tmp.getInt("isNoodle") == 1){
+				if (tmp.getInt("isNoodle") == 1) {
 					item.setNoodle(true);
 				}
 				dataList.add(item);
@@ -187,30 +190,36 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		return dataList;
 	}
 
-	class MenuCategory{
+	class MenuCategory {
 		private String menuName;
 		private int menuId;
 		private boolean isNoodle = false;
+
 		public String getMenuName() {
 			return menuName;
 		}
+
 		public void setMenuName(String menuName) {
 			this.menuName = menuName;
 		}
+
 		public int getMenuId() {
 			return menuId;
 		}
+
 		public void setMenuId(int menuId) {
 			this.menuId = menuId;
 		}
+
 		public boolean isNoodle() {
 			return isNoodle;
 		}
+
 		public void setNoodle(boolean isNoodle) {
 			this.isNoodle = isNoodle;
 		}
 	}
-	
+
 	@Override
 	public void leftBtnListener() {
 		DebugFlags.logD(TAG, "leftBtnListener");
@@ -219,16 +228,56 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	@Override
 	public void rightBtnListener() {
 		DebugFlags.logD(TAG, "rightBtnListener");
-		finish();
+		
 		Intent mIntent = new Intent();
-		mIntent.putParcelableArrayListExtra(Constants.DISH_COMBO_RESULT, comboList);
-		//提交到配餐列表
-		setResult(FragmentMain.requestCode, mIntent);//resultCode错误
+		mIntent.putParcelableArrayListExtra(Constants.DISH_COMBO_RESULT,
+				comboList);
+		// 提交到配餐列表
+		setResult(FragmentMain.requestCode, mIntent);// resultCode错误
+		finish();
 	}
 
 	@Override
 	public void onClick(View v) {
-		
-		
+		/**
+		 * 收集所有fragment中的数据
+		 */
+		OrderPhoneFragment tempFragment = null;
+		for (int i = 0; i < menuArray.size(); i++) {
+
+			tempFragment = getFragWithposition(i);
+			if (tempFragment.categoryId == 0) {// 没有实例化
+				continue;
+			}
+			DebugFlags.logD(TAG, "fragment 引用" + tempFragment.categoryId);
+			ArrayList<MenuItemModel> temp = new ArrayList<MenuItemModel>();
+			temp = tempFragment.mAdapter.getSelectList();
+			if (temp.size() > 0) {
+				for (MenuItemModel item : temp) {
+					DebugFlags.logD(TAG, "选中的有数 ： " + item.getName());
+					comboList.add(item);
+				}
+			}
+		}
+		if (comboList.size() == 0) {
+			Toast.makeText(PhoneOrderActivity.this, "没有选择菜品",
+					Toast.LENGTH_SHORT).show();
+		} else {
+			allComboList.add(comboList);
+//			comboList.clear();// 清空所选菜品
+			for (int i = 0; i < menuArray.size(); i++) {
+				tempFragment = getFragWithposition(i);
+				if (tempFragment.categoryId == 0) {// 没有实例化
+					continue;
+				}
+				tempFragment.mAdapter.resetDataDefault();//清除选中效果
+			}
+		}
+	}
+
+	private OrderPhoneFragment getFragWithposition(int position) {
+		OrderPhoneFragment mFragment = (OrderPhoneFragment) indicatorViewPager
+				.getViewPager().getAdapter().instantiateItem(viewPager, position);
+		return mFragment;
 	}
 }

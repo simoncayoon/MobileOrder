@@ -5,15 +5,18 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 
 public class FragmentMain extends BaseFragment implements OnClickListener{
 
+	private static final String TAG = "FragmentMain";
 	private TextView addCombo, headerPhone, headerDate, headerAddr;
 	public static final int requestCode = 0x1111;
 	private ArrayList<MenuItemModel> dishCombo;
@@ -62,8 +65,10 @@ public class FragmentMain extends BaseFragment implements OnClickListener{
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		DebugFlags.logD(TAG, "返回方法：onActivityResult");
 		if(data != null){
-			data.getParcelableArrayListExtra(Constants.DISH_COMBO_RESULT);
+			dishCombo = data.getParcelableArrayListExtra(Constants.DISH_COMBO_RESULT);
+			DebugFlags.logD(TAG, "返回的数组：" + dishCombo.size());
 		}
 		//列表加载数据 
 	}

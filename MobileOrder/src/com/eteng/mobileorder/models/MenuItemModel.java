@@ -1,10 +1,9 @@
 package com.eteng.mobileorder.models;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MenuItemModel implements Parcelable{
+public class MenuItemModel implements Parcelable {
 
 	// "goodsId": 6,
 	// "goodsSerial": "1",
@@ -41,6 +40,8 @@ public class MenuItemModel implements Parcelable{
 	 * 类型
 	 */
 	private String type;
+
+	private boolean choiceState = false;
 
 	public String getImgUrl() {
 		return imgUrl;
@@ -86,6 +87,15 @@ public class MenuItemModel implements Parcelable{
 	public int describeContents() {
 		return 0;
 	}
+	
+
+	public boolean isChoiceState() {
+		return choiceState;
+	}
+
+	public void setChoiceState(boolean choiceState) {
+		this.choiceState = choiceState;
+	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
@@ -95,23 +105,23 @@ public class MenuItemModel implements Parcelable{
 		dest.writeDouble(this.discountPrice);
 		dest.writeDouble(this.itemPrice);
 	}
-	
-	public static final Parcelable.Creator<MenuItemModel> CREATOR = new Creator<MenuItemModel>() { 
-		  public MenuItemModel createFromParcel(Parcel source) { 
-			  MenuItemModel newsInfo = new MenuItemModel(); 
-		      newsInfo.name = source.readString(); 
-		      newsInfo.imgUrl = source.readString(); 
-		      newsInfo.type = source.readString(); 
-		      newsInfo.discountPrice = source.readDouble();
-		      newsInfo.itemPrice = source.readDouble();
-		      return newsInfo; 
-		  }
+
+	public static final Parcelable.Creator<MenuItemModel> CREATOR = new Creator<MenuItemModel>() {
+		public MenuItemModel createFromParcel(Parcel source) {
+			MenuItemModel newsInfo = new MenuItemModel();
+			newsInfo.name = source.readString();
+			newsInfo.imgUrl = source.readString();
+			newsInfo.type = source.readString();
+			newsInfo.discountPrice = source.readDouble();
+			newsInfo.itemPrice = source.readDouble();
+			return newsInfo;
+		}
 
 		@Override
 		public MenuItemModel[] newArray(int size) {
 			// TODO Auto-generated method stub
 			return new MenuItemModel[size];
-		} 
+		}
 	};
 
 }

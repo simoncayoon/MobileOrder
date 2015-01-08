@@ -34,13 +34,15 @@ public class OrderPhoneFragment extends BaseFragment implements
 	private static final String TAG = "OrderPhoneFragment";
 	private ProgressBar progressBar;
 	private GridView mGridView;
-	private int categoryId;
+	public int categoryId;
 	private boolean isSingleSelect;
 	private static final String KEY_LIST_POSITION = "key_list_position";
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";
 	public static final String INTENT_IS_NOODLE = "is_noodle";
 	private int mFirstVisible;
 	private ArrayList<MenuItemModel> dataList;
+	private ArrayList<MenuItemModel> selectList;
+	public MenuCategoryAdapter<MenuItemModel> mAdapter;
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -65,6 +67,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dataList = new ArrayList<MenuItemModel>();
+		selectList = new ArrayList<MenuItemModel>();
 		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
 	}
@@ -86,7 +89,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 		} else {
 
 		}
-		mGridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 		mGridView.setOnItemClickListener(this);
 
 		if (savedInstanceState != null) {
@@ -127,13 +129,12 @@ public class OrderPhoneFragment extends BaseFragment implements
 								String jsonString = respon
 										.getString("goodsList");
 								parseJson(jsonString);
-								mGridView
-										.setAdapter(new MenuCategoryAdapter<MenuItemModel>(
-												getActivity()
-														.getApplicationContext(),
-												dataList,
-												R.layout.header,
-												R.layout.order_phone_item_category_layout));
+								mAdapter = new MenuCategoryAdapter<MenuItemModel>(
+										getActivity().getApplicationContext(),
+										dataList,
+										R.layout.header,
+										R.layout.order_phone_item_category_layout);
+								mGridView.setAdapter(mAdapter);
 							} else {
 								try {
 									throw new VolleyError();
@@ -227,6 +228,9 @@ public class OrderPhoneFragment extends BaseFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		// 将所选项添加到选择列表中
+		mAdapter.setChoiceState(position);
+		DebugFlags.logD(TAG, "当前的数数据是:" + mAdapter.getSelectList().size());
 		mCallbacks.onItemSelected(position);
 	}
 
@@ -244,5 +248,12 @@ public class OrderPhoneFragment extends BaseFragment implements
 					.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 							: ListView.CHOICE_MODE_NONE);
 		}
+	}
+//	
+	public MenuCategoryAdapter<MenuItemModel> getAdapter(){
+		if(this.mAdapter == null){
+			DebugFlags.logD(TAG, "mAdapter null");
+		}
+		return mAdapter;
 	}
 }

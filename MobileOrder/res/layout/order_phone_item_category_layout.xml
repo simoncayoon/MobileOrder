@@ -6,12 +6,25 @@
     android:orientation="vertical"
     android:padding="3dp" >
 
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/menu_with_category_img"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:contentDescription="@string/img_desc"
-        android:src="@drawable/default_dish_load_img" />
+        android:layout_height="70dp" >
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/menu_with_category_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/img_desc"
+            android:src="@drawable/default_dish_load_img" />
+
+        <ImageView
+            android:id="@+id/menu_with_category_shadow_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:contentDescription="@string/img_desc" >
+        </ImageView>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/menu_with_category_name"
