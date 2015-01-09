@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.utils.NetController;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;

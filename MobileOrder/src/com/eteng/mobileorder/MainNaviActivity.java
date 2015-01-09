@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
@@ -21,7 +20,7 @@ import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeList
 
 public class MainNaviActivity extends FragmentActivity {
 
-	private static final String TAG = "MainNaviActivity";
+//	private static final String TAG = "MainNaviActivity";
 	private IndicatorViewPager indicatorViewPager;
 	private TopNavigationBar naviTitleView;
 	private String[] tabNames;

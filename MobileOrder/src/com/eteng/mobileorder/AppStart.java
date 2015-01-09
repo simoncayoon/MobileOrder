@@ -32,7 +32,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DownloadHelper;
 import com.eteng.mobileorder.utils.NetController;
@@ -56,7 +55,6 @@ public class AppStart extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_start);
-		DebugFlags.logD(TAG, "进入应用");
 //		ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
 //		Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
 //		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
@@ -105,7 +103,6 @@ public class AppStart extends Activity {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, respon.toString());
 						startActivity(new Intent(AppStart.this, MainNaviActivity.class));
 					}
 				}, new Response.ErrorListener() {

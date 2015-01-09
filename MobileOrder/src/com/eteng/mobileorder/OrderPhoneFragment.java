@@ -35,13 +35,12 @@ public class OrderPhoneFragment extends BaseFragment implements
 	private ProgressBar progressBar;
 	private GridView mGridView;
 	public int categoryId;
-	private boolean isSingleSelect;
+	public boolean isSingleSelect;
 	private static final String KEY_LIST_POSITION = "key_list_position";
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";
 	public static final String INTENT_IS_NOODLE = "is_noodle";
 	private int mFirstVisible;
 	private ArrayList<MenuItemModel> dataList;
-	private ArrayList<MenuItemModel> selectList;
 	public MenuCategoryAdapter<MenuItemModel> mAdapter;
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -67,7 +66,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dataList = new ArrayList<MenuItemModel>();
-		selectList = new ArrayList<MenuItemModel>();
 		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
 	}
@@ -76,7 +74,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 	protected void onCreateView(Bundle savedInstanceState) {
 		super.onCreateView(savedInstanceState);
 		setContentView(R.layout.fragment_tabmain_item);
-		DebugFlags.logD(TAG, "当前的种类ID：" + categoryId);
 		progressBar = (ProgressBar) findViewById(R.id.fragment_mainTab_item_progressBar);
 	}
 
@@ -85,7 +82,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) findViewById(R.id.asset_grid);
 		if (isSingleSelect) {
-			DebugFlags.logD(TAG, "粉面类, 单选选模式");
+			
 		} else {
 
 		}
@@ -112,7 +109,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 	 */
 	private void getDataList() {
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
-		DebugFlags.logD(TAG, "this url is " + url);
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
 		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
@@ -130,7 +126,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 										.getString("goodsList");
 								parseJson(jsonString);
 								mAdapter = new MenuCategoryAdapter<MenuItemModel>(
-										getActivity().getApplicationContext(),
+										getApplicationContext(),
 										dataList,
 										R.layout.header,
 										R.layout.order_phone_item_category_layout);
@@ -230,7 +226,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 			long id) {
 		// 将所选项添加到选择列表中
 		mAdapter.setChoiceState(position);
-		DebugFlags.logD(TAG, "当前的数数据是:" + mAdapter.getSelectList().size());
 		mCallbacks.onItemSelected(position);
 	}
 
@@ -249,10 +244,8 @@ public class OrderPhoneFragment extends BaseFragment implements
 							: ListView.CHOICE_MODE_NONE);
 		}
 	}
-//	
 	public MenuCategoryAdapter<MenuItemModel> getAdapter(){
 		if(this.mAdapter == null){
-			DebugFlags.logD(TAG, "mAdapter null");
 		}
 		return mAdapter;
 	}

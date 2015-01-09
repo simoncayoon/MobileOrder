@@ -20,8 +20,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private static final String TAG = "FragmentMain";
 	private TextView addCombo, headerPhone, headerDate, headerAddr;
 	private ListView mListView;
-	public static final int requestCode = 0x1111;
 	private ArrayList<MenuItemModel> dishCombo;
+	private DishComboAdapter mAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	private void initList() {
 		mListView = (ListView) findViewById(R.id.phone_order_dish_combo_list_view);
-		
+		mAdapter = new DishComboAdapter(getActivity());
+		mListView.setAdapter(mAdapter);
 	}
 
 	private void initHeader() {
@@ -70,20 +71,21 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		startActivityForResult(new Intent(getActivity(),
-				PhoneOrderActivity.class), requestCode);
+				PhoneOrderActivity.class), Constants.REQUEST_CODE);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		DebugFlags.logD(TAG, "返回方法：onActivityResult");
 		if (data != null) {
-			dishCombo = data
-					.getParcelableArrayListExtra(Constants.DISH_COMBO_RESULT);
-			DebugFlags.logD(TAG, "返回的数组：" + dishCombo.size());
-			if(dishCombo.size() > 0){
-				mListView.setAdapter(new DishComboAdapter(getActivity(), dishCombo));
+			dishCombo = data.getExtras().getParcelableArrayList(Constants.DISH_COMBO_RESULT);
+			for (MenuItemModel item : dishCombo) {
+				DebugFlags.logD(
+						TAG,
+						"各项数据是:" + item.getName() + item.getImgUrl()
+								+ item.getItemPrice());
 			}
+			mAdapter.setDataSrc(dishCombo);
 		}
 		// 列表加载数据
 	}

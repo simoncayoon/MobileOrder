@@ -36,4 +36,7 @@ public class Constants {
 	 * 配餐完成返回小票列表数据表示符
 	 */
 	public static final String DISH_COMBO_RESULT = "dish_combo_result";
+	
+	public static int REQUEST_CODE = 0x1223;
+	public static int RESULT_CODE = 0x1225;
 }

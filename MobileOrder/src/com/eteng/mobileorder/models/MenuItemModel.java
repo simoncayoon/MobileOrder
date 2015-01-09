@@ -43,6 +43,10 @@ public class MenuItemModel implements Parcelable {
 
 	private boolean choiceState = false;
 
+	public MenuItemModel() {
+
+	}
+
 	public String getImgUrl() {
 		return imgUrl;
 	}
@@ -87,7 +91,6 @@ public class MenuItemModel implements Parcelable {
 	public int describeContents() {
 		return 0;
 	}
-	
 
 	public boolean isChoiceState() {
 		return choiceState;
@@ -99,22 +102,17 @@ public class MenuItemModel implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(this.imgUrl);
 		dest.writeString(this.name);
+		dest.writeString(this.imgUrl);
 		dest.writeString(this.type);
 		dest.writeDouble(this.discountPrice);
 		dest.writeDouble(this.itemPrice);
+		dest.writeByte(this.choiceState ? (byte)1 : (byte)0);
 	}
 
 	public static final Parcelable.Creator<MenuItemModel> CREATOR = new Creator<MenuItemModel>() {
 		public MenuItemModel createFromParcel(Parcel source) {
-			MenuItemModel newsInfo = new MenuItemModel();
-			newsInfo.name = source.readString();
-			newsInfo.imgUrl = source.readString();
-			newsInfo.type = source.readString();
-			newsInfo.discountPrice = source.readDouble();
-			newsInfo.itemPrice = source.readDouble();
-			return newsInfo;
+			return new MenuItemModel(source);
 		}
 
 		@Override
@@ -124,4 +122,12 @@ public class MenuItemModel implements Parcelable {
 		}
 	};
 
+	private MenuItemModel(Parcel in) {
+		this.name = in.readString();
+		this.imgUrl = in.readString();
+		this.type = in.readString();
+		this.discountPrice = in.readDouble();
+		this.itemPrice = in.readDouble();
+		this.choiceState = (in.readByte() == 1 ? true : false);
+	}
 }

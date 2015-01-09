@@ -56,6 +56,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	private Button addToComboList;
 	private MyAdapter mAdapter;
 	private LinkedHashSet<ArrayList<MenuItemModel>> allComboList;
+	private boolean hasDish = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	 */
 	void getMenuCategory() {
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
-		DebugFlags.logD(TAG, "this url is " + url);
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
@@ -228,12 +228,17 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	@Override
 	public void rightBtnListener() {
 		DebugFlags.logD(TAG, "rightBtnListener");
-		
-		Intent mIntent = new Intent();
-		mIntent.putParcelableArrayListExtra(Constants.DISH_COMBO_RESULT,
-				comboList);
-		// 提交到配餐列表
-		setResult(FragmentMain.requestCode, mIntent);// resultCode错误
+		if(hasDish){
+			for(MenuItemModel item : comboList){
+				DebugFlags.logD(TAG, "name =====" + item.getName());
+			}
+			Intent mIntent = new Intent();
+			Bundle mBundle = new Bundle();
+			mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT, comboList);
+			mIntent.putExtras(mBundle);
+			// 提交到配餐列表
+			setResult(Constants.RESULT_CODE, mIntent);// resultCode错误
+		}
 		finish();
 	}
 
@@ -249,12 +254,32 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			if (tempFragment.categoryId == 0) {// 没有实例化
 				continue;
 			}
-			DebugFlags.logD(TAG, "fragment 引用" + tempFragment.categoryId);
-			ArrayList<MenuItemModel> temp = new ArrayList<MenuItemModel>();
-			temp = tempFragment.mAdapter.getSelectList();
-			if (temp.size() > 0) {
-				for (MenuItemModel item : temp) {
-					DebugFlags.logD(TAG, "选中的有数 ： " + item.getName());
+			ArrayList<MenuItemModel> tempList = new ArrayList<MenuItemModel>();
+			tempList = tempFragment.mAdapter.getSelectList();
+			
+			int listSize = tempList.size();
+			if (listSize > 0) {		
+				if (tempFragment.isSingleSelect) {// 如果是粉面类，将名称和总价合并
+					MenuItemModel unionMenu = new MenuItemModel();
+					StringBuilder sb = new StringBuilder();
+					Double totalPrice = 0.0;
+					for (int j = 0; j < listSize; j++) {
+						if (j < (listSize - 1)) {
+							sb = sb.append(tempList.get(j).getName() + " + ");//追加“+”
+							totalPrice += tempList.get(j).getItemPrice();
+							continue;
+						} 
+						sb = sb.append(tempList.get(j).getName());
+						DebugFlags.logD(TAG, "每一项的价格" + tempList.get(j).getItemPrice());
+						totalPrice += tempList.get(j).getItemPrice();;//计算总价
+					}
+					DebugFlags.logD(TAG, "总价是:" + totalPrice);
+					unionMenu.setName(sb.toString());
+					unionMenu.setItemPrice(totalPrice);
+					comboList.add(unionMenu);
+					continue;
+				}
+				for (MenuItemModel item : tempList) {
 					comboList.add(item);
 				}
 			}
@@ -263,21 +288,23 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			Toast.makeText(PhoneOrderActivity.this, "没有选择菜品",
 					Toast.LENGTH_SHORT).show();
 		} else {
+			hasDish = true;
 			allComboList.add(comboList);
-//			comboList.clear();// 清空所选菜品
+			// comboList.clear();// 清空所选菜品
 			for (int i = 0; i < menuArray.size(); i++) {
 				tempFragment = getFragWithposition(i);
 				if (tempFragment.categoryId == 0) {// 没有实例化
 					continue;
 				}
-				tempFragment.mAdapter.resetDataDefault();//清除选中效果
+				tempFragment.mAdapter.resetDataDefault();// 清除选中效果
 			}
 		}
 	}
 
 	private OrderPhoneFragment getFragWithposition(int position) {
 		OrderPhoneFragment mFragment = (OrderPhoneFragment) indicatorViewPager
-				.getViewPager().getAdapter().instantiateItem(viewPager, position);
+				.getViewPager().getAdapter()
+				.instantiateItem(viewPager, position);
 		return mFragment;
 	}
 }
