@@ -1,5 +1,6 @@
 package com.eteng.mobileorder;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,14 +14,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeListener;
 
-public class MainNaviActivity extends FragmentActivity {
+public class MainNaviActivity extends FragmentActivity implements TopNavigationBar.NaviBtnListener{
 
-//	private static final String TAG = "MainNaviActivity";
+	private static final String TAG = "MainNaviActivity";
 	private IndicatorViewPager indicatorViewPager;
 	private TopNavigationBar naviTitleView;
 	private String[] tabNames;
@@ -48,6 +50,7 @@ public class MainNaviActivity extends FragmentActivity {
 		// 默认是1,，自动预加载左右两边的界面。设置viewpager预加载数为0。只加载加载当前界面。
 		viewPager.setPrepareNumber(0);
 		naviTitleView.setTitle(tabNames[0]);//默认第一个页面
+		naviTitleView.setRightImg(R.drawable.setting_btn_bg_default);
 		indicatorViewPager
 				.setOnIndicatorPageChangeListener(new OnIndicatorPageChangeListener() {
 
@@ -110,5 +113,17 @@ public class MainNaviActivity extends FragmentActivity {
 			}
 			return tarFragment;
 		}
+	}
+
+	@Override
+	public void leftBtnListener() {
+		DebugFlags.logD(TAG, "leftBtnListener");
+	}
+
+	@Override
+	public void rightBtnListener() {
+		DebugFlags.logD(TAG, "test");
+		//跳转到设置页面
+		startActivity(new Intent(MainNaviActivity.this, SettingActivity.class));
 	}
 }

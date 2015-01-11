@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/GENERAL_VIEW_BG_COLOR" xmlns:app="http://schemas.android.com/apk/res/com.eteng.mobileorder">
+
+    <com.eteng.mobileorder.cusomview.TopNavigationBar
+        android:id="@+id/general_navi_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+
+    <!-- 打印机按钮 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/COLOR_WHITE" >
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:paddingBottom="@dimen/content_padding_each_side"
+            android:paddingLeft="@dimen/content_padding_left"
+            android:paddingTop="@dimen/content_padding_each_side"
+            android:text="@string/printer_text"
+            android:textSize="22sp" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/printer_connector_switcher"
+            android:layout_marginRight="20dp"
+            app:onColor="@color/TAB_TEXT_COLOR_SELECTED"
+            style="@style/SwitchButtonStyle" />
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/devices_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdge="none"
+        android:cacheColorHint="@android:color/transparent"
+        />
+</LinearLayout>

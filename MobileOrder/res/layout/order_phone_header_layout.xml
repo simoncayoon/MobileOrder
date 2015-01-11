@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/main_fragment_header_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/main_header_padding_left"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:text="@string/header_tel_text"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
+                android:textSize="@dimen/main_haader_text_size" />
+
+            <EditText
+                android:id="@+id/header_tel_edit_view"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:inputType="number"
+                android:textSize="@dimen/main_haader_text_size"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/general_boundary_line"
+            android:contentDescription="@string/img_desc" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/main_fragment_header_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:drawablePadding="3dp"
+                android:text="@string/header_date_text"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
+                android:textSize="@dimen/main_haader_text_size" />
+
+            <TextView
+                android:id="@+id/header_date_edit_view"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="@dimen/main_haader_text_size"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/general_boundary_line"
+            android:contentDescription="@string/img_desc" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/main_fragment_header_addr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/main_header_padding_left"
+                android:drawablePadding="3dp"
+                android:text="@string/header_addr_text"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
+                android:textSize="@dimen/main_haader_text_size" />
+
+            <EditText
+                android:id="@+id/header_addr_edit_view"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:layout_marginLeft="20dp"
+                android:textSize="@dimen/main_haader_text_size"
+                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/general_boundary_line"
+            android:contentDescription="@string/img_desc" />
+    </LinearLayout>
+
+</LinearLayout>

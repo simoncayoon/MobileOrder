@@ -5,135 +5,51 @@
     android:background="@color/GENERAL_VIEW_BG_COLOR"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <include
         android:id="@+id/phone_order_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        layout="@layout/order_phone_header_layout" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/main_fragment_header_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/main_header_padding_left"
-                android:drawablePadding="3dp"
-                android:gravity="center"
-                android:text="@string/header_tel_text"
-                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
-                android:textSize="17sp" />
-
-            <EditText
-                android:id="@+id/header_tel_edit_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusableInTouchMode="false"
-                android:inputType="number"
-                android:requiresFadingEdge="none" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/general_boundary_line"
-            android:contentDescription="@string/img_desc" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/main_fragment_header_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/main_header_padding_left"
-                android:drawablePadding="3dp"
-                android:text="@string/header_date_text"
-                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/header_date_edit_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/general_boundary_line"
-            android:contentDescription="@string/img_desc" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/main_fragment_header_addr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/main_header_padding_left"
-                android:drawablePadding="3dp"
-                android:text="@string/header_addr_text"
-                android:textColor="@color/MAIN_FRAGMENT_HEADER_TEXT_COLOR"
-                android:textSize="17sp" />
-
-            <EditText
-                android:id="@+id/header_addr_edit_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="false"
-                android:inputType="textMultiLine" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/general_boundary_line"
-            android:contentDescription="@string/img_desc" />
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/order_add_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="@dimen/main_header_padding_left"
-            android:layout_marginTop="10dp"
-            android:drawablePadding="5dp"
-            android:gravity="center"
-            android:text="@string/header_collocate"
-            android:textColor="@color/PHONE_ORDER_COLLOCATE_TEXT_COLOR"
-            android:textSize="22sp" />
-
-        <ImageView
+        <LinearLayout
+            android:id="@+id/add_combo_layout"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/general_dotted_line"
-            android:contentDescription="@string/img_desc" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/order_add_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="@dimen/main_header_padding_left"
+                android:layout_marginTop="10dp"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:text="@string/header_collocate"
+                android:textColor="@color/PHONE_ORDER_COLLOCATE_TEXT_COLOR"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/general_dotted_line"
+                android:contentDescription="@string/img_desc" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/phone_order_dish_combo_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/add_combo_layout"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:cacheColorHint="#00000000"
@@ -142,27 +58,31 @@
             android:fadingEdge="none"
             android:listSelector="#00000000"
             android:scrollbars="none" />
-
-        <LinearLayout
+    </RelativeLayout>
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:padding="6dp" >
 
             <TextView
                 android:id="@+id/phone_order_combo_count"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:text="@string/test_text"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/total_price_text"
+                android:textColor="@color/PHONE_ORDER_COLLOCATE_TEXT_COLOR"
                 android:textSize="20sp" />
 
             <Button
                 android:id="@+id/phone_order_commit_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="50dp"
                 android:background="@drawable/general_verify_btn_selector"
                 android:text="@string/general_confirm_text"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
-    </LinearLayout>
 
 </LinearLayout>

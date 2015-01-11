@@ -7,7 +7,12 @@
     <!-- 首页相关 -->
     <dimen name="main_top_navi_text_size">20dp</dimen>
     <dimen name="main_header_padding_left">30dp</dimen>
+    <dimen name="main_haader_text_size">17sp</dimen>
     
     <!-- 登录页相关 -->
     <dimen name="login_edit_box_margin_size">40dp</dimen>
+    
+    <!-- 设置相关 -->
+    <dimen name="content_padding_left">40dp</dimen>
+    <dimen name="content_padding_each_side">10dp</dimen>
 </resources>

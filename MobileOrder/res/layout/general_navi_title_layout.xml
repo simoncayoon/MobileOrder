@@ -6,8 +6,8 @@
 
     <Button
         android:id="@+id/general_navi_left_btn"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
@@ -25,8 +25,8 @@
 
     <Button
         android:id="@+id/general_navi_right_btn"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"

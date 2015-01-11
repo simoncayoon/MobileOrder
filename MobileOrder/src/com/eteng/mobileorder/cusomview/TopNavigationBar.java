@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class TopNavigationBar extends FrameLayout {
 
@@ -62,14 +61,17 @@ public class TopNavigationBar extends FrameLayout {
 	}
 
 	public void setTitle(String title) {
+		
 		titleView.setText(title);
 	}
 
 	public void setLeftBtnText(String LeftString) {
+		leftBtn.setVisibility(View.VISIBLE);
 		leftBtn.setText(LeftString);
 	}
 
 	public void setRightBtnText(String rightString) {
+		rightBtn.setVisibility(View.VISIBLE);
 		rightBtn.setText(rightString);
 	}
 
