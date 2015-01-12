@@ -23,8 +23,10 @@ import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeList
 public class MainNaviActivity extends FragmentActivity implements TopNavigationBar.NaviBtnListener{
 
 	private static final String TAG = "MainNaviActivity";
+	
 	private IndicatorViewPager indicatorViewPager;
 	private TopNavigationBar naviTitleView;
+	
 	private String[] tabNames;
 
 	@Override
@@ -42,7 +44,6 @@ public class MainNaviActivity extends FragmentActivity implements TopNavigationB
 		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
 		indicatorViewPager
 				.setAdapter(new MyAdapter(getSupportFragmentManager()));
-
 		// 禁止viewpager的滑动事件
 		viewPager.setCanScroll(false);
 		// 设置viewpager保留界面不重新加载的页面数量

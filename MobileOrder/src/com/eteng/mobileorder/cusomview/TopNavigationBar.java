@@ -1,6 +1,8 @@
 package com.eteng.mobileorder.cusomview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +80,12 @@ public class TopNavigationBar extends FrameLayout {
 	public void setLeftImg(int drawableId) {
 		leftBtn.setVisibility(View.VISIBLE);
 		leftBtn.setBackgroundResource(drawableId);
+	}
+	
+	@SuppressLint("NewApi")
+	public void setLeftImg(Drawable drawableId) {
+		leftBtn.setVisibility(View.VISIBLE);
+		leftBtn.setBackground(drawableId);
 	}
 
 	public void setRightImg(int drawableId) {

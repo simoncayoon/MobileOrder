@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.models.MenuItemModel;
 
-public class DishComboAdapter extends BaseAdapter {
+public class DishComboAdapter extends BaseAdapter{
 
 	private Context mContext;
 	private ArrayList<MenuItemModel> dataSrc;
@@ -77,5 +77,5 @@ public class DishComboAdapter extends BaseAdapter {
 	public void setDataSrc(ArrayList<MenuItemModel> dataSrc){
 		this.dataSrc = dataSrc;
 		notifyDataSetChanged();
-	} 
+	}
 }

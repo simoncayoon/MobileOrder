@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import java.util.UUID;
+
+import com.eteng.mobileorder.MobileOrderApplication;
+import com.eteng.mobileorder.debug.DebugFlags;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -55,6 +59,25 @@ public class BlueToothService {
 	private static int PrinterType = 0;
 	private static int PrinterTypeNow = 0;
 	private int timeout;
+	private CustomBTStateListener mDummyCallBacks = new CustomBTStateListener() {
+
+		@Override
+		public void connectting() {
+		}
+
+		@Override
+		public void connectSucceed() {
+		}
+
+		@Override
+		public void connectLose() {
+		}
+
+		@Override
+		public void connectFailed() {
+		}
+	};
+	private CustomBTStateListener btStateListener = mDummyCallBacks;
 
 	private void SetWriteState(int state) {
 		synchronized (this) {
@@ -66,15 +89,32 @@ public class BlueToothService {
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	private static final String NAME = "BTPrinter";
 
-	private Handler mHandler;
-
-	public BlueToothService(Context context, Handler handler) {
+//	private Handler mHandler;
+	
+	public BlueToothService(Context context){
 		this.context = context;
-		this.mHandler = handler;
 		mState = STATE_NONE;
 		adapter = BluetoothAdapter.getDefaultAdapter();
-
+		if (context instanceof CustomBTStateListener) {
+			btStateListener = (CustomBTStateListener) context;
+		} else {
+			DebugFlags.logD(TAG, "must implements listener callback\n"
+					+ "BlueTooth init failed!!");
+		}
 	}
+
+//	public BlueToothService(Context context, Handler handler) {
+//		this.context = context;
+////		this.mHandler = handler;
+//		mState = STATE_NONE;
+//		adapter = BluetoothAdapter.getDefaultAdapter();
+//		if (context instanceof CustomBTStateListener) {
+//			btStateListener = (CustomBTStateListener) context;
+//		} else {
+//			DebugFlags.logD(TAG, "must implements listener callback\n"
+//					+ "BlueTooth init failed!!");
+//		}
+//	}
 
 	public boolean HasDevice() {
 		if (adapter != null) {
@@ -96,8 +136,11 @@ public class BlueToothService {
 	public void OpenDevice() {
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 		// �����������豸
+		if(context instanceof MobileOrderApplication){
+			DebugFlags.logD(TAG, "context instanceof MobileOrderApplication");
+		}
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		context.startActivity(intent);
-
 	}
 
 	public void CloseDevice() {
@@ -340,8 +383,9 @@ public class BlueToothService {
 	private void connectionSuccess() {
 		setState(STATE_CONNECTED);
 		SetPrinterInf();
-		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, SUCCESS_CONNECT, -1)
-				.sendToTarget();
+//		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, SUCCESS_CONNECT, -1)
+//				.sendToTarget();
+		btStateListener.connectSucceed();
 	}
 
 	private void SetPrinterInf() {
@@ -363,8 +407,9 @@ public class BlueToothService {
 
 	private void connectionFailed() {
 		setState(STATE_LISTEN);
-		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, FAILED_CONNECT, -1)
-				.sendToTarget();
+//		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, FAILED_CONNECT, -1)
+//				.sendToTarget();
+		btStateListener.connectFailed();
 	}
 
 	/**
@@ -372,16 +417,16 @@ public class BlueToothService {
 	 */
 	private void connectionLost() {
 		setState(STATE_LISTEN);
-		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, -1)
-				.sendToTarget();
-
+//		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, -1)
+//				.sendToTarget();
+		btStateListener.connectLose();
 	}
 
 	private void Nopointstart() {
 		setState(STATE_LISTEN);
-		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, 0)
-				.sendToTarget();
-
+//		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, 0)
+//				.sendToTarget();
+		btStateListener.connectting();
 	}
 
 	/**
@@ -616,8 +661,8 @@ public class BlueToothService {
 				mmOutStream.write(buffer);
 				Log.i("BTPWRITE", new String(buffer, "GBK"));
 				// Share the sent message back to the UI Activity
-				mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer)
-						.sendToTarget();
+//				mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer)
+//						.sendToTarget();
 			} catch (IOException e) {
 
 			}
@@ -638,88 +683,90 @@ public class BlueToothService {
 	public byte[] convert(String str) {
 		str = (str == null ? "" : str);
 		String tmp;
-		byte[] send = new byte[str.length()*2];
+		byte[] send = new byte[str.length() * 2];
 		char c;
 		int i, j;
-	
+
 		for (i = 0; i < str.length(); i++) {
 			c = str.charAt(i);
 			j = (c >>> 8); // ȡ����8λ
-			send[i*2]=(byte)j;
+			send[i * 2] = (byte) j;
 			j = (c & 0xFF); // ȡ����8λ
-			send[i*2+1]=(byte)j;
+			send[i * 2 + 1] = (byte) j;
 		}
 		return send;
 	}
 
 	/*
 	 * @Western Text by Unicode
-	 * 
-	 * 
 	 */
 	public void PrintCharactersUnicode(String str) {
-		byte[] send;		
-		send=string2Unicode(str);
-		////String hexStr=bytesToHexString(send);
+		byte[] send;
+		send = string2Unicode(str);
+		// //String hexStr=bytesToHexString(send);
 		write(send);
 	}
-	static byte[] string2Unicode(String s) {   
-	    try {   
-	      StringBuffer out = new StringBuffer("");   
-	      byte[] bytes = s.getBytes("unicode");   
-	    	byte[] bt=new byte[bytes.length-2];
-	      for (int i = 2,j=0; i < bytes.length - 1; i += 2,j += 2) {   
-	    	  bt[j]= (byte)(bytes[i + 1] & 0xff);   
-	    	  bt[j+1] = (byte)(bytes[i] & 0xff);    
-	      }   
-	      return bt;   
-	    }   
-	    catch (Exception e) {   
-	      try {
-			byte[] bt=s.getBytes("GBK");
+
+	static byte[] string2Unicode(String s) {
+		try {
+			StringBuffer out = new StringBuffer("");
+			byte[] bytes = s.getBytes("unicode");
+			byte[] bt = new byte[bytes.length - 2];
+			for (int i = 2, j = 0; i < bytes.length - 1; i += 2, j += 2) {
+				bt[j] = (byte) (bytes[i + 1] & 0xff);
+				bt[j + 1] = (byte) (bytes[i] & 0xff);
+			}
 			return bt;
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return null;
+		} catch (Exception e) {
+			try {
+				byte[] bt = s.getBytes("GBK");
+				return bt;
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
+			}
 		}
-	    }   
-	  }  
-	
+	}
+
 	/*
 	 * @Chinese Text by GBK
-	 * 
 	 */
 	public void PrintCharacters(String str) {
 		byte[] send;
 		try {
-			String ss=str;
+			String ss = str;
 			send = ss.getBytes("GBK");
 		} catch (UnsupportedEncodingException e) {
 			send = str.getBytes();
 		}
 		write(send);
 	}
-	
-	 /* Convert byte[] to hex string.�������ǿ��Խ�byteת����int��Ȼ������Integer.toHexString(int)��ת����16�����ַ�  
-	 * @param src byte[] data  
-	 * @return hex string  
-	 */     
-	public static String bytesToHexString(byte[] src){  
-	    StringBuilder stringBuilder = new StringBuilder("");  
-	    if (src == null || src.length <= 0) {  
-	        return null;  
-	    }  
-	    for (int i = 0; i < src.length; i++) {  
-	        int v = src[i] & 0xFF;  
-	        String hv = Integer.toHexString(v);  
-	        if (hv.length() < 2) {  
-	            stringBuilder.append(0);  
-	        }  
-	        stringBuilder.append(hv);  
-	    }  
-	    return stringBuilder.toString();  
-	}  
+
+	/*
+	 * Convert byte[] to hex
+	 * string.�������ǿ��Խ�byteת����int��Ȼ������Integer.toHexString
+	 * (int)��ת����16�����ַ�
+	 * 
+	 * @param src byte[] data
+	 * 
+	 * @return hex string
+	 */
+	public static String bytesToHexString(byte[] src) {
+		StringBuilder stringBuilder = new StringBuilder("");
+		if (src == null || src.length <= 0) {
+			return null;
+		}
+		for (int i = 0; i < src.length; i++) {
+			int v = src[i] & 0xFF;
+			String hv = Integer.toHexString(v);
+			if (hv.length() < 2) {
+				stringBuilder.append(0);
+			}
+			stringBuilder.append(hv);
+		}
+		return stringBuilder.toString();
+	}
 
 	public void SendOrder(byte[] send) {
 		write(send);
@@ -728,7 +775,7 @@ public class BlueToothService {
 	public void PrintImage(Bitmap bitmapcode, int timeout) {
 		this.timeout = timeout;
 		PrintImageNew(bitmapcode);
-		//PrintImageOld(bitmapcode);
+		// PrintImageOld(bitmapcode);
 
 	}
 
@@ -873,5 +920,27 @@ public class BlueToothService {
 
 		}
 		f = 0;
+	}
+
+	public interface CustomBTStateListener {
+		/**
+		 * 连接成功
+		 */
+		public void connectSucceed();
+
+		/**
+		 * 连接失败
+		 */
+		public void connectFailed();
+
+		/**
+		 * 丢失连接
+		 */
+		public void connectLose();
+
+		/**
+		 * 正在连接
+		 */
+		public void connectting();
 	}
 }
