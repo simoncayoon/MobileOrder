@@ -73,7 +73,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	private void initView() {
 		TopNavigationBar navi = (TopNavigationBar) findViewById(R.id.general_navi_view);
-		navi.setRightImg(R.drawable.order_phone_navi_left_btn_selector);
+		navi.setLeftImg(R.drawable.order_phone_navi_left_btn_selector);
 		navi.setTitle("电话订餐");// 设置标题
 		addToComboList = (Button) findViewById(R.id.add_combolist_btn);
 		addToComboList.setOnClickListener(this);
@@ -223,11 +223,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	@Override
 	public void leftBtnListener() {
 		DebugFlags.logD(TAG, "leftBtnListener");
-	}
-
-	@Override
-	public void rightBtnListener() {
-		DebugFlags.logD(TAG, "rightBtnListener");
 		if(hasDish){
 			for(MenuItemModel item : comboList){
 				DebugFlags.logD(TAG, "name =====" + item.getName());
@@ -243,6 +238,12 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public void rightBtnListener() {
+		DebugFlags.logD(TAG, "rightBtnListener");
+		
+	}
+
+	@Override
 	public void onClick(View v) {
 		/**
 		 * 收集所有fragment中的数据
@@ -251,7 +252,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		for (int i = 0; i < menuArray.size(); i++) {
 
 			tempFragment = getFragWithposition(i);
-			if (tempFragment.categoryId == 0) {// 没有实例化
+			if (tempFragment.categoryId == 0 || tempFragment == null) {// 没有实例化
 				continue;
 			}
 			ArrayList<MenuItemModel> tempList = new ArrayList<MenuItemModel>();

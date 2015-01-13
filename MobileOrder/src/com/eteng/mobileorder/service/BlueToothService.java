@@ -7,9 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import java.util.UUID;
 
-import com.eteng.mobileorder.MobileOrderApplication;
-import com.eteng.mobileorder.debug.DebugFlags;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -19,8 +16,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.util.Log;
+
+import com.eteng.mobileorder.MobileOrderApplication;
+import com.eteng.mobileorder.debug.DebugFlags;
 
 public class BlueToothService {
 
@@ -95,12 +94,12 @@ public class BlueToothService {
 		this.context = context;
 		mState = STATE_NONE;
 		adapter = BluetoothAdapter.getDefaultAdapter();
-		if (context instanceof CustomBTStateListener) {
-			btStateListener = (CustomBTStateListener) context;
-		} else {
-			DebugFlags.logD(TAG, "must implements listener callback\n"
-					+ "BlueTooth init failed!!");
-		}
+//		if (context instanceof CustomBTStateListener) {
+//			btStateListener = (CustomBTStateListener) context;
+//		} else {
+//			DebugFlags.logD(TAG, "must implements listener callback\n"
+//					+ "BlueTooth init failed!!");
+//		}
 	}
 
 //	public BlueToothService(Context context, Handler handler) {
@@ -942,5 +941,9 @@ public class BlueToothService {
 		 * 正在连接
 		 */
 		public void connectting();
+	}
+	
+	public void setConnStateChangeListener(CustomBTStateListener listener){
+		btStateListener = listener;
 	}
 }
