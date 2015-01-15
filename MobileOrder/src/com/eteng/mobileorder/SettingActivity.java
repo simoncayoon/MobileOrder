@@ -1,6 +1,5 @@
 package com.eteng.mobileorder;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import android.app.Activity;
@@ -64,6 +63,7 @@ public class SettingActivity extends Activity implements
 	private ListView devList, settingFuncList;
 	private LinearLayout scanDevLayout, promptlayout;
 	private Button summyBtn, scanNewDevBtn;
+	private TextView promptText;
 
 	private String[] menuList = new String[] { "我的资料", "菜单上传", "备注信息", "客户信息" };
 	private int[] drawList = new int[] { R.drawable.setting_my_profile,
@@ -98,6 +98,7 @@ public class SettingActivity extends Activity implements
 		scanNewDevBtn.setOnClickListener(this);
 		promptlayout = (LinearLayout) scanDevLayout
 				.findViewById(R.id.prompt_layout);
+		promptText = (TextView) promptlayout.findViewById(R.id.scan_prompt_text);
 		settingFuncList = (ListView) findViewById(R.id.setting_func_list__view);
 		settingFuncList.setOnItemClickListener(this);
 		settingFuncList.setAdapter(new FuncListAdapter());
@@ -141,13 +142,19 @@ public class SettingActivity extends Activity implements
 				mBTService.OpenDevice();
 				return;
 			}
-			if (mBTService.GetScanState() == mBTService.STATE_SCANING) {
+			if (mBTService.GetScanState() == BlueToothService.STATE_SCANING) {
 				Message msg = new Message();
 				msg.what = 2;
 				handler.sendMessage(msg);
 			}
-			if (mBTService.getState() == mBTService.STATE_CONNECTING) {
+			if (mBTService.getState() == BlueToothService.STATE_CONNECTING) {
+				promptlayout.setVisibility(View.VISIBLE);
+				promptText.setText("正在连接");
 				return;
+			}
+			if(mBTService.getState() == BlueToothService.STATE_NONE){
+				promptlayout.setVisibility(View.VISIBLE);
+				promptText.setText("正在连接");
 			}
 
 			String info = ((TextView) view).getText().toString();
@@ -166,9 +173,11 @@ public class SettingActivity extends Activity implements
 			// devList.setVisibility(View.VISIBLE);
 
 		} else {
+			DebugFlags.logD(TAG, "关闭触发");
 			if (scanDevLayout.isShown()) {
 				scanDevLayout.setVisibility(View.GONE);
 			}
+			
 		}
 	}
 
@@ -188,7 +197,9 @@ public class SettingActivity extends Activity implements
 		int id = v.getId();
 		if (id == R.id.summySwitchBtn) {
 			if (!printerConnector.isChecked()) {// 为选择
-
+				if(mBTService.getState() == BlueToothService.STATE_CONNECTED){
+					printerConnector.setChecked(true);
+				}
 				// 打开选择列表弹出框
 				scanDevLayout.setVisibility(View.VISIBLE);
 				// 打开蓝牙>寻找设备>建立连接>修改全局连接状态
@@ -278,12 +289,13 @@ public class SettingActivity extends Activity implements
 				break;
 			case 1:// 扫描完毕
 				mBTService.StopScan();
+				DebugFlags.logD(TAG, "扫描完毕后状态"  + mBTService.getState());
 				promptlayout.setVisibility(View.GONE);
 				Toast.makeText(SettingActivity.this, "扫描完毕", Toast.LENGTH_SHORT)
 						.show();
 				break;
 			case 2:// 停止扫描
-				promptlayout.setVisibility(View.GONE);
+				promptText.setText("正在连接");
 				break;
 			}
 		}
@@ -394,7 +406,6 @@ public class SettingActivity extends Activity implements
 			case MESSAGE_WRITE:// 缓冲区未满
 				// sendFlag = true;
 				break;
-
 			}
 		}
 	};

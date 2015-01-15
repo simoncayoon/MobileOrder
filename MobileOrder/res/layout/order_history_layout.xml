@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/GENERAL_VIEW_BG_COLOR"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/general_order_layout_order_count"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="@string/test_text"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/general_order_layout_order_total_price"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1.5"
+            android:singleLine="true"
+            android:text="@string/test_text"
+            android:textSize="22sp" />
+    </LinearLayout>
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/general_boundary_line"
+        android:contentDescription="@string/img_desc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/COLOR_WHITE" >
+
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_history_query_begin_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/order_history_query_begin_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@drawable/general_rectangle_bg" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_history_query_end_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/order_history_query_end_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@drawable/general_rectangle_bg" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/order_history_query_btn"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:background="@drawable/query_btn_bg_selector"
+            android:contentDescription="@string/img_desc"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/general_boundary_line"
+        android:contentDescription="@string/img_desc" />
+
+    <ListView
+        android:id="@+id/order_history_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/COLOR_WHITE"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/order_list_divider_sharp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true" />
+
+</LinearLayout>

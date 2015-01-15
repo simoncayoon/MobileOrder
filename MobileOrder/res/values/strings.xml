@@ -26,11 +26,23 @@
     <string name="title_each_item_count">小计：</string>
     <string name="title_each_item_remark">备注：</string>
     <string name="total_price_text">合计 %s 元</string>
-    
+
     <!-- 设置页面相关 -->
     <string name="printer_text">打印机</string>
     <string name="scan_list_title">蓝牙设备</string>
     <string name="setting_func_list_help">帮助</string>
     <string name="exit">退出</string>
+
+    <!-- 订单相关 -->
+    <string name="order_count_text">订单:%s单</string>
+    <string name="order_total_price_text">金额：%s元</string>
+
+    <!-- 历史订单相关 -->
+    <string name="order_history_query_begin_text">开始：</string>
+    <string name="order_history_query_end_text">截止：</string>
+    
+    <!-- 选择器相关 -->
+    <string name="np_number_picker_increment_button">Increment</string>
+    <string name="np_number_picker_decrement_button">Decrement</string>
 
 </resources>

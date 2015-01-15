@@ -18,6 +18,31 @@ public class Constants {
 	public static final String GOODS_BY_ID = "queryGoodsBySellerId";
 	
 	/**
+	 * 订单详情查询接口名称
+	 */
+	public static final String ORDER_BY_ORDERID = "queryOrderByOrderId";
+	
+	/**
+	 * WS订单查询接口名称
+	 */
+	public static final String ORDER_BY_ID = "queryOrderBySellerId";
+	
+	/**
+	 * 历史订单查询类型
+	 */
+	public static final String ORDER_QUERY_TYPE_HISTORY = "1";
+	
+	/**
+	 * 微信订单查询类型
+	 */
+	public static final String ORDER_QUERY_TYPE_WX = "2";
+	
+	/**
+	 * 当日订单查询类型
+	 */
+	public static final String ORDER_QUERY_TYPE_DAY = "3";
+	
+	/**
 	 * 分页查询中页数属性
 	 */
 	public static final String PAGE = "1";
@@ -39,4 +64,6 @@ public class Constants {
 	
 	public static int REQUEST_CODE = 0x1223;
 	public static int RESULT_CODE = 0x1225;
+	
+	public static String PRINT_FUNC_SWITCH = "print_func_switch";
 }

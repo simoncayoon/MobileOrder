@@ -18,7 +18,7 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.NoActionBar" >
+        android:theme="@style/AppBaseTheme" >
         <activity
             android:name="com.eteng.mobileorder.LoginActivity"
             android:label="@string/app_name" >
@@ -31,12 +31,13 @@
         <activity android:name="com.eteng.mobileorder.MainNaviActivity" />
         <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
         <activity android:name="com.eteng.mobileorder.SettingActivity" />
+        <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
         <!-- <activity android:name="com.eteng.mobileorder.LoginActivity" > -->
         <!-- </activity> -->
 
         <receiver android:name="com.eteng.mobileorder.receiver.TestBroadrReceiver" >
             <intent-filter>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

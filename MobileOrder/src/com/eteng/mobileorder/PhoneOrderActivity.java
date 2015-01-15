@@ -252,7 +252,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		for (int i = 0; i < menuArray.size(); i++) {
 
 			tempFragment = getFragWithposition(i);
-			if (tempFragment.categoryId == 0 || tempFragment == null) {// 没有实例化
+			if (tempFragment.categoryId == 0 || tempFragment.mAdapter == null) {// 没有实例化
 				continue;
 			}
 			ArrayList<MenuItemModel> tempList = new ArrayList<MenuItemModel>();
