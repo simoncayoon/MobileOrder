@@ -28,7 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.eteng.mobileorder.MainNaviActivity" />
+        <activity
+            android:name="com.eteng.mobileorder.MainNaviActivity"
+            android:theme="@style/CustomTheme" />
         <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
         <activity android:name="com.eteng.mobileorder.SettingActivity" />
         <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />

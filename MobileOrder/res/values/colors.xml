@@ -19,5 +19,9 @@
   	<color name="PHONE_ORDER_REMARK_FOCUS_BG">#F65237</color>
   	<color name="PHONE_ORDER_COLLOCATE_TEXT_COLOR">#EA3808</color>
   	<color name="MAIN_FRAGMENT_HEADER_TEXT_COLOR">#444444</color>
+  	
+  	<!-- 历史订单相关 -->
+  	<color name="query_btn_text_color">#818080</color>
+  	<color name="order_fragment_title_text_color">#5a5a5a</color>
  
 </resources>

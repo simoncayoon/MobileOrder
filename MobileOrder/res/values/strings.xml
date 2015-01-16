@@ -10,7 +10,7 @@
     <!-- 登陆页面相关 -->
     <string name="login_account_text_hint">账户</string>
     <string name="login_pwd_text_hint">密码</string>
-    <string name="login_text">登录</string>
+    <string name="login_text">登&#160;&#160;&#160;&#160;录</string>
     <string name="login_company_desc">贵阳翼腾信息技术有限责任公司</string>
     <string name="login_copyright_desc">版权所有</string>
     <string name="login_english_desc1">Copyright© 2014 Etenginfo</string>

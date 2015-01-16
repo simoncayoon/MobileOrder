@@ -82,9 +82,10 @@
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
-                android:background="@drawable/general_verify_btn_selector"
+                android:background="@drawable/general_corner_frame_big"
                 android:text="@string/general_confirm_text"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
         </LinearLayout>
 
 </LinearLayout>

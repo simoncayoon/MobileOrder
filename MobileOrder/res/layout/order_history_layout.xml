@@ -56,13 +56,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/order_history_query_begin_text"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/query_btn_text_color" />
 
             <Button
                 android:id="@+id/order_history_query_begin_btn"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@drawable/general_rectangle_bg" />
+                android:background="@drawable/general_rectangle_bg"
+                android:padding="3dp"
+                android:textColor="@color/query_btn_text_color"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -75,13 +79,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/order_history_query_end_text"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/query_btn_text_color" />
 
             <Button
                 android:id="@+id/order_history_query_end_btn"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@drawable/general_rectangle_bg" />
+                android:background="@drawable/general_rectangle_bg"
+                android:padding="3dp"
+                android:textColor="@color/query_btn_text_color"
+                android:textSize="15sp"  />
         </LinearLayout>
 
         <ImageButton

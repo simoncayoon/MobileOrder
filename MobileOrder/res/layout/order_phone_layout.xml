@@ -26,7 +26,7 @@
         android:layout_width="80dp"
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/general_verify_btn_selector"
+        android:background="@drawable/general_corner_frame_small"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         android:layout_margin="10dp"

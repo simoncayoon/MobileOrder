@@ -30,6 +30,7 @@ import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.service.BlueToothService;
+import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 
@@ -82,16 +83,18 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		addCombo = (TextView) findViewById(R.id.order_add_btn);
 		Drawable addDrawable = getResources().getDrawable(
 				R.drawable.main_fragment_add_combo_icon);// 添加配餐按钮
-		addDrawable.setBounds(0, 0, 35, 35);
+		int addDrawableSize = DisplayMetrics.dip2px(this, 30);
+		int drawableSize = DisplayMetrics.dip2px(this, 22);
+		addDrawable.setBounds(0, 0, addDrawableSize, addDrawableSize);
 		addCombo.setCompoundDrawables(addDrawable, null, null, null);
 		addDrawable = getResources().getDrawable(R.drawable.header_tel_icon);// 电话图标
-		addDrawable.setBounds(0, 0, 25, 25);
+		addDrawable.setBounds(0, 0, drawableSize, drawableSize);
 		headerPhone.setCompoundDrawables(addDrawable, null, null, null);
 		addDrawable = getResources().getDrawable(R.drawable.header_date_icon);// 日期图标
-		addDrawable.setBounds(0, 0, 25, 25);
+		addDrawable.setBounds(0, 0, drawableSize, drawableSize);
 		headerDate.setCompoundDrawables(addDrawable, null, null, null);
 		addDrawable = getResources().getDrawable(R.drawable.header_addr_icon);// 地址图标
-		addDrawable.setBounds(0, 0, 25, 25);
+		addDrawable.setBounds(0, 0, drawableSize, drawableSize);
 		headerAddr.setCompoundDrawables(addDrawable, null, null, null);
 
 		telEditView = (EditText) findViewById(R.id.header_tel_edit_view);

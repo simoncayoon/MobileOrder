@@ -15,18 +15,20 @@ import android.widget.TextView;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeListener;
 
-public class MainNaviActivity extends FragmentActivity implements TopNavigationBar.NaviBtnListener{
+public class MainNaviActivity extends FragmentActivity implements
+		TopNavigationBar.NaviBtnListener {
 
 	private static final String TAG = "MainNaviActivity";
-	
+
 	private IndicatorViewPager indicatorViewPager;
 	private TopNavigationBar naviTitleView;
-	
+
 	private String[] tabNames;
 
 	@Override
@@ -50,7 +52,7 @@ public class MainNaviActivity extends FragmentActivity implements TopNavigationB
 		viewPager.setOffscreenPageLimit(4);
 		// 默认是1,，自动预加载左右两边的界面。设置viewpager预加载数为0。只加载加载当前界面。
 		viewPager.setPrepareNumber(0);
-		naviTitleView.setTitle(tabNames[0]);//默认第一个页面
+		naviTitleView.setTitle(tabNames[0]);// 默认第一个页面
 		naviTitleView.setRightImg(R.drawable.setting_btn_bg_default);
 		indicatorViewPager
 				.setOnIndicatorPageChangeListener(new OnIndicatorPageChangeListener() {
@@ -89,8 +91,12 @@ public class MainNaviActivity extends FragmentActivity implements TopNavigationB
 			}
 			TextView textView = (TextView) convertView;
 			textView.setText(tabNames[position]);
+			textView.setTextSize((float) DisplayMetrics.sp2px(
+					MainNaviActivity.this, 4));
 			Drawable top = getResources().getDrawable(tabIcons[position]);
-			top.setBounds(new Rect(0, 0, 45, 45));
+			top.setBounds(new Rect(0, 0, DisplayMetrics.dip2px(
+					MainNaviActivity.this, 30), DisplayMetrics.dip2px(
+					MainNaviActivity.this, 30)));
 			textView.setCompoundDrawables(null, top, null, null);
 			return textView;
 		}
@@ -124,7 +130,7 @@ public class MainNaviActivity extends FragmentActivity implements TopNavigationB
 	@Override
 	public void rightBtnListener() {
 		DebugFlags.logD(TAG, "test");
-		//跳转到设置页面
+		// 跳转到设置页面
 		startActivity(new Intent(MainNaviActivity.this, SettingActivity.class));
 	}
 }

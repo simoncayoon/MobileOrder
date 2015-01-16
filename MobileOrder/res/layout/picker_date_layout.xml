@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/date_picker_bg" >
+
+    <com.eteng.mobileorder.cusomview.NumberPicker
+        android:id="@+id/date_year"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <com.eteng.mobileorder.cusomview.NumberPicker
+        android:id="@+id/date_month"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_weight="1" />
+
+    <com.eteng.mobileorder.cusomview.NumberPicker
+        android:id="@+id/date_day"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>
