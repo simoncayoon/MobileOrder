@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:columnWidth="100dip"
+        android:columnWidth="80dip"
         android:numColumns="auto_fit"
         android:padding="16dp"
         tools:context=".OrderPhoneFragment"

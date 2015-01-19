@@ -5,6 +5,7 @@
     <color name="COLOR_BLACK">#000000</color>
     <color name="OPTION_TEXT_COLOR_DEFAULT">#504F4F</color>
     <color name="GENERAL_VIEW_BG_COLOR">#EAEAEA</color>
+    <color name="GENERAL_TEXT_COLOR">#5A5A5A</color>
     
     <!-- 主页相关 -->
     

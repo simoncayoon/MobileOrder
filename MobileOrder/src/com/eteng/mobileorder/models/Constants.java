@@ -52,6 +52,8 @@ public class Constants {
 	 */
 	public static final String PAGE_COUNT = "20";
 	
+	public static final String EDIT_PROFILE = "editSellerInfo";
+	
 	/**
 	 * 测试id
 	 */
@@ -66,4 +68,7 @@ public class Constants {
 	public static int RESULT_CODE = 0x1225;
 	
 	public static String PRINT_FUNC_SWITCH = "print_func_switch";
+	
+	
+	public static final String SP_OWN_PROFILE_NAME = "own_profile_name";
 }

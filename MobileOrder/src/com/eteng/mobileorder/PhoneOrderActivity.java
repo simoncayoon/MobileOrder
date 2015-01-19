@@ -117,8 +117,9 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			TextView textView = (TextView) convertView;
 			textView.setText(menuArray.get(position).getMenuName());
 			textView.setPadding(30, 0, 30, 0);
+			textView.setTextColor(getResources().getColor(R.color.GENERAL_TEXT_COLOR));
 			textView.setTextSize(DisplayMetrics.sp2px(PhoneOrderActivity.this,
-					12));
+					8));
 			return convertView;
 		}
 

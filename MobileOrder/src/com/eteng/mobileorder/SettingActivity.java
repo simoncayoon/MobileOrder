@@ -4,6 +4,7 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -163,7 +164,15 @@ public class SettingActivity extends Activity implements
 			mBTService.ConnectToDevice(address);// 连接蓝牙
 
 		} else if (vId == R.id.setting_func_list__view) {// 功能列表
-
+			if(position == 0){//我的资料
+				startActivity(new Intent(SettingActivity.this, SettingOwnProfile.class));
+			}
+			if(position == 1){
+				startActivity(new Intent(SettingActivity.this, SettingUploadActivity.class));
+			}
+//			if(position == 2){//备注信息
+//				startActivity(new Intent(SettingActivity.this, RemarkInfoActivity.class));
+//			}
 		}
 	}
 
