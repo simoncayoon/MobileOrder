@@ -7,6 +7,7 @@
     <string name="general_confirm_text">确 认</string>
     <string name="test_text">测试文字</string>
     <string name="save_text">保&#160;&#160;&#160;&#160;存</string>
+    <string name="cancel">取消</string>
 
     <!-- 登陆页面相关 -->
     <string name="login_account_text_hint">账户</string>
@@ -33,7 +34,13 @@
     <string name="scan_list_title">蓝牙设备</string>
     <string name="setting_func_list_help">帮助</string>
     <string name="exit">退出</string>
-    
+    <string name="setting_menu_category_title_text">菜品类目</string>
+    <string name="menu_put_on_shelves_text">上架</string>
+    <string name="menu_put_off_shelves_text">下架</string>
+    <string name="add_new_dish_text">添加菜品</string>
+    <string name="dish_name_edit_prompt">请在此输入菜品名</string>
+    <string name="dish_price_edit_prompt">请在此输入价格</string>
+
     <!-- 我的资料相关 -->
     <string name="setting_own_profile_name_text">店名：</string>
     <string name="setting_own_profile_tel_text">电话：</string>
@@ -48,11 +55,11 @@
     <!-- 历史订单相关 -->
     <string name="order_history_query_begin_text">开始：</string>
     <string name="order_history_query_end_text">截止：</string>
-    
+
     <!-- 选择器相关 -->
     <string name="np_number_picker_increment_button">Increment</string>
     <string name="np_number_picker_decrement_button">Decrement</string>
-    
+
     <!-- 备注信息相关 -->
     <string name="setting_remark_info_remind_text">备注信息将会在粉面类目菜单显示\n每隔限制输入2个字&#160;&#160;共可添加6个备注</string>
     <string name="setting_remark_category_title_text">类目选择</string>

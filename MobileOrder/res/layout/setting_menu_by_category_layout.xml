@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/GENERAL_VIEW_BG_COLOR"
+    android:orientation="vertical" >
+
+    <com.eteng.mobileorder.cusomview.TopNavigationBar
+        android:id="@+id/general_navi_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/COLOR_WHITE"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:id="@+id/menu_category_edit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/setting_general_corner_red_line_frame"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight="1"
+                android:text="@string/setting_menu_category_title_text"
+                android:textColor="@color/GENERAL_TEXT_COLOR"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/menu_by_category_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/GENERAL_TEXT_COLOR"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.mobeta.android.dslv.DragSortListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:dslv="http://schemas.android.com/apk/res/com.eteng.mobileorder"
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:divider="@drawable/general_dotted_line"
+        android:dividerHeight="2dp"
+        android:padding="3dp"
+        dslv:collapsed_height="2dp"
+        dslv:drag_enabled="true"
+        dslv:drag_scroll_start="0.33"
+        dslv:float_alpha="0.6"
+        dslv:max_drag_scroll_speed="0.5"
+        dslv:slide_shuffle_speed="0.3"
+        dslv:track_drag_sort="false"
+        dslv:use_default_controller="false" />
+
+</LinearLayout>

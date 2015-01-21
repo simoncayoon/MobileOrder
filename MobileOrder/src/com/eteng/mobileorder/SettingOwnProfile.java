@@ -1,9 +1,5 @@
 package com.eteng.mobileorder;
 
-import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
-import com.eteng.mobileorder.models.Constants;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +7,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.eteng.mobileorder.cusomview.TopNavigationBar;
+import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.models.Constants;
 
 public class SettingOwnProfile extends Activity implements
 		TopNavigationBar.NaviBtnListener {

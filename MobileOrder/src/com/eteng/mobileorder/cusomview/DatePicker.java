@@ -2,13 +2,13 @@ package com.eteng.mobileorder.cusomview;
 
 import java.util.Calendar;
 
-import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.cusomview.NumberPicker.OnValueChangeListener;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+
+import com.eteng.mobileorder.R;
+import com.eteng.mobileorder.cusomview.NumberPicker.OnValueChangeListener;
 
 
 public class DatePicker extends FrameLayout {

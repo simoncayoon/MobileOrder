@@ -28,6 +28,16 @@ public class Constants {
 	public static final String ORDER_BY_ID = "queryOrderBySellerId";
 	
 	/**
+	 * WS新增菜品种类接口名称
+	 */
+	public static final String ADD_CATEGORY_BY_ID = "addClassBySellerId";
+	
+	/**
+	 * WS修改类目名字接口名称
+	 */
+	public static final String UPDATE_CATEGORY_NAME = "updateClassNameById";
+	
+	/**
 	 * 历史订单查询类型
 	 */
 	public static final String ORDER_QUERY_TYPE_HISTORY = "1";
@@ -51,6 +61,11 @@ public class Constants {
 	 * 分页查询中每页数量属性
 	 */
 	public static final String PAGE_COUNT = "20";
+	
+	/**
+	 * 菜单类别排序接口名称
+	 */
+	public static final String MENU_SORT = "changeClassOrder";
 	
 	public static final String EDIT_PROFILE = "editSellerInfo";
 	

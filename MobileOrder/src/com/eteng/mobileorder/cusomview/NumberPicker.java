@@ -20,8 +20,6 @@ package com.eteng.mobileorder.cusomview;
 
 import java.util.ArrayList;
 
-import com.eteng.mobileorder.R;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -52,6 +50,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.eteng.mobileorder.R;
 
 /**
  * A widget that enables the user to select a number form a predefined range.

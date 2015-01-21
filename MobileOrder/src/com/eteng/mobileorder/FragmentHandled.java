@@ -7,19 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.eteng.mobileorder.adapter.OrderListAdapter;
-import com.eteng.mobileorder.debug.DebugFlags;
-import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.OrderWXModel;
-import com.eteng.mobileorder.utils.JsonUTF8Request;
-import com.eteng.mobileorder.utils.NetController;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,9 +18,22 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.eteng.mobileorder.adapter.OrderListAdapter;
+import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.models.OrderWXModel;
+import com.eteng.mobileorder.utils.JsonUTF8Request;
+import com.eteng.mobileorder.utils.NetController;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 public class FragmentHandled extends BaseFragment implements
 		OnRefreshListener<ListView>, OnItemClickListener {

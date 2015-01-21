@@ -2,11 +2,7 @@ package com.eteng.mobileorder;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.Toast;
 
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.service.BlueToothService;
 
 public class MobileOrderApplication extends Application{

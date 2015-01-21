@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="8dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="8dp" >
+
+    <FrameLayout
+        android:id="@+id/image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent" >
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/menu_with_category_img"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/img_desc"
+            android:src="@drawable/default_dish_load_img" />
+
+        <ImageView
+            android:id="@+id/menu_with_category_shadow_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:contentDescription="@string/img_desc" >
+        </ImageView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/image_layout"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/image_layout"
+        android:gravity="bottom"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/menu_with_category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test_text"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/menu_with_category_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test_text"
+            android:textColor="@color/PHONE_ORDER_ITEM_COLOR_PRICE"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_layout"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_layout"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/menu_put_on_shelves_btn"
+            android:layout_width="0dip"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/setting_general_corner_red_frame"
+            android:text="@string/menu_put_on_shelves_text"
+            android:textColor="@color/COLOR_WHITE"
+            android:textSize="12sp"
+            android:layout_margin="3dp" />
+
+        <Button
+            android:id="@+id/menu_put_off_shelves_btn"
+            android:layout_width="0dip"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/setting_general_corner_gray_frame"
+            android:text="@string/menu_put_off_shelves_text"
+            android:textColor="@color/COLOR_WHITE"
+            android:textSize="12sp"
+            android:layout_margin="3dp" />
+    </LinearLayout>
+
+</RelativeLayout>

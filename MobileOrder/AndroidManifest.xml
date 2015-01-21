@@ -37,6 +37,7 @@
         <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
         <activity android:name="com.eteng.mobileorder.SettingOwnProfile" />
         <activity android:name="com.eteng.mobileorder.SettingUploadActivity"/>
+        <activity android:name="com.eteng.mobileorder.SettingMenuByCategory"/>
         <!-- <activity android:name="com.eteng.mobileorder.LoginActivity" > -->
         <!-- </activity> -->
 

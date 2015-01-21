@@ -1,18 +1,21 @@
 package com.eteng.mobileorder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
@@ -25,22 +28,29 @@ import com.eteng.mobileorder.utils.NetController;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
-public class DSLVFragment extends ListFragment {
+public class DSLVFragment extends ListFragment implements OnItemClickListener,
+		OnItemLongClickListener{
 
 	private static final String TAG = "DSLVFragment";
-	
+
 	ArrayAdapter<String> adapter;
 
 	private String[] array;
-	private ArrayList<String> menuArray = null;
+	public ArrayList<String> menuArray = null;
+	public ArrayList<Integer> menuIdArray = null;
 
 	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
 		@Override
 		public void drop(int from, int to) {
-			if (from != to) {
+			if (from != to) {				
 				String item = adapter.getItem(from);
 				adapter.remove(item);
-				adapter.insert(item, to);
+				adapter.insert(item, to);// 改变展示效果
+				
+				int changeId = menuIdArray.get(from);//修改menuID顺序
+				menuIdArray.remove(from);
+				menuIdArray.add(to, changeId);
+				// updateRemoteSort();//远程从新排序
 			}
 		}
 	};
@@ -69,8 +79,8 @@ public class DSLVFragment extends ListFragment {
 	private DragSortListView mDslv;
 	private DragSortController mController;
 
-	public int dragStartMode = DragSortController.ON_DOWN;
-	public boolean removeEnabled = false;
+	public int dragStartMode = DragSortController.ON_DRAG;
+	public boolean removeEnabled = true;
 	public int removeMode = DragSortController.FLING_REMOVE;
 	public boolean sortEnabled = true;
 	public boolean dragEnabled = true;
@@ -104,12 +114,8 @@ public class DSLVFragment extends ListFragment {
 	 * DragSortController.
 	 */
 	public DragSortController buildController(DragSortListView dslv) {
-		// defaults are
-		// dragStartMode = onDown
-		// removeMode = flingRight
 		DragSortController controller = new DragSortController(dslv);
 		controller.setDragHandleId(R.id.upload_menu_drag_handle);
-		// controller.setClickRemoveId(R.id.click_remove);
 		controller.setRemoveEnabled(removeEnabled);
 		controller.setSortEnabled(sortEnabled);
 		controller.setDragInitMode(dragStartMode);
@@ -121,6 +127,7 @@ public class DSLVFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		menuIdArray = new ArrayList<Integer>();
 		mDslv = (DragSortListView) inflater.inflate(getLayout(), container,
 				false);
 		mController = buildController(mDslv);
@@ -139,8 +146,10 @@ public class DSLVFragment extends ListFragment {
 
 		mDslv.setDropListener(onDrop);
 		mDslv.setRemoveListener(onRemove);
+		mDslv.setOnItemClickListener(this);
+		mDslv.setOnItemLongClickListener(this);
 
-//		setListAdapter();
+		// setListAdapter();
 	}
 
 	private void getListData() {
@@ -153,8 +162,8 @@ public class DSLVFragment extends ListFragment {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						 menuArray = getMenuList(respon);
-						 setListAdapter();
+						menuArray = getMenuList(respon);
+						setListAdapter();
 					}
 				}, new Response.ErrorListener() {
 					@Override
@@ -162,11 +171,12 @@ public class DSLVFragment extends ListFragment {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
-		NetController.getInstance(getActivity().getApplicationContext()).addToRequestQueue(
-				getMenuRequest, TAG);
+		NetController.getInstance(getActivity().getApplicationContext())
+				.addToRequestQueue(getMenuRequest, TAG);
 	}
 
 	ArrayList<String> getMenuList(JSONObject JsonString) {
+		menuIdArray.clear();
 		ArrayList<String> dataList = new ArrayList<String>();
 		try {
 			JSONArray jsonArray = new JSONArray(
@@ -174,11 +184,27 @@ public class DSLVFragment extends ListFragment {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject tmp = new JSONObject(jsonArray.getString(i));
 				dataList.add(tmp.getString("className"));
+				menuIdArray.add(tmp.getInt("classId"));
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return dataList;
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+		// remoteDeleteMenu();//远程删除
+		return false;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent mIntent = new Intent(getActivity(), SettingMenuByCategory.class);
+		mIntent.putExtra("test", menuIdArray.get(position));
+		mIntent.putExtra("menu_name", menuArray.get(position));
+		startActivity(mIntent);
 	}
 }
