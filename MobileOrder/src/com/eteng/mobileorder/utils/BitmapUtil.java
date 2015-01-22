@@ -10,38 +10,33 @@ import android.os.Build;
 
 public class BitmapUtil {
 
-	public static Bitmap downSizeBitmap(Bitmap bitmap,int reqSize)  {
-		
-		int width = bitmap.getWidth();
-		int height = bitmap.getHeight();
-		 
-		float scaleWidth = ((float) reqSize) / width;
-		float scaleHeight = ((float) reqSize) / height;
-		 
+	public static Bitmap resizeImage(Bitmap bitmap, int repWith, int reqHeight) {
+		Bitmap BitmapOrg = bitmap;
+		int width = BitmapOrg.getWidth();
+		int height = BitmapOrg.getHeight();
+		int newWidth = repWith;
+		int newHeight = reqHeight;
+
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
 		Matrix matrix = new Matrix();
-		matrix.postScale(scaleWidth, scaleHeight);
-		 
-		Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+		matrix.postScale(scaleWidth, scaleWidth);
+		Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
+				height, matrix, true);
 		return resizedBitmap;
-		 
-		/*if(bitmap.getWidth() < reqSize) {
-			return bitmap;
-		} else {
-			return Bitmap.createScaledBitmap(bitmap, reqSize, reqSize, false);
-		} */
 	}
-	
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static byte[] convertBitmapToBytes(Bitmap bitmap) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	public static byte[] convertBitmapToBytes(Bitmap bitmap) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
-	        bitmap.copyPixelsToBuffer(buffer);
-	        return buffer.array();
-      } else {
-    	  	ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-    	  	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-	        byte[] data = baos.toByteArray();
-	        return data;
-      }
-    }
+			bitmap.copyPixelsToBuffer(buffer);
+			return buffer.array();
+		} else {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+			byte[] data = baos.toByteArray();
+			return data;
+		}
+	}
 }

@@ -72,11 +72,6 @@ public class TopNavigationBar extends RelativeLayout {
 		titleView.setText(title);
 	}
 
-	public void setLeftBtnText(String LeftString) {
-		leftBtn.setVisibility(View.VISIBLE);
-		leftBtn.setText(LeftString);
-	}
-
 	public void setRightBtnEnable() {
 		// remove the old button (if there is one)   
         if (tempBtn != null){
@@ -111,6 +106,46 @@ public class TopNavigationBar extends RelativeLayout {
         tempBtn = newButton;
         // add button  
         this.addView(tempBtn);  
+	}
+	
+	public void setLeftBtnEnable() {
+		// remove the old button (if there is one)   
+        if (tempBtn != null){
+        	return;
+        }       
+        Button newButton = new Button(mContext);
+  
+        // set OnClickListener  
+        newButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mCallBack.leftBtnListener();				
+			}
+		});  
+  
+        // set LayoutParams  
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-2, -2);  
+        try{
+        	lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT); 
+        } catch (IllegalArgumentException e){
+        	DebugFlags.logD(TAG, e.getMessage());
+        }
+        lp.addRule(RelativeLayout.CENTER_VERTICAL);  
+        lp.setMargins(10, 0, 10, 0);  
+        newButton.setLayoutParams(lp);   
+        newButton.setTextSize(DisplayMetrics.sp2px(mContext, 5));  
+        newButton.setTextColor(Color.WHITE);  
+  
+        // set button drawable  
+        newButton.setBackgroundColor(Color.parseColor("#00000000"));
+        tempBtn = newButton;
+        // add button  
+        this.addView(tempBtn);  
+	}
+	
+	public void setLeftBtnText(String str){
+		tempBtn.setText(str);
 	}
 	
 	public void setRightBtnText(String str){

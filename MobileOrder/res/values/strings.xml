@@ -8,6 +8,8 @@
     <string name="test_text">测试文字</string>
     <string name="save_text">保&#160;&#160;&#160;&#160;存</string>
     <string name="cancel">取消</string>
+    <string name="camera_commit">提&#160;&#160;&#160;交</string>
+    <string name="dish_category_choice">类型选择</string>
 
     <!-- 登陆页面相关 -->
     <string name="login_account_text_hint">账户</string>

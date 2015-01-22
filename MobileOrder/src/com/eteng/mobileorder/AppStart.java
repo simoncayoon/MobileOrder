@@ -10,10 +10,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,51 +39,87 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DownloadHelper;
 import com.eteng.mobileorder.utils.NetController;
+import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorViewPagerAdapter;
 
 public class AppStart extends Activity {
-	
-	private static final String TAG = "AppStart";
-	private boolean DIALOG_SHOW = false;
 
-	
+	private static final String TAG = "AppStart";
+	private static final String KEY_IS_FIRST_VISIT = "IS_FRIST_VISIT";
+
 	private IndicatorViewPager indicatorViewPager;
 	private LayoutInflater inflate;
 	private Dialog mDialog;
 	private TextView rateTextView;
 	private ProgressBar upAppBar;
+	private SharedPreferences sp;
+
+	private boolean isFistVisit = false;
+	private boolean DIALOG_SHOW = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_start);
-//		ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
-//		Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
-//		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
-//		inflate = LayoutInflater.from(getApplicationContext());
-//		indicatorViewPager.setAdapter(adapter);
 //		checkUpdate();
+		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+				Context.MODE_PRIVATE);
+		isFistVisit = sp.getBoolean(KEY_IS_FIRST_VISIT, false);
+		if (isFistVisit) {// 加载引导页面
+			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
+			Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
+			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
+			inflate = LayoutInflater.from(getApplicationContext());
+			indicatorViewPager.setAdapter(adapter);
+		} else {// 加载启动页面
+			ImageView actionImg = new ImageView(this);
+			LayoutParams layoutParams = new LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			actionImg.setLayoutParams(layoutParams);
+			// actionImg.setBackground(getResources().getDrawable(R.drawable.app_action_page));
+			actionImg.setBackgroundResource(R.drawable.app_action_page);
+			this.addContentView(actionImg, layoutParams);
+			new Handler().postDelayed(new Runnable() {
+				public void run() {
+					/*
+					 * Create an Intent that will start the Main WordPress
+					 * Activity.
+					 */
+					Intent mainIntent = new Intent(AppStart.this,
+							LoginActivity.class);
+					AppStart.this.startActivity(mainIntent);
+					AppStart.this.finish();
+				}
+			}, 2900); // 2900 for release
+		}
+
 	}
 
 	private IndicatorPagerAdapter adapter = new IndicatorViewPagerAdapter() {
-		private int[] images = { R.drawable.ic_launcher, R.drawable.ic_launcher};
+		private int[] images = new int[] { R.drawable.indicate_01,
+				R.drawable.indicate_02, R.drawable.indicate_03,
+				R.drawable.indicate_04, R.drawable.indicate_05 };
 
 		@Override
-		public View getViewForTab(int position, View convertView, ViewGroup container) {
+		public View getViewForTab(int position, View convertView,
+				ViewGroup container) {
 			if (convertView == null) {
-				//设置显示图标
-				convertView = inflate.inflate(R.layout.appstart_guide, container, false);
+				// 设置显示图标
+				convertView = inflate.inflate(R.layout.appstart_guide,
+						container, false);
 			}
 			return convertView;
 		}
 
 		@Override
-		public View getViewForPage(int position, View convertView, ViewGroup container) {
+		public View getViewForPage(int position, View convertView,
+				ViewGroup container) {
 			if (convertView == null) {
 				convertView = new View(getApplicationContext());
-				convertView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+				convertView.setLayoutParams(new LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			}
 			convertView.setBackgroundResource(images[position]);
 			return convertView;
@@ -90,7 +130,7 @@ public class AppStart extends Activity {
 			return images.length;
 		}
 	};
-	
+
 	/**
 	 * 检查更新
 	 */
@@ -103,7 +143,8 @@ public class AppStart extends Activity {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						startActivity(new Intent(AppStart.this, MainNaviActivity.class));
+//						startActivity(new Intent(AppStart.this,
+//								MainNaviActivity.class));
 					}
 				}, new Response.ErrorListener() {
 
@@ -112,7 +153,8 @@ public class AppStart extends Activity {
 						// TODO Auto-generated method stub
 						Toast.makeText(AppStart.this, "Nothing check",
 								Toast.LENGTH_SHORT).show();
-						startActivity(new Intent(AppStart.this, MainNaviActivity.class));
+//						startActivity(new Intent(AppStart.this,
+//								MainNaviActivity.class));
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -206,7 +248,7 @@ public class AppStart extends Activity {
 				}
 				return false;
 			}
-//
+			//
 
 		};
 

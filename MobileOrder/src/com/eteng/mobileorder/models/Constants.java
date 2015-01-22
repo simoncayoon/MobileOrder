@@ -85,5 +85,13 @@ public class Constants {
 	public static String PRINT_FUNC_SWITCH = "print_func_switch";
 	
 	
+	/**
+	 * SharePerference 我的资料文件名称
+	 */
 	public static final String SP_OWN_PROFILE_NAME = "own_profile_name";
+	
+	/**
+	 * SharePerference 通用文件名
+	 */
+	public static final String SP_GENERAL_PROFILE_NAME = "own_profile_name";
 }

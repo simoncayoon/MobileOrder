@@ -5,18 +5,25 @@
     android:background="@color/GENERAL_VIEW_BG_COLOR"
     android:orientation="vertical" >
 
+    <com.eteng.mobileorder.cusomview.TopNavigationBar
+        android:id="@+id/general_navi_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@color/COLOR_WHITE"
         android:orientation="vertical" >
 
         <FrameLayout
             android:layout_width="200dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
+            android:background="@drawable/general_edit_corner_bg"
             android:orientation="vertical" >
 
             <TextView
@@ -25,7 +32,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity=""
                 android:gravity="center"
-                android:text="@string/add_new_dish_text" />
+                android:text="@string/add_new_dish_text"
+                android:textSize="20sp" />
 
             <ImageButton
                 android:id="@+id/add_camera_preview_img"
@@ -47,7 +55,8 @@
         android:background="@drawable/general_edit_corner_bg"
         android:hint="@string/dish_name_edit_prompt"
         android:inputType="text"
-        android:paddingLeft="10dp" >
+        android:paddingLeft="10dp"
+        android:textColor="@color/GENERAL_TEXT_COLOR" >
     </EditText>
 
     <EditText
@@ -60,7 +69,30 @@
         android:background="@drawable/general_edit_corner_bg"
         android:hint="@string/dish_price_edit_prompt"
         android:inputType="number"
-        android:paddingLeft="10dp" >
+        android:paddingLeft="10dp"
+        android:textColor="@color/GENERAL_TEXT_COLOR" >
     </EditText>
+
+    <Button
+        android:id="@+id/category_type_selector"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/general_edit_corner_bg"
+        android:text="@string/dish_category_choice"
+        android:textColor="@color/GENERAL_TEXT_COLOR" />
+
+    <Button
+        android:id="@+id/general_commit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/general_corner_frame_small"
+        android:text="@string/camera_commit"
+        android:textColor="@color/COLOR_WHITE"
+        android:textSize="20sp" />
 
 </LinearLayout>
