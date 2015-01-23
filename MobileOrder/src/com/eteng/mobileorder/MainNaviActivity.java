@@ -53,7 +53,7 @@ public class MainNaviActivity extends FragmentActivity implements
 		// 默认是1,，自动预加载左右两边的界面。设置viewpager预加载数为0。只加载加载当前界面。
 		viewPager.setPrepareNumber(0);
 		naviTitleView.setTitle(tabNames[0]);// 默认第一个页面
-		naviTitleView.setRightImg(R.drawable.setting_btn_bg_default);
+		naviTitleView.setRightImg(R.drawable.setting_btn_bg_selector);
 		indicatorViewPager
 				.setOnIndicatorPageChangeListener(new OnIndicatorPageChangeListener() {
 

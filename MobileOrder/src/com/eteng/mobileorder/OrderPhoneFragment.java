@@ -16,12 +16,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eteng.mobileorder.adapter.HorizontalListViewAdapter;
 import com.eteng.mobileorder.adapter.MenuCategoryAdapter;
+import com.eteng.mobileorder.cusomview.HorizontalListView;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
@@ -32,15 +33,20 @@ public class OrderPhoneFragment extends BaseFragment implements
 		OnItemClickListener {
 
 	private static final String TAG = "OrderPhoneFragment";
-	private ProgressBar progressBar;
-	private GridView mGridView;
-	public int categoryId;
-	public boolean isSingleSelect;
 	private static final String KEY_LIST_POSITION = "key_list_position";
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";
 	public static final String INTENT_IS_NOODLE = "is_noodle";
+	
+//	private ProgressBar progressBar;
+	private GridView mGridView;
+	private HorizontalListView remarkListView;
+	private HorizontalListViewAdapter mRemarkAdapter;
+	
+	public int categoryId;	
+	public boolean isSingleSelect;
 	private int mFirstVisible;
 	private ArrayList<MenuItemModel> dataList;
+	private ArrayList<String> remarkList;
 	public MenuCategoryAdapter<MenuItemModel> mAdapter;
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -66,6 +72,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dataList = new ArrayList<MenuItemModel>();
+		remarkList = new ArrayList<String>();
 		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
 	}
@@ -74,13 +81,14 @@ public class OrderPhoneFragment extends BaseFragment implements
 	protected void onCreateView(Bundle savedInstanceState) {
 		super.onCreateView(savedInstanceState);
 		setContentView(R.layout.fragment_tabmain_item);
-		progressBar = (ProgressBar) findViewById(R.id.fragment_mainTab_item_progressBar);
+//		progressBar = (ProgressBar) findViewById(R.id.fragment_mainTab_item_progressBar);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) findViewById(R.id.asset_grid);
+		remarkListView = (HorizontalListView) findViewById(R.id.menu_remark_list);
 		if (isSingleSelect) {
 			
 		} else {
@@ -102,6 +110,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 		}
 		setHasOptionsMenu(true);
 		getDataList();
+		getOptions();
 	}
 
 	/***
@@ -141,7 +150,60 @@ public class OrderPhoneFragment extends BaseFragment implements
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-						progressBar.setVisibility(View.GONE);
+//						progressBar.setVisibility(View.GONE);
+					}
+				}, new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
+	}
+	
+	/***
+	 * 获取相应种类下的所有数据
+	 */
+	private void getOptions() {
+		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter("classId", String.valueOf(categoryId));
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "test  +  " + respon);
+						try {
+							if (respon.getString("code").equals("0")) {// 查询成功
+								JSONArray options = new JSONArray(respon.getString("optionList"));
+								if(!(options.length() > 0)){
+									return;
+								}
+								for(int i = 0; i < options.length(); i++){
+									String temp = options.getJSONObject(i).getString("optionName");
+									DebugFlags.logD(TAG, temp);
+									remarkList.add(temp);
+								}
+								remarkListView.setVisibility(View.VISIBLE);
+								mRemarkAdapter = new HorizontalListViewAdapter(getActivity(), remarkList);
+								remarkListView.setAdapter(mRemarkAdapter);
+								
+							} else {
+								try {
+									throw new VolleyError();
+								} catch (VolleyError e) {
+									e.printStackTrace();
+								}
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+//						progressBar.setVisibility(View.GONE);
 					}
 				}, new Response.ErrorListener() {
 

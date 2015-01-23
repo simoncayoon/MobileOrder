@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+<!-- 
     <ProgressBar
         android:id="@+id/fragment_mainTab_item_progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" /> -->
 
     <com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/asset_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:columnWidth="80dip"
         android:numColumns="auto_fit"
@@ -23,6 +24,19 @@
         tools:context=".OrderPhoneFragment"
         android:fadingEdge="none"
         android:cacheColorHint="#00000000"
-        android:listSelector="#00000000" />
-
-</FrameLayout>
+        android:listSelector="#00000000"
+        android:background="@color/COLOR_WHITE" />
+    
+    <com.eteng.mobileorder.cusomview.HorizontalListView
+        android:id="@+id/menu_remark_list"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:cacheColorHint="#00000000"
+        android:fadingEdge="none"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/general_edit_corner_bg"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+	
+</LinearLayout>

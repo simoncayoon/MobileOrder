@@ -6,7 +6,7 @@
     android:focusable="false"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="@drawable/date_picker_bg" >
+    android:background="@drawable/general_dialog_bg" >
 
     <com.eteng.mobileorder.cusomview.NumberPicker
         android:id="@+id/date_year"

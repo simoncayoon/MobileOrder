@@ -30,12 +30,12 @@
         android:id="@+id/menu_with_category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/PHONE_ORDER_ITEM_COLOR_NAME" />
+        android:textColor="@color/GENERAL_TEXT_COLOR" />
 
     <TextView
         android:id="@+id/menu_with_category_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/PHONE_ORDER_ITEM_COLOR_PRICE" />
+        android:textColor="@color/TAB_TEXT_COLOR_SELECTED" />
 
 </LinearLayout>

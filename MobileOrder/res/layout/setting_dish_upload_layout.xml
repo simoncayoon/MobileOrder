@@ -90,7 +90,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/general_corner_frame_small"
+        android:background="@drawable/general_corner_small_frame_selector"
         android:text="@string/camera_commit"
         android:textColor="@color/COLOR_WHITE"
         android:textSize="20sp" />

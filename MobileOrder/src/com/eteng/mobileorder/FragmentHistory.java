@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -36,6 +37,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.OrderListAdapter;
 import com.eteng.mobileorder.cusomview.DatePicker;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderWXModel;
@@ -74,6 +76,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 		initView();
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	private void initView() {
 		orderCountView = (TextView) findViewById(R.id.general_order_layout_order_count);
 		orderCountView.setText(String.format(Locale.CHINESE, getResources()
@@ -84,7 +87,6 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 
 		String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(
 				new Date()).toString();
-		DebugFlags.logD(TAG, "当前的日期是:" + currentDate);
 		startBtn = (Button) findViewById(R.id.order_history_query_begin_btn);
 		startBtn.setText(currentDate);
 		endBtn = (Button) findViewById(R.id.order_history_query_end_btn);
@@ -119,6 +121,9 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 	}
 
 	private void getHistoryData() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(getActivity(), "加载中...", true, false,
+				null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
@@ -127,8 +132,6 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 		builder.appendQueryParameter("page", "00");
 		builder.appendQueryParameter("pageCount", "00");
 		builder.appendQueryParameter("startDate", startBtn.getText().toString());
-		DebugFlags.logD(TAG, "start date" + startBtn.getText().toString());
-		DebugFlags.logD(TAG, "end date" + endBtn.getText().toString());
 		builder.appendQueryParameter("endDate", endBtn.getText().toString());
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -156,15 +159,18 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 										"oops! the server msg is :"
 												+ respon.getString("msg"));
 							}
+
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -187,7 +193,6 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 			long id) {
 		try {
 			int orderId = orderDataList.get(position).getOrderId();
-			DebugFlags.logD(TAG, "订单ID" + orderId);
 			Intent mIntent = new Intent(getActivity(),
 					OrderDetailActivity.class);
 			mIntent.putExtra("ORDER_DETAIL_ID", orderId);
@@ -226,13 +231,14 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 	}
 
 	void showDatePicker() {
-		String mDateString = "";
 		DatePicker newView = new DatePicker(getActivity());
 		popPicker = new PopupWindow(newView, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, false);
+		popPicker.setAnimationStyle(R.style.popwin_anim_style);
 		// 设置点击窗口外边窗口消失
 		popPicker.setOutsideTouchable(true);
-		popPicker.setBackgroundDrawable(getResources().getDrawable(R.drawable.date_picker_bg));
+		popPicker.setBackgroundDrawable(getResources().getDrawable(
+				R.drawable.general_dialog_bg));
 		// 设置此参数获得焦点，否则无法点击
 		popPicker.setFocusable(true);
 		popPicker.showAtLocation(getActivity().getWindow().getDecorView(),
@@ -244,26 +250,23 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 			public void onDismiss() {
 				// TODO Auto-generated method stub
 				mCalendar.set(Calendar.YEAR, mDatePicker.getYear());
-				DebugFlags.logD(TAG, "年： " + mDatePicker.getYear());
 				mCalendar.set(Calendar.MONTH, mDatePicker.getMonth());
-				DebugFlags.logD(TAG, "月： " + mDatePicker.getMonth());
 				mCalendar.set(Calendar.DAY_OF_MONTH, mDatePicker.getDay());
-				DebugFlags.logD(TAG, "日： " + mDatePicker.getDay());
-				if(isFromStart){
+				if (isFromStart) {
 					startBtn.setText(mDatePicker.getDate());
-				}else{
+				} else {
 					endBtn.setText(mDatePicker.getDate());
 				}
 			}
 		});
-		
+
 	}
-	
+
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if(popPicker != null){
+		if (popPicker != null) {
 			popPicker.dismiss();
 			popPicker = null;
 		}

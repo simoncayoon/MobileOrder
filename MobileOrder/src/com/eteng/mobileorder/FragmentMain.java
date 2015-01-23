@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		confirmLayout = (LinearLayout) findViewById(R.id.confirm_layout);
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	private void initHeader() {
 		headerPhone = (TextView) getContentView().findViewById(
 				R.id.main_fragment_header_phone);
@@ -68,7 +70,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 				R.id.main_fragment_header_addr);
 		addCombo = (TextView) getContentView().findViewById(R.id.order_add_btn);
 		Drawable addDrawable = getResources().getDrawable(
-				R.drawable.main_fragment_add_combo_icon);// 添加配餐按钮
+				R.drawable.main_fragment_add_combo_normal_icon_selector);// 添加配餐按钮
 		int addDrawableSize = DisplayMetrics.dip2px(getActivity(), 30);
 		int drawableSize = DisplayMetrics.dip2px(getActivity(), 22);
 		addDrawable.setBounds(0, 0, addDrawableSize, addDrawableSize);
@@ -89,9 +91,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		Date data = new Date();
 		dateView.setText(new SimpleDateFormat("yy/MM/dd").format(data));
 		addrEditView = (EditText) findViewById(R.id.header_addr_edit_view);
-		// headerPhone.setText("18685613451");
-		// headerDate.setText("15/01/10");
-		// headerAddr.setText("中华北路神奇世纪商务城1803");
 		totalPrice = (TextView) findViewById(R.id.phone_order_combo_count);// 显示总价
 		confirmBtn = (Button) findViewById(R.id.phone_order_commit_btn);
 		confirmBtn.setOnClickListener(this);
@@ -144,6 +143,9 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 				}
 				DebugFlags.logD(TAG, "PrintString " + printString);
 				btService.PrintCharacters(printString);
+			} else {
+				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
+				.show();
 			}
 		}
 	}

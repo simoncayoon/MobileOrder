@@ -18,6 +18,11 @@ public class Constants {
 	public static final String GOODS_BY_ID = "queryGoodsBySellerId";
 	
 	/**
+	 * WS查询菜品类目下的备注信息接口名称
+	 */
+	public static final String OPTION_REMARK = "querySellerClassOption";
+	
+	/**
 	 * 订单详情查询接口名称
 	 */
 	public static final String ORDER_BY_ORDERID = "queryOrderByOrderId";
@@ -36,6 +41,11 @@ public class Constants {
 	 * WS修改类目名字接口名称
 	 */
 	public static final String UPDATE_CATEGORY_NAME = "updateClassNameById";
+	
+	/**
+	 * WS登陆接口名称
+	 */
+	public static final String LOGIN = "login";
 	
 	/**
 	 * 历史订单查询类型

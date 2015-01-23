@@ -17,9 +17,9 @@
         android:layout_weight="1" />
 
     <com.shizhefei.view.indicator.FixedIndicatorView
-        android:background="#fff"
         android:id="@+id/tabmain_indicator"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        android:background="@drawable/main_tab_bg" />
 
 </LinearLayout>

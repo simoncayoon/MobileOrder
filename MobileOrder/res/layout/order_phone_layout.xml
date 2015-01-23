@@ -2,34 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/COLOR_WHITE" >
-    
+    android:background="@color/GENERAL_VIEW_BG_COLOR"
+    android:orientation="vertical" >
+
     <com.eteng.mobileorder.cusomview.TopNavigationBar
         android:id="@+id/general_navi_view"
         android:layout_width="match_parent"
-        android:layout_height="60dp"/>
+        android:layout_height="60dp" />
 
-    <com.shizhefei.view.indicator.ScrollIndicatorView
-        android:id="@+id/moretab_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="45dp" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/moretab_viewPager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1" />
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:background="@color/COLOR_WHITE" >
+
+        <com.shizhefei.view.indicator.ScrollIndicatorView
+            android:id="@+id/moretab_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="45dp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/moretab_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/GENERAL_VIEW_BG_COLOR" />
+    </LinearLayout>
     
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:contentDescription="@string/img_desc"
+        android:background="@drawable/general_boundary_line"/>
+
     <Button
         android:id="@+id/add_combolist_btn"
-        android:layout_width="80dp"
-        android:layout_height="30dp"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/general_corner_frame_small"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
         android:layout_margin="10dp"
-        android:text="@string/general_confirm_text"/>
+        android:background="@drawable/general_corner_small_frame_selector"
+        android:text="@string/general_confirm_text"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
 </LinearLayout>

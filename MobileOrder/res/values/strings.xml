@@ -17,9 +17,10 @@
     <string name="login_text">登&#160;&#160;&#160;&#160;录</string>
     <string name="login_company_desc">贵阳翼腾信息技术有限责任公司</string>
     <string name="login_copyright_desc">版权所有</string>
-    <string name="login_english_desc1">Copyright© 2014 Etenginfo</string>
+    <string name="login_english_desc1">Copyright 2013&#8211;2015</string>
     <string name="login_english_desc2">Allright Reservd</string>
     <string name="login_company_tel">0851&#8211;6850058</string>
+    <string name="login_remenber_my_acount">记住我的账户</string>
 
     <!-- 电话订单相关 -->
     <string name="header_tel_text">电话</string>

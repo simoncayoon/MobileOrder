@@ -18,7 +18,8 @@
    	<color name="PHONE_ORDER_ITEM_COLOR_NAME">#504F4F</color>
    	<color name="PHONE_ORDER_ITEM_COLOR_PRICE">#5E5E5E</color>
   	<color name="PHONE_ORDER_REMARK_FOCUS_BG">#F65237</color>
-  	<color name="PHONE_ORDER_COLLOCATE_TEXT_COLOR">#EA3808</color>
+  	<color name="PHONE_ORDER_COLLOCATE_TEXT_COLOR_NORMAL">#EA3808</color>
+  	<color name="PHONE_ORDER_COLLOCATE_TEXT_COLOR_FOCUS">#BE2C05</color>
   	<color name="MAIN_FRAGMENT_HEADER_TEXT_COLOR">#444444</color>
   	
   	<!-- 历史订单相关 -->

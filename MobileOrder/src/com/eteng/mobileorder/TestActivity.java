@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ArrayAdapter;
 
 import com.mobeta.android.dslv.DragSortController;
@@ -17,12 +19,25 @@ public class TestActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.test_layout);
-		mDslv = (DragSortListView) findViewById(R.id.setting_upload_sort_list_view);
-		mController = buildController(mDslv);
-		mDslv.setFloatViewManager(mController);
-		mDslv.setOnTouchListener(mController);
-		mDslv.setDragEnabled(dragEnabled);
-		setListAdapter();
+//		mDslv = (DragSortListView) findViewById(R.id.setting_upload_sort_list_view);
+//		mController = buildController(mDslv);
+//		mDslv.setFloatViewManager(mController);
+//		mDslv.setOnTouchListener(mController);
+//		mDslv.setDragEnabled(dragEnabled);
+//		setListAdapter();
+		new Handler().postDelayed(new Runnable() {
+			public void run() {
+				/*
+				 * Create an Intent that will start the Main WordPress
+				 * Activity.
+				 */
+				Intent mainIntent = new Intent(TestActivity.this,
+						LoginActivity.class);
+				startActivity(mainIntent);
+				overridePendingTransition(R.anim.zoomin, R.anim.zoomout); 
+				finish();
+			}
+		}, 2000);
 	}
 
 	ArrayAdapter<String> adapter;

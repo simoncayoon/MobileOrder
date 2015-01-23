@@ -82,7 +82,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		headerAddr = (TextView) findViewById(R.id.main_fragment_header_addr);
 		addCombo = (TextView) findViewById(R.id.order_add_btn);
 		Drawable addDrawable = getResources().getDrawable(
-				R.drawable.main_fragment_add_combo_icon);// 添加配餐按钮
+				R.drawable.main_fragment_add_combo_normal_icon);// 添加配餐按钮
 		int addDrawableSize = DisplayMetrics.dip2px(this, 30);
 		int drawableSize = DisplayMetrics.dip2px(this, 22);
 		addDrawable.setBounds(0, 0, addDrawableSize, addDrawableSize);

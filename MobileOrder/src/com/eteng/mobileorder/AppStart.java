@@ -16,7 +16,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +37,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DownloadHelper;
 import com.eteng.mobileorder.utils.NetController;
-import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorViewPagerAdapter;
@@ -63,37 +60,39 @@ public class AppStart extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_start);
+		new Handler().postDelayed(new Runnable() {
+			public void run() {
+				/*
+				 * Create an Intent that will start the Main WordPress
+				 * Activity.
+				 */
+				Intent mainIntent = new Intent(AppStart.this,
+						LoginActivity.class);
+				AppStart.this.startActivity(mainIntent);
+				overridePendingTransition(R.anim.zoomin, R.anim.zoomout); 
+				AppStart.this.finish();
+			}
+		}, 2000); // 2900 for release
 //		checkUpdate();
-		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE);
-		isFistVisit = sp.getBoolean(KEY_IS_FIRST_VISIT, false);
-		if (isFistVisit) {// 加载引导页面
-			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
-			Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
-			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
-			inflate = LayoutInflater.from(getApplicationContext());
-			indicatorViewPager.setAdapter(adapter);
-		} else {// 加载启动页面
-			ImageView actionImg = new ImageView(this);
-			LayoutParams layoutParams = new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-			actionImg.setLayoutParams(layoutParams);
-			// actionImg.setBackground(getResources().getDrawable(R.drawable.app_action_page));
-			actionImg.setBackgroundResource(R.drawable.app_action_page);
-			this.addContentView(actionImg, layoutParams);
-			new Handler().postDelayed(new Runnable() {
-				public void run() {
-					/*
-					 * Create an Intent that will start the Main WordPress
-					 * Activity.
-					 */
-					Intent mainIntent = new Intent(AppStart.this,
-							LoginActivity.class);
-					AppStart.this.startActivity(mainIntent);
-					AppStart.this.finish();
-				}
-			}, 2900); // 2900 for release
-		}
+//		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+//				Context.MODE_PRIVATE);
+//		isFistVisit = sp.getBoolean(KEY_IS_FIRST_VISIT, false);
+//		if (isFistVisit) {// 加载引导页面
+//			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
+//			Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
+//			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
+//			inflate = LayoutInflater.from(getApplicationContext());
+//			indicatorViewPager.setAdapter(adapter);
+//		} else {// 加载启动页面
+////			ImageView actionImg = new ImageView(this);
+////			LayoutParams layoutParams = new LayoutParams(
+////					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+////			actionImg.setLayoutParams(layoutParams);
+////			// actionImg.setBackground(getResources().getDrawable(R.drawable.app_action_page));
+////			actionImg.setBackgroundResource(R.drawable.app_action_page);
+////			this.addContentView(actionImg, layoutParams);
+//			
+//		}
 
 	}
 

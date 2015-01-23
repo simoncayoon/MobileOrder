@@ -32,10 +32,10 @@
             android:layout_marginRight="@dimen/login_edit_box_margin_size"
             android:layout_marginTop="40dp"
             android:background="@drawable/general_edit_corner_bg"
-            android:drawableLeft="@drawable/login_account_icon_left"
             android:drawablePadding="10dp"
             android:hint="@string/login_account_text_hint"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/GENERAL_TEXT_COLOR" />
 
         <EditText
             android:id="@+id/login_pwd_edit_box"
@@ -46,17 +46,25 @@
             android:layout_marginRight="@dimen/login_edit_box_margin_size"
             android:layout_marginTop="10dp"
             android:background="@drawable/general_edit_corner_bg"
-            android:drawableLeft="@drawable/login_pwd_icon_left"
             android:drawablePadding="10dp"
             android:hint="@string/login_pwd_text_hint"
-            android:singleLine="true"  />
+            android:singleLine="true"
+            android:textColor="@color/GENERAL_TEXT_COLOR"
+            android:inputType="textPassword"/>
 
         <CheckBox
             android:id="@+id/login_save_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/login_edit_box_margin_size"
-            android:layout_marginTop="10dp" />
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:layout_marginTop="10dp"
+            
+            android:text="@string/login_remenber_my_acount"
+            android:textColor="@color/GENERAL_TEXT_COLOR"
+            android:textSize="15sp"
+            />
 
         <Button
             android:id="@+id/login_btn"
@@ -65,7 +73,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/general_corner_frame_small"
+            android:background="@drawable/general_corner_small_frame_selector"
             android:text="@string/login_text"
             android:textColor="@color/COLOR_WHITE"
             android:textSize="20sp" />
@@ -78,7 +86,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="25dp"
         android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:paddingBottom="20dp" >
 
         <TextView
             android:layout_width="match_parent"
@@ -100,20 +110,6 @@
             android:layout_margin="2dp"
             android:gravity="center"
             android:text="@string/login_english_desc1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:gravity="center"
-            android:text="@string/login_english_desc2" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:gravity="center"
-            android:text="@string/login_company_tel" />
     </LinearLayout>
 
 </LinearLayout>
