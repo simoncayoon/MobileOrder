@@ -20,9 +20,10 @@ import android.widget.ListView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.eteng.mobileorder.adapter.HorizontalListViewAdapter;
 import com.eteng.mobileorder.adapter.MenuCategoryAdapter;
-import com.eteng.mobileorder.cusomview.HorizontalListView;
+import com.eteng.mobileorder.adapter.RemarkListAdapter;
+import com.eteng.mobileorder.cusomview.RemarkListInterface.OnItemSelectedListener;
+import com.eteng.mobileorder.cusomview.RemarkListView;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
@@ -39,15 +40,17 @@ public class OrderPhoneFragment extends BaseFragment implements
 	
 //	private ProgressBar progressBar;
 	private GridView mGridView;
-	private HorizontalListView remarkListView;
-	private HorizontalListViewAdapter mRemarkAdapter;
+	private RemarkListView remarkListView;
+//	private HorizontalListViewAdapter mRemarkAdapter;
+//	private RemarkListAdapter mRemarkListAdapter;
 	
 	public int categoryId;	
 	public boolean isSingleSelect;
 	private int mFirstVisible;
 	private ArrayList<MenuItemModel> dataList;
-	private ArrayList<String> remarkList;
+	private ArrayList<RemarkModel> remarkList;
 	public MenuCategoryAdapter<MenuItemModel> mAdapter;
+	public RemarkListAdapter mRemarkAdapter;
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -72,7 +75,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dataList = new ArrayList<MenuItemModel>();
-		remarkList = new ArrayList<String>();
+		remarkList = new ArrayList<RemarkModel>();
 		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
 	}
@@ -88,7 +91,15 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) findViewById(R.id.asset_grid);
-		remarkListView = (HorizontalListView) findViewById(R.id.menu_remark_list);
+		remarkListView = (RemarkListView) findViewById(R.id.menu_remark_list);
+		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {
+			
+			@Override
+			public void onItemSelected(View selectItemView, int select) {
+				DebugFlags.logD(TAG, "select position" +  select);
+				mRemarkAdapter.setChoiceState(select);
+			}
+		});
 		if (isSingleSelect) {
 			
 		} else {
@@ -184,15 +195,18 @@ public class OrderPhoneFragment extends BaseFragment implements
 								if(!(options.length() > 0)){
 									return;
 								}
+								remarkList.clear();
 								for(int i = 0; i < options.length(); i++){
 									String temp = options.getJSONObject(i).getString("optionName");
 									DebugFlags.logD(TAG, temp);
-									remarkList.add(temp);
+									RemarkModel item = new RemarkModel();
+									item.setRemarkName(temp);
+									item.setSelectStat(false);//默认不选中任何备注
+									remarkList.add(item);
 								}
 								remarkListView.setVisibility(View.VISIBLE);
-								mRemarkAdapter = new HorizontalListViewAdapter(getActivity(), remarkList);
+								mRemarkAdapter = new RemarkListAdapter(getActivity(), remarkList);
 								remarkListView.setAdapter(mRemarkAdapter);
-								
 							} else {
 								try {
 									throw new VolleyError();
@@ -310,5 +324,22 @@ public class OrderPhoneFragment extends BaseFragment implements
 		if(this.mAdapter == null){
 		}
 		return mAdapter;
+	}
+	
+	public class RemarkModel {
+		private String remarkName;
+		private boolean isSelectStat;//设置默认值
+		public String getRemarkName() {
+			return remarkName;
+		}
+		public void setRemarkName(String remarkName) {
+			this.remarkName = remarkName;
+		}
+		public boolean isSelectStat() {
+			return isSelectStat;
+		}
+		public void setSelectStat(boolean isSelectStat) {
+			this.isSelectStat = isSelectStat;
+		}
 	}
 }

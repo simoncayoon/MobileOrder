@@ -2,11 +2,7 @@ package com.eteng.mobileorder.adapter;
 
 import java.util.ArrayList;
 
-import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.utils.DisplayMetrics;
-
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +10,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.eteng.mobileorder.R;
+import com.eteng.mobileorder.utils.DisplayMetrics;
 
 public class HorizontalListViewAdapter extends BaseAdapter {
 

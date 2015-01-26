@@ -140,7 +140,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	@Override
 	public void onItemSelected(int position) {
-
+		
 	};
 
 	/**

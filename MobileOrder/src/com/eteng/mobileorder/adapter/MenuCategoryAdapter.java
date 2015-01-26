@@ -144,7 +144,7 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 	}
 
 	/**
-	 * 选中指定位置
+	 * 选中后取消指定位置
 	 * 
 	 * @param position
 	 */

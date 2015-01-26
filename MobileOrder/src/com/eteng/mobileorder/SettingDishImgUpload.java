@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,13 +20,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.app.AlertDialog.Builder;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 
 public class SettingDishImgUpload extends Activity implements NaviBtnListener,
