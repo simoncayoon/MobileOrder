@@ -74,7 +74,7 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 		MenuItemModel item = dataSrc.get(position);
 		holder.dishName.setText(((MenuItemModel) item).getName());
 		holder.dishPrice.setText("￥ "
-				+ String.valueOf(((MenuItemModel) item).getItemPrice()));
+				+ String.valueOf(((MenuItemModel) item).getPrice()));
 		holder.dishImg.setImageUrl(((MenuItemModel) item).getImgUrl(),
 				NetController.getInstance(context.getApplicationContext())
 						.getImageLoader());

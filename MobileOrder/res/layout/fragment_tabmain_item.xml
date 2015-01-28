@@ -26,19 +26,6 @@
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <!--
-             <com.shizhefei.view.indicator.ScrollIndicatorView
-            android:id="@+id/menu_remark_list"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/order_phone_remark_list_bg"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:visibility="gone" />
-        -->
-
         <com.eteng.mobileorder.cusomview.RemarkListView
             android:id="@+id/menu_remark_list"
             android:layout_width="wrap_content"

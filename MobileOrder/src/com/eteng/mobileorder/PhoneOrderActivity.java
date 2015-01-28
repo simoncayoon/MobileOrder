@@ -31,9 +31,11 @@ import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.StringMaker;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
@@ -43,19 +45,18 @@ import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 public class PhoneOrderActivity extends FragmentActivity implements
 		OrderPhoneFragment.Callbacks, NaviBtnListener, OnClickListener {
 
-	private String TAG = "PhoneOrderActivity";
+	private static final String TAG = "PhoneOrderActivity";
 	private IndicatorViewPager indicatorViewPager;
 	private LayoutInflater inflate;
-	private ArrayList<MenuCategory> menuArray;
-	/**
-	 * 配餐列表
-	 */
-	private ArrayList<MenuItemModel> comboList;
 	private ViewPager viewPager;
 	private ScrollIndicatorView indicator;
 	private Button addToComboList;
+
+	private ArrayList<MenuCategory> menuArray;
+	private ArrayList<OrderDetailModel> comboList;
+	private ArrayList<String> attachStringList;
 	private MyAdapter mAdapter;
-	private LinkedHashSet<ArrayList<MenuItemModel>> allComboList;
+	private LinkedHashSet<ArrayList<OrderDetailModel>> allComboList;
 	private boolean hasDish = false;
 
 	@Override
@@ -64,8 +65,8 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		setContentView(R.layout.order_phone_layout);
 		initView();
 		menuArray = new ArrayList<MenuCategory>();
-		comboList = new ArrayList<MenuItemModel>();
-		allComboList = new LinkedHashSet<ArrayList<MenuItemModel>>();
+		comboList = new ArrayList<OrderDetailModel>();
+		allComboList = new LinkedHashSet<ArrayList<OrderDetailModel>>();
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 		inflate = LayoutInflater.from(getApplicationContext());
 		getMenuCategory();// 获取菜单种类
@@ -117,7 +118,8 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			TextView textView = (TextView) convertView;
 			textView.setText(menuArray.get(position).getMenuName());
 			textView.setPadding(30, 0, 30, 0);
-			textView.setTextColor(getResources().getColor(R.color.GENERAL_TEXT_COLOR));
+			textView.setTextColor(getResources().getColor(
+					R.color.GENERAL_TEXT_COLOR));
 			textView.setTextSize(DisplayMetrics.sp2px(PhoneOrderActivity.this,
 					8));
 			return convertView;
@@ -140,7 +142,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	@Override
 	public void onItemSelected(int position) {
-		
+
 	};
 
 	/**
@@ -185,7 +187,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				dataList.add(item);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return dataList;
@@ -224,13 +225,13 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	@Override
 	public void leftBtnListener() {
 		DebugFlags.logD(TAG, "leftBtnListener");
-		if(hasDish){
-			for(MenuItemModel item : comboList){
-				DebugFlags.logD(TAG, "name =====" + item.getName());
-			}
+		if (hasDish) {
 			Intent mIntent = new Intent();
 			Bundle mBundle = new Bundle();
-			mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT, comboList);
+			mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT,
+					comboList);
+			// mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT_ATTACH,
+			// attachList);
 			mIntent.putExtras(mBundle);
 			// 提交到配餐列表
 			setResult(Constants.RESULT_CODE, mIntent);// resultCode错误
@@ -241,7 +242,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	@Override
 	public void rightBtnListener() {
 		DebugFlags.logD(TAG, "rightBtnListener");
-		
+
 	}
 
 	@Override
@@ -250,7 +251,8 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		 * 收集所有fragment中的数据
 		 */
 		OrderPhoneFragment tempFragment = null;
-		for (int i = 0; i < menuArray.size(); i++) {
+		attachStringList = new ArrayList<String>();
+		for (int i = 0; i < menuArray.size(); i++) {// 遍历每个类目
 
 			tempFragment = getFragWithposition(i);
 			if (tempFragment.categoryId == 0 || tempFragment.mAdapter == null) {// 没有实例化
@@ -258,31 +260,66 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			}
 			ArrayList<MenuItemModel> tempList = new ArrayList<MenuItemModel>();
 			tempList = tempFragment.mAdapter.getSelectList();
-			
 			int listSize = tempList.size();
-			if (listSize > 0) {		
+			if (listSize > 0) {
 				if (tempFragment.isSingleSelect) {// 如果是粉面类，将名称和总价合并
-					MenuItemModel unionMenu = new MenuItemModel();
-					StringBuilder sb = new StringBuilder();
-					Double totalPrice = 0.0;
-					for (int j = 0; j < listSize; j++) {
-						if (j < (listSize - 1)) {
-							sb = sb.append(tempList.get(j).getName() + " + ");//追加“+”
-							totalPrice += tempList.get(j).getItemPrice();
-							continue;
-						} 
-						sb = sb.append(tempList.get(j).getName());
-						DebugFlags.logD(TAG, "每一项的价格" + tempList.get(j).getItemPrice());
-						totalPrice += tempList.get(j).getItemPrice();;//计算总价
+					if (!tempFragment.getAdapter().isMainCheck
+							&& tempList.size() > 0) {// 当粉面有选项，但未选择主食
+						Toast.makeText(PhoneOrderActivity.this, "未选择粉面主食",
+								Toast.LENGTH_SHORT).show();
+						return;
 					}
-					DebugFlags.logD(TAG, "总价是:" + totalPrice);
-					unionMenu.setName(sb.toString());
-					unionMenu.setItemPrice(totalPrice);
-					comboList.add(unionMenu);
+					OrderDetailModel orderItem = new OrderDetailModel();
+					StringBuilder sb = new StringBuilder();
+					Double totalPrice = 0.0;// 总价
+					double attachPrice = 0.0;// 附加价
+					MenuItemModel mainDish = null;// 主食（一个）
+					for (int j = 0; j < listSize; j++) {
+						if (!tempList.get(j).getType().equals("1")) {
+							attachStringList.add(tempList.get(j).getName());
+							attachPrice += tempList.get(j).getPrice();
+						} else {
+							mainDish = tempList.get(j);
+						}
+						if (j < (listSize - 1)) {
+							sb = sb.append(tempList.get(j).getName() + " + ");// 追加“+”
+							totalPrice += tempList.get(j).getPrice();// 单项价格
+							continue;
+						}
+						sb = sb.append(tempList.get(j).getName());
+						totalPrice += tempList.get(j).getPrice();// 计算总价
+					}
+					orderItem.setAskFor(StringMaker.divWithSymbol(",",
+							tempFragment.mRemarkAdapter.getSelectList()));// 填充备注信息
+					orderItem
+							.setGoodsDiscountPrice(mainDish.getDiscountPrice());
+					orderItem.setGoodsSinglePrice(mainDish.getPrice());
+					orderItem.setAttachName(StringMaker.divWithSymbol(",",
+							attachStringList));// 附加产品组合
+					orderItem.setAttachPrice(attachPrice);
+					orderItem.setOrderId("");
+					orderItem.setGoodsName(mainDish.getName());
+					orderItem.setComboName(sb.toString());// 填充展示组合名称
+					orderItem.setTotalPrice(totalPrice);// 填充单项订单总价
+					orderItem.setRemarkName(StringMaker.divWithSymbol(" + ",
+							tempFragment.mRemarkAdapter.getSelectList()));// 填充备注展示信息
+					comboList.add(orderItem);
+					tempFragment.mRemarkAdapter.resetDataDefault();
 					continue;
 				}
 				for (MenuItemModel item : tempList) {
-					comboList.add(item);
+					OrderDetailModel orderItem = new OrderDetailModel();
+					orderItem.setAskFor("");
+					orderItem.setGoodsDiscountPrice(item.getDiscountPrice());
+					orderItem.setGoodsSinglePrice(item.getPrice());
+					orderItem.setAttachName("");
+					orderItem.setAttachPrice(0.0);
+					orderItem.setOrderId("");
+					orderItem.setGoodsName(item.getName());
+					orderItem.setTotalPrice(item.getPrice());
+					orderItem.setGoodsId(item.getId());
+					orderItem.setComboName(item.getName());
+					comboList.add(orderItem);
 				}
 			}
 		}

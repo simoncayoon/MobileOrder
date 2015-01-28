@@ -4,9 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,31 +22,43 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.DishComboAdapter;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.JsonUTF8Request;
+import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.StringMaker;
 
 public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	private static final String TAG = "FragmentMain";
+
 	private TextView addCombo, headerPhone, headerDate, headerAddr, totalPrice,
 			dateView;
 	private EditText telEditView, addrEditView;
 	private Button confirmBtn;
 	private ListView mListView;
-	private ArrayList<MenuItemModel> dishCombo;
+	private LinearLayout confirmLayout;
+
+	private ArrayList<OrderDetailModel> dishCombo;
 	private DishComboAdapter mAdapter;
 	private MobileOrderApplication mApplication;
-	private LinearLayout confirmLayout;
+
+	private Double totalPriceNum = 0.0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		dishCombo = new ArrayList<MenuItemModel>();
+		dishCombo = new ArrayList<OrderDetailModel>();
 	}
 
 	@Override
@@ -114,40 +131,189 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 			/**
 			 * 步骤：1、判断可否打印 2、网络提交返回 3、打印
 			 */
-			String printString = "";
-			printString = getPrintString(dishCombo);
-			if (printString.equals("")) {
-				Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT)
+
+			if (telEditView.getText().toString().length() == 0) {// 判断是否输入电话号码
+				Toast.makeText(getActivity(), "请输入电话号码！", Toast.LENGTH_SHORT)
 						.show();
 				return;
 			}
-			BlueToothService btService = mApplication.getBTService();
-			if (btService.IsOpen()) {
-				if (btService.getState() == BlueToothService.STATE_CONNECTED) {
-					DebugFlags.logD(TAG, "STATE_CONNECTED");
-				}
-				if (btService.getState() == BlueToothService.STATE_CONNECTING) {
-					DebugFlags.logD(TAG, "STATE_CONNECTING");
-				}
-				if (btService.getState() == BlueToothService.STATE_LISTEN) {
-					DebugFlags.logD(TAG, "STATE_LISTEN");
-				}
-				if (btService.getState() == BlueToothService.STATE_NONE) {
-					DebugFlags.logD(TAG, "LOSE_CONNECT");
-				}
-				if (btService.getState() == BlueToothService.STATE_SCAN_STOP) {
-					DebugFlags.logD(TAG, "STATE_SCAN_STOP");
-				}
-				if (btService.getState() == BlueToothService.STATE_SCANING) {
-					DebugFlags.logD(TAG, "STATE_SCANING");
-				}
-				DebugFlags.logD(TAG, "PrintString " + printString);
-				btService.PrintCharacters(printString);
-			} else {
-				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
-				.show();
+			if (addrEditView.getText().toString().length() == 0) {// 判断是否输入地址
+				Toast.makeText(getActivity(), "请输订单地址！", Toast.LENGTH_SHORT)
+						.show();
+				return;
 			}
+
+			pushOrderInfo();
 		}
+	}
+
+	private void printAction() {
+		String printString = "";
+		printString = getPrintString(dishCombo);
+		if (printString.equals("")) {
+			Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		BlueToothService btService = mApplication.getBTService();
+		if (btService.IsOpen()) {
+			if (btService.getState() == BlueToothService.STATE_CONNECTED) {
+				DebugFlags.logD(TAG, "STATE_CONNECTED");
+			}
+			if (btService.getState() == BlueToothService.STATE_CONNECTING) {
+				DebugFlags.logD(TAG, "STATE_CONNECTING");
+			}
+			if (btService.getState() == BlueToothService.STATE_LISTEN) {
+				DebugFlags.logD(TAG, "STATE_LISTEN");
+			}
+			if (btService.getState() == BlueToothService.STATE_NONE) {
+				DebugFlags.logD(TAG, "LOSE_CONNECT");
+				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+			if (btService.getState() == BlueToothService.STATE_SCAN_STOP) {
+				DebugFlags.logD(TAG, "STATE_SCAN_STOP");
+			}
+			if (btService.getState() == BlueToothService.STATE_SCANING) {
+				DebugFlags.logD(TAG, "STATE_SCANING");
+				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+			DebugFlags.logD(TAG, "PrintString " + printString);
+			btService.PrintCharacters(printString);
+		} else {
+			Toast.makeText(getActivity(), "请查看蓝牙状态", Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	private void pushOrderInfo() {
+		String orderInfo = "";
+		String orderDetail = "";
+		String orderAddr = "";
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD
+				.show(getActivity(), "正在提交", true, true, null);
+		try {
+			orderInfo = comboOrderInfo();
+			orderDetail = comboOrderDetail();
+			orderAddr = comboAddr();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String url = Constants.HOST_HEAD + Constants.COMMIT_ORDER_INFO;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("orderInfo", orderInfo);
+		builder.appendQueryParameter("orderDetailsList", orderDetail);
+		builder.appendQueryParameter("addressInfo", orderAddr);
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.POST, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "JSON String" + respon);
+						try {
+							if (respon.getString("code").equals("0")) {
+								printAction();
+							} else {
+								Toast.makeText(getActivity(), "提交失败!",
+										Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						Toast.makeText(getActivity(), "提交失败!",
+								Toast.LENGTH_SHORT).show();
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
+	}
+
+	/**
+	 * 组合地址JSON地址
+	 * 
+	 * @return 地址JSON串
+	 */
+	private String comboAddr() throws JSONException {
+		JSONObject addrJson = new JSONObject();
+		addrJson.put("addressId", "");
+		addrJson.put("buyerId", "");
+		addrJson.put("buyerName", "");
+		addrJson.put("buyerTel", telEditView.getText().toString());
+		addrJson.put("createPerson", "");
+		addrJson.put("detailAddress", addrEditView.getText().toString());
+		addrJson.put("createDate", "");
+		addrJson.put("addStatus", "1");
+		DebugFlags.logD(TAG, "订单信息" + addrJson.toString());
+		return addrJson.toString();
+	}
+
+	/**
+	 * 组合订单详情
+	 * 
+	 * @return 订单详情JSON串
+	 */
+	private String comboOrderDetail() throws JSONException {
+		JSONArray detailList = new JSONArray();
+		for (int i = 0; i < dishCombo.size(); i++) {
+			JSONObject item = new JSONObject();
+//			MenuItemModel dataItem = dishCombo.get(i);
+//			item.put("askFor",
+//					StringMaker.divWithSymbol(",", dataItem.getRemark()));
+//			 item.put("goodsDiscountPrice", dataItem.getPrice());
+//			 item.put("createPerson", "");
+//			 item.put("goodsSinglePrice", dataItem.getPrice());
+//			 item.put("goodsAttachName", StringMaker.divWithSymbol("", src));
+//			 item.put("goodsNumber", "");
+//			 item.put("goodsAttachPrice", dataItem.getGoodsAttachPrice());
+//			 item.put("orderId", "");
+//			 item.put("detailId", "");
+//			 item.put("goodsName", dataItem.getName());
+//			 item.put("createTime", "");
+//			 item.put("totalPrice", totalPriceNum);
+//			 item.put("goodsId", dataItem.getGoodId());
+			 detailList.put(item);
+		}
+		DebugFlags.logD(TAG, "订单信息" + detailList.toString());
+		return detailList.toString();
+	}
+
+	/**
+	 * 订单预览信息
+	 * 
+	 * @return 返回订单字符串
+	 */
+	private String comboOrderInfo() throws JSONException {
+
+		JSONObject infoJson = new JSONObject();
+		infoJson.put("sellerUserId", Constants.SELLER_ID);
+		infoJson.put("orderSn", "");
+		infoJson.put("shouldPay", totalPriceNum);
+		infoJson.put("buyerUserId", "");
+		infoJson.put("totalPay", totalPriceNum);
+		infoJson.put("createPerson", "");
+		infoJson.put("orderSource", "1");// 电话来源
+		infoJson.put("orderTel", telEditView.getText().toString());
+		infoJson.put("addressId", "");
+		infoJson.put("createTime", "");
+		infoJson.put("orderId", "");
+		infoJson.put("orderStatus", "1");
+		infoJson.put("besurePerson", "");
+		infoJson.put("orderAddress", addrEditView.getText().toString());
+		infoJson.put("besureTime", "");
+		DebugFlags.logD(TAG, "订单信息" + infoJson.toString());
+		return infoJson.toString();
 	}
 
 	@Override
@@ -157,28 +323,22 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		if (data != null) {
 			dishCombo = data.getExtras().getParcelableArrayList(
 					Constants.DISH_COMBO_RESULT);
-			for (MenuItemModel item : dishCombo) {
-				DebugFlags.logD(
-						TAG,
-						"各项数据是:" + item.getName() + item.getImgUrl()
-								+ item.getItemPrice());
-			}
 			mAdapter.setDataSrc(dishCombo);
 			confirmLayout.setVisibility(View.VISIBLE);
 		}
 		// 列表加载数据
 	}
 
-	String getPrintString(ArrayList<MenuItemModel> dataSrc) {
+	String getPrintString(ArrayList<OrderDetailModel> dataSrc) {
 		if (!(dataSrc.size() > 0)) {
 			return "";
 		}
 		String printString = "";
 		StringBuilder sb = new StringBuilder();
 		sb.append(getHeadString());
-		for (MenuItemModel item : dataSrc) {
+		for (OrderDetailModel item : dataSrc) {
 			String temp = "";
-			temp = "配餐：" + item.getName() + "\n" + "小计：" + item.getItemPrice()
+			temp = "配餐：" + item.getComboName() + "\n" + "小计：" + item.getTotalPrice()
 					+ "\n" + "备注：" + "\r\n";
 			sb.append(temp);
 		}
@@ -204,9 +364,10 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		if (!(dishCombo.size() > 0))
 			return;
 		double totalPrice = 0.0;
-		for (MenuItemModel item : dishCombo) {
-			totalPrice += item.getItemPrice();
+		for (OrderDetailModel item : dishCombo) {
+			totalPrice += item.getTotalPrice();
 		}
+		totalPriceNum = totalPrice;
 		this.totalPrice.setText(String.format(
 				getResources().getString(R.string.total_price_text),
 				String.valueOf(totalPrice)));

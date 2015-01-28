@@ -35,7 +35,6 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 
 	ArrayAdapter<String> adapter;
 
-	private String[] array;
 	public ArrayList<String> menuArray = null;
 	public ArrayList<Integer> menuIdArray = null;
 

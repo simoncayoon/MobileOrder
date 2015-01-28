@@ -11,9 +11,12 @@ import android.widget.TextView;
 import com.eteng.mobileorder.OrderPhoneFragment.RemarkModel;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.cusomview.RemarkListInterface.RemarkNameAdapter;
+import com.eteng.mobileorder.debug.DebugFlags;
 
 public class RemarkListAdapter extends RemarkNameAdapter {
 
+	private static final String TAG = "RemarkListAdapter";
+	
 	private Context mContext;
 	private ArrayList<RemarkModel> dataSrc;
 	private LayoutInflater mInflater;
@@ -66,5 +69,26 @@ public class RemarkListAdapter extends RemarkNameAdapter {
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
 		return dataSrc.get(position);
+	}
+
+	/**
+	 * 获取选中备注数据
+	 */
+	public ArrayList<String> getSelectList() {
+		ArrayList<String> selectList = new ArrayList<String>();
+		for (RemarkModel temp : dataSrc) {
+			if (temp.isSelectStat()) {
+				selectList.add(temp.getRemarkName());
+				DebugFlags.logD(TAG, "所选的备注:" + temp.getRemarkName());
+			}
+		}
+		return selectList;
+	}
+
+	public void resetDataDefault() {
+		for (RemarkModel temp : dataSrc) {
+			temp.setSelectStat(false);
+		}
+		this.notifyDataSetChanged();
 	}
 }

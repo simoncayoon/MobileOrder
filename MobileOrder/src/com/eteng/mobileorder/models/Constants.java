@@ -48,6 +48,11 @@ public class Constants {
 	public static final String LOGIN = "login";
 	
 	/**
+	 * WS提交订单接口名称
+	 */
+	public static final String COMMIT_ORDER_INFO = "addOrder";
+	
+	/**
 	 * 历史订单查询类型
 	 */
 	public static final String ORDER_QUERY_TYPE_HISTORY = "1";
@@ -88,6 +93,8 @@ public class Constants {
 	 * 配餐完成返回小票列表数据表示符
 	 */
 	public static final String DISH_COMBO_RESULT = "dish_combo_result";
+	
+	public static final String DISH_COMBO_RESULT_ATTACH = "dish_combo_result_attach";
 	
 	public static int REQUEST_CODE = 0x1223;
 	public static int RESULT_CODE = 0x1225;

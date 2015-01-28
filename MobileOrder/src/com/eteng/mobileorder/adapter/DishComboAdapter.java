@@ -10,20 +10,20 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.OrderDetailModel;
 
-public class DishComboAdapter extends BaseAdapter{
+public class DishComboAdapter extends BaseAdapter {
 
 	private Context mContext;
-	private ArrayList<MenuItemModel> dataSrc;
+	private ArrayList<OrderDetailModel> dataSrc;
 	private LayoutInflater inflater;
 
 	public DishComboAdapter(Context context) {
-		dataSrc = new ArrayList<MenuItemModel>();
+		dataSrc = new ArrayList<OrderDetailModel>();
 		this.mContext = context;
 	}
 
-	public DishComboAdapter(Context context, ArrayList<MenuItemModel> dataSrc) {
+	public DishComboAdapter(Context context, ArrayList<OrderDetailModel> dataSrc) {
 		this.mContext = context;
 		this.dataSrc = dataSrc;
 	}
@@ -63,18 +63,24 @@ public class DishComboAdapter extends BaseAdapter{
 			mHolder = (ViewHolder) convertView.getTag();
 		}
 
-		mHolder.comboName.setText(dataSrc.get(position).getName());
+		mHolder.comboName.setText(dataSrc.get(position).getComboName());//填充名字
 		mHolder.comboCount.setText(String.valueOf(dataSrc.get(position)
-				.getItemPrice()));
-		mHolder.remark.setText("");
+				.getTotalPrice()));//填充价钱
+		String remarkString = dataSrc.get(position).getRemarkName();//填充备注信息
+		if (remarkString == null) {
+			mHolder.remark.setText("");
+		} else {
+			mHolder.remark.setText(remarkString);
+		}
+
 		return convertView;
 	}
 
 	class ViewHolder {
 		TextView comboName, comboCount, remark;
 	}
-	
-	public void setDataSrc(ArrayList<MenuItemModel> dataSrc){
+
+	public void setDataSrc(ArrayList<OrderDetailModel> dataSrc) {
 		this.dataSrc = dataSrc;
 		notifyDataSetChanged();
 	}

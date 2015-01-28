@@ -138,7 +138,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
+//						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								Editor inputSp = sp.edit();

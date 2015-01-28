@@ -168,7 +168,7 @@ public class SettingMenuByCategory extends ListActivity implements
 			MenuItemModel item = new MenuItemModel();
 			item.setDiscountPrice(temp.getDouble("discountPrice"));
 			item.setImgUrl(temp.getString("goodsImgPath"));
-			item.setItemPrice(temp.getDouble("goodsPrice"));
+			item.setPrice(temp.getDouble("goodsPrice"));
 			item.setName(temp.getString("goodsName"));
 			item.setType(temp.getString("goodsType"));
 			dataList.add(item);

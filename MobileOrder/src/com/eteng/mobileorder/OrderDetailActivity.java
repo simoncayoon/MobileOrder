@@ -29,6 +29,8 @@ import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.OrderDetailModel;
+import com.eteng.mobileorder.models.OrderInfoModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -44,10 +46,11 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	private TopNavigationBar topBar;
 	private Button confirmBtn;
 	private ListView mListView;
-	private ArrayList<MenuItemModel> dishCombo;
+	private ArrayList<OrderDetailModel> dishCombo;
 	private DishComboAdapter mAdapter;
 	private MobileOrderApplication mApplication;
 	private LinearLayout confirmLayout;
+	private OrderInfoModel orderInfo;
 	private int orderID;
 	private String orderSn = "";
 	private boolean isFromWX = false;
@@ -110,7 +113,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	}
 
 	void initData() {
-		dishCombo = new ArrayList<MenuItemModel>();
+		dishCombo = new ArrayList<OrderDetailModel>();
 		DebugFlags.logD(TAG, "接收订单ID" + orderID);
 		mApplication = MobileOrderApplication.getInstance();
 		getDishCombo();
@@ -155,23 +158,42 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	}
 
 	private void setHaderContent(JSONObject jsonObj) throws JSONException {
-		orderSn = jsonObj.getString("orderSn");
-		telEditView.setText(jsonObj.getString("orderTel"));
-		dateView.setText(jsonObj.getString("besureTime"));
-		addrEditView.setText(jsonObj.getString("orderAddress"));
+		
+		orderInfo = new OrderInfoModel();
+		orderInfo.setAddress(jsonObj.getString("address"));
+		orderInfo.setAddrId(jsonObj.getString("addressId"));
+		orderInfo.setCreateTime(jsonObj.getString("createTime"));
+		orderInfo.setOrderAddr(jsonObj.getString("orderAddress"));
+		orderInfo.setOrderId(jsonObj.getString("orderId"));
+		orderInfo.setOrderSn(jsonObj.getString("orderSn"));
+		orderInfo.setOrderStatus(jsonObj.getString("orderStatus"));
+		orderInfo.setOrderTel(jsonObj.getString("orderTel"));
+		orderInfo.setTotalPay(jsonObj.getDouble("totalPay"));
+		
+		telEditView.setText(orderInfo.getOrderTel());
+		dateView.setText(orderInfo.getCreateTime());
+		addrEditView.setText(orderInfo.getOrderAddr());
+		
 		this.totalPrice.setText(String.format(
 				getResources().getString(R.string.total_price_text),
-				jsonObj.getString("totalPay")));
+				String.valueOf(orderInfo.getTotalPay())));
 	}
 
 	void setListContent(JSONArray jsonArray) throws JSONException {
 		for (int i = 0; i < jsonArray.length(); i++) {
-			MenuItemModel temp = new MenuItemModel();
+			OrderDetailModel temp = new OrderDetailModel();
 			JSONObject item = new JSONObject(jsonArray.getString(i));
-			temp.setDiscountPrice(item.getDouble("goodsDiscountPrice"));
-			temp.setItemPrice(item.getDouble("totalPrice"));
-			temp.setName(item.getString("goodsName")
-					+ item.getString("goodsAttachName").replace(",", "+"));
+			temp.setAttachName(item.getString("goodsAttachName"));
+			temp.setAskFor(item.getString("askFor"));
+			temp.setTotalPrice(item.getDouble("totalPrice"));
+			temp.setGoodsName(item.getString("goodsName"));
+			
+			if(temp.getAttachName().length() > 0){//设置菜单组合
+				temp.setComboName(temp.getGoodsName() + temp.getAttachName().replace(",", " + "));
+			}else{
+				temp.setComboName(temp.getGoodsName());
+			}
+			temp.setRemarkName(temp.getAskFor().replace(",", " + "));
 			dishCombo.add(temp);
 		}
 		mListView.setAdapter(new DishComboAdapter(OrderDetailActivity.this,
@@ -192,8 +214,8 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 			}
 		}
 		if (mApplication.getBTService().getState() == BlueToothService.STATE_CONNECTED) {
-			mApplication.getBTService().PrintCharacters(
-					getPrintString(dishCombo));
+//			mApplication.getBTService().PrintCharacters(
+//					getPrintString(dishCombo));
 		} else {
 			Toast.makeText(OrderDetailActivity.this, "请查看打印机状态!",
 					Toast.LENGTH_SHORT).show();
@@ -224,7 +246,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		sb.append(getHeadString());
 		for (MenuItemModel item : dataSrc) {
 			String temp = "";
-			temp = "配餐：" + item.getName() + "\n" + "小计：" + item.getItemPrice()
+			temp = "配餐：" + item.getName() + "\n" + "小计：" + item.getPrice()
 					+ "\n" + "备注：" + "\r\n";
 			sb.append(temp);
 		}

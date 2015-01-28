@@ -38,16 +38,14 @@ public class OrderPhoneFragment extends BaseFragment implements
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";
 	public static final String INTENT_IS_NOODLE = "is_noodle";
 	
-//	private ProgressBar progressBar;
 	private GridView mGridView;
 	private RemarkListView remarkListView;
-//	private HorizontalListViewAdapter mRemarkAdapter;
-//	private RemarkListAdapter mRemarkListAdapter;
 	
 	public int categoryId;	
 	public boolean isSingleSelect;
 	private int mFirstVisible;
-	private ArrayList<MenuItemModel> dataList;
+	private ArrayList<MenuItemModel> mainList;
+	private ArrayList<MenuItemModel> attachList;
 	private ArrayList<RemarkModel> remarkList;
 	public MenuCategoryAdapter<MenuItemModel> mAdapter;
 	public RemarkListAdapter mRemarkAdapter;
@@ -74,7 +72,8 @@ public class OrderPhoneFragment extends BaseFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		dataList = new ArrayList<MenuItemModel>();
+		mainList = new ArrayList<MenuItemModel>();
+		attachList = new ArrayList<MenuItemModel>();
 		remarkList = new ArrayList<RemarkModel>();
 		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
@@ -84,7 +83,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 	protected void onCreateView(Bundle savedInstanceState) {
 		super.onCreateView(savedInstanceState);
 		setContentView(R.layout.fragment_tabmain_item);
-//		progressBar = (ProgressBar) findViewById(R.id.fragment_mainTab_item_progressBar);
 	}
 
 	@Override
@@ -92,19 +90,12 @@ public class OrderPhoneFragment extends BaseFragment implements
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) findViewById(R.id.asset_grid);
 		remarkListView = (RemarkListView) findViewById(R.id.menu_remark_list);
-		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {
-			
+		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {//备注选项信息
 			@Override
 			public void onItemSelected(View selectItemView, int select) {
-				DebugFlags.logD(TAG, "select position" +  select);
 				mRemarkAdapter.setChoiceState(select);
 			}
 		});
-		if (isSingleSelect) {
-			
-		} else {
-
-		}
 		mGridView.setOnItemClickListener(this);
 
 		if (savedInstanceState != null) {
@@ -140,16 +131,26 @@ public class OrderPhoneFragment extends BaseFragment implements
 
 					@Override
 					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "responList" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								String jsonString = respon
 										.getString("goodsList");
 								parseJson(jsonString);
-								mAdapter = new MenuCategoryAdapter<MenuItemModel>(
-										getApplicationContext(),
-										dataList,
-										R.layout.header,
-										R.layout.order_phone_item_category_layout);
+								if(isSingleSelect){
+									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
+											getApplicationContext(),
+											mainList,
+											attachList,
+											R.layout.header,
+											R.layout.order_phone_item_category_layout, isSingleSelect);
+								}else{
+									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
+											getApplicationContext(),
+											mainList,
+											R.layout.header,
+											R.layout.order_phone_item_category_layout, false);
+								}
 								mGridView.setAdapter(mAdapter);
 							} else {
 								try {
@@ -161,7 +162,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-//						progressBar.setVisibility(View.GONE);
 					}
 				}, new Response.ErrorListener() {
 
@@ -188,7 +188,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "test  +  " + respon);
+						
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								JSONArray options = new JSONArray(respon.getString("optionList"));
@@ -198,7 +198,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 								remarkList.clear();
 								for(int i = 0; i < options.length(); i++){
 									String temp = options.getJSONObject(i).getString("optionName");
-									DebugFlags.logD(TAG, temp);
 									RemarkModel item = new RemarkModel();
 									item.setRemarkName(temp);
 									item.setSelectStat(false);//默认不选中任何备注
@@ -217,7 +216,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-//						progressBar.setVisibility(View.GONE);
 					}
 				}, new Response.ErrorListener() {
 
@@ -242,12 +240,20 @@ public class OrderPhoneFragment extends BaseFragment implements
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
 			MenuItemModel item = new MenuItemModel();
+			item.setId(temp.getInt("goodsId"));
+			item.setSerial(temp.getString("goodsSerial"));
+			item.setName(temp.getString("goodsName"));
+			item.setPrice(temp.getDouble("goodsPrice"));
 			item.setDiscountPrice(temp.getDouble("discountPrice"));
 			item.setImgUrl(temp.getString("goodsImgPath"));
-			item.setItemPrice(temp.getDouble("goodsPrice"));
-			item.setName(temp.getString("goodsName"));
-			item.setType(temp.getString("goodsType"));
-			dataList.add(item);
+			item.setType(temp.getString("goodsType"));			
+			item.setStatus(temp.getString("goodsStatus"));
+			item.setOwnId(temp.getInt("goodsClass"));
+			if(item.getType().equals("1")){
+				mainList.add(item);
+			} else {
+				attachList.add(item);
+			}
 		}
 	}
 
@@ -320,6 +326,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 							: ListView.CHOICE_MODE_NONE);
 		}
 	}
+	
 	public MenuCategoryAdapter<MenuItemModel> getAdapter(){
 		if(this.mAdapter == null){
 		}
