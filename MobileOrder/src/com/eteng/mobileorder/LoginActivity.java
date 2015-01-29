@@ -1,5 +1,8 @@
 package com.eteng.mobileorder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -138,7 +142,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-//						DebugFlags.logD(TAG, "JSON String" + respon);
+						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								Editor inputSp = sp.edit();
@@ -175,7 +179,16 @@ public class LoginActivity extends Activity implements OnClickListener {
 								Toast.LENGTH_SHORT).show();
 						mProgressHUD.dismiss();
 					}
-				});
+				}){
+			@Override
+			protected Map<String, String> getParams()
+					throws AuthFailureError {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("account", accountName);
+				map.put("pwd", pwd);
+				return map;
+			}
+		};
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}

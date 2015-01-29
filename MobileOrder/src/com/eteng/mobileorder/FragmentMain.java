@@ -3,6 +3,8 @@ package com.eteng.mobileorder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,13 +32,12 @@ import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
-import com.eteng.mobileorder.utils.StringMaker;
 
 public class FragmentMain extends BaseFragment implements OnClickListener {
 
@@ -143,7 +145,12 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 				return;
 			}
 
-			pushOrderInfo();
+			try {
+				pushOrderInfo();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -157,25 +164,19 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		BlueToothService btService = mApplication.getBTService();
 		if (btService.IsOpen()) {
 			if (btService.getState() == BlueToothService.STATE_CONNECTED) {
-				DebugFlags.logD(TAG, "STATE_CONNECTED");
 			}
 			if (btService.getState() == BlueToothService.STATE_CONNECTING) {
-				DebugFlags.logD(TAG, "STATE_CONNECTING");
 			}
 			if (btService.getState() == BlueToothService.STATE_LISTEN) {
-				DebugFlags.logD(TAG, "STATE_LISTEN");
 			}
 			if (btService.getState() == BlueToothService.STATE_NONE) {
-				DebugFlags.logD(TAG, "LOSE_CONNECT");
 				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
 						.show();
 				return;
 			}
 			if (btService.getState() == BlueToothService.STATE_SCAN_STOP) {
-				DebugFlags.logD(TAG, "STATE_SCAN_STOP");
 			}
 			if (btService.getState() == BlueToothService.STATE_SCANING) {
-				DebugFlags.logD(TAG, "STATE_SCANING");
 				Toast.makeText(getActivity(), "请查看打印机状态", Toast.LENGTH_SHORT)
 						.show();
 				return;
@@ -188,29 +189,65 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	}
 
-	private void pushOrderInfo() {
-		String orderInfo = "";
-		String orderDetail = "";
-		String orderAddr = "";
+	private void pushOrderInfo() throws JSONException {
+		final String orderInfo = comboOrderInfo();
+		final String orderDetail = comboOrderDetail();
+		final String orderAddr = comboAddr();
 		final ProgressHUD mProgressHUD;
 		mProgressHUD = ProgressHUD
 				.show(getActivity(), "正在提交", true, true, null);
-		try {
-			orderInfo = comboOrderInfo();
-			orderDetail = comboOrderDetail();
-			orderAddr = comboAddr();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		String url = Constants.HOST_HEAD + Constants.COMMIT_ORDER_INFO;
-		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("orderInfo", orderInfo);
-		builder.appendQueryParameter("orderDetailsList", orderDetail);
-		builder.appendQueryParameter("addressInfo", orderAddr);
-		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
-				Request.Method.POST, builder.toString(), null,
-				new Response.Listener<JSONObject>() {
+//		Uri.Builder builder = Uri.parse(url).buildUpon();
+//		builder.appendQueryParameter("orderInfo", orderInfo);
+//		builder.appendQueryParameter("orderDetailsList", orderDetail);
+//		builder.appendQueryParameter("addressInfo", orderAddr);
+//		DebugFlags.logD(TAG, "URL is " + builder.toString());
+//		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+//				Request.Method.POST, url, null,
+//				new Response.Listener<JSONObject>() {
+//
+//					@Override
+//					public void onResponse(JSONObject respon) {
+//						DebugFlags.logD(TAG, "JSON String" + respon);
+//						try {
+//							if (respon.getString("code").equals("0")) {
+//								printAction();
+//							} else {
+//								Toast.makeText(getActivity(), "提交失败!",
+//										Toast.LENGTH_SHORT).show();
+//							}
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//						}
+//						mProgressHUD.dismiss();
+//					}
+//				}, new Response.ErrorListener() {
+//					@Override
+//					public void onErrorResponse(VolleyError arg0) {
+//						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+//						Toast.makeText(getActivity(), "提交失败!",
+//								Toast.LENGTH_SHORT).show();
+//						mProgressHUD.dismiss();
+//					}
+//				}) {
+
+//			@Override
+//			public Map<String, String> getHeaders() throws AuthFailureError {
+//				Map<String, String> headers = new HashMap<String, String>();
+//				headers.put("Accept", "application/json");
+//				headers.put("Content-Type", "application/json; charset=UTF-8");
+//				return headers;
+//			}
+//		};
+//		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+//				getMenuRequest, TAG);
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("orderInfo", orderInfo);
+		params.put("orderDetailsList", orderDetail);
+		params.put("addressInfo", orderAddr);
+		JsonPostRequest getOrderInfoRequest = new JsonPostRequest(
+				Request.Method.POST, url, new Response.Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(JSONObject respon) {
@@ -228,16 +265,16 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
+
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-						Toast.makeText(getActivity(), "提交失败!",
+						Toast.makeText(getActivity(), "VolleyError 提交失败!",
 								Toast.LENGTH_SHORT).show();
 						mProgressHUD.dismiss();
 					}
-				});
+				}, params);
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
-				getMenuRequest, TAG);
+				getOrderInfoRequest, TAG);
 	}
 
 	/**
@@ -255,7 +292,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		addrJson.put("detailAddress", addrEditView.getText().toString());
 		addrJson.put("createDate", "");
 		addrJson.put("addStatus", "1");
-		DebugFlags.logD(TAG, "订单信息" + addrJson.toString());
+		DebugFlags.logD(TAG, "订单地址信息" + addrJson.toString());
 		return addrJson.toString();
 	}
 
@@ -268,24 +305,23 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		JSONArray detailList = new JSONArray();
 		for (int i = 0; i < dishCombo.size(); i++) {
 			JSONObject item = new JSONObject();
-//			MenuItemModel dataItem = dishCombo.get(i);
-//			item.put("askFor",
-//					StringMaker.divWithSymbol(",", dataItem.getRemark()));
-//			 item.put("goodsDiscountPrice", dataItem.getPrice());
-//			 item.put("createPerson", "");
-//			 item.put("goodsSinglePrice", dataItem.getPrice());
-//			 item.put("goodsAttachName", StringMaker.divWithSymbol("", src));
-//			 item.put("goodsNumber", "");
-//			 item.put("goodsAttachPrice", dataItem.getGoodsAttachPrice());
-//			 item.put("orderId", "");
-//			 item.put("detailId", "");
-//			 item.put("goodsName", dataItem.getName());
-//			 item.put("createTime", "");
-//			 item.put("totalPrice", totalPriceNum);
-//			 item.put("goodsId", dataItem.getGoodId());
-			 detailList.put(item);
+			OrderDetailModel dataItem = dishCombo.get(i);
+			item.put("askFor", dataItem.getAskFor());
+			item.put("goodsDiscountPrice", dataItem.getGoodsDiscountPrice());
+			item.put("createPerson", "");
+			item.put("goodsSinglePrice", dataItem.getGoodsSinglePrice());
+			item.put("goodsAttachName", dataItem.getAttachName());
+			item.put("goodsNumber", "1");// 默认购买数量
+			item.put("goodsAttachPrice", dataItem.getAttachPrice());
+			item.put("orderId", "");
+			item.put("detailId", "");
+			item.put("goodsName", dataItem.getGoodsName());
+			item.put("createTime", "");
+			item.put("totalPrice", dataItem.getTotalPrice());
+			item.put("goodsId", dataItem.getGoodsId());
+			detailList.put(item);
 		}
-		DebugFlags.logD(TAG, "订单信息" + detailList.toString());
+		DebugFlags.logD(TAG, "订单详情信息" + detailList.toString());
 		return detailList.toString();
 	}
 
@@ -312,14 +348,13 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		infoJson.put("besurePerson", "");
 		infoJson.put("orderAddress", addrEditView.getText().toString());
 		infoJson.put("besureTime", "");
-		DebugFlags.logD(TAG, "订单信息" + infoJson.toString());
+		DebugFlags.logD(TAG, "订单总信息" + infoJson.toString());
 		return infoJson.toString();
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		DebugFlags.logD(TAG, "onActivityResult");
 		if (data != null) {
 			dishCombo = data.getExtras().getParcelableArrayList(
 					Constants.DISH_COMBO_RESULT);
@@ -338,8 +373,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		sb.append(getHeadString());
 		for (OrderDetailModel item : dataSrc) {
 			String temp = "";
-			temp = "配餐：" + item.getComboName() + "\n" + "小计：" + item.getTotalPrice()
-					+ "\n" + "备注：" + "\r\n";
+			temp = "配餐：" + item.getComboName() + "\n" + "小计："
+					+ item.getTotalPrice() + "\n" + "备注：" + "\r\n";
 			sb.append(temp);
 		}
 		sb.append("\r\n\r\n\r\n");
@@ -360,7 +395,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		DebugFlags.logD(TAG, "onResume");
 		if (!(dishCombo.size() > 0))
 			return;
 		double totalPrice = 0.0;

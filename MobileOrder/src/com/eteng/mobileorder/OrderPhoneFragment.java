@@ -131,7 +131,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "responList" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								String jsonString = respon

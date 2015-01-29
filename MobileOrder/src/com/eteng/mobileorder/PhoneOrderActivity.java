@@ -224,7 +224,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	@Override
 	public void leftBtnListener() {
-		DebugFlags.logD(TAG, "leftBtnListener");
 		if (hasDish) {
 			Intent mIntent = new Intent();
 			Bundle mBundle = new Bundle();
@@ -241,7 +240,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	@Override
 	public void rightBtnListener() {
-		DebugFlags.logD(TAG, "rightBtnListener");
 
 	}
 
@@ -298,6 +296,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 							attachStringList));// 附加产品组合
 					orderItem.setAttachPrice(attachPrice);
 					orderItem.setOrderId("");
+					orderItem.setGoodsId(mainDish.getId());
 					orderItem.setGoodsName(mainDish.getName());
 					orderItem.setComboName(sb.toString());// 填充展示组合名称
 					orderItem.setTotalPrice(totalPrice);// 填充单项订单总价
@@ -314,7 +313,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					orderItem.setGoodsSinglePrice(item.getPrice());
 					orderItem.setAttachName("");
 					orderItem.setAttachPrice(0.0);
-					orderItem.setOrderId("");
+					orderItem.setGoodsId(item.getId());
 					orderItem.setGoodsName(item.getName());
 					orderItem.setTotalPrice(item.getPrice());
 					orderItem.setGoodsId(item.getId());
