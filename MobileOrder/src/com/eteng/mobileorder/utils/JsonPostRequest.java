@@ -1,7 +1,6 @@
 package com.eteng.mobileorder.utils;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.protocol.HTTP;

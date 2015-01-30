@@ -3,8 +3,6 @@ package com.eteng.mobileorder.cusomview;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.eteng.mobileorder.debug.DebugFlags;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;

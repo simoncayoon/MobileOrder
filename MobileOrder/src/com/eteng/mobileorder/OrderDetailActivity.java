@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +23,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.DishComboAdapter;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.models.OrderInfoModel;
 import com.eteng.mobileorder.service.BlueToothService;
@@ -49,7 +48,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	private ArrayList<OrderDetailModel> dishCombo;
 	private DishComboAdapter mAdapter;
 	private MobileOrderApplication mApplication;
-	private LinearLayout confirmLayout;
+	// private LinearLayout confirmLayout;
 	private OrderInfoModel orderInfo;
 	private int orderID;
 	private String orderSn = "";
@@ -61,7 +60,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.order_detail_layout);
 
 		orderID = getIntent().getIntExtra("ORDER_DETAIL_ID", 0);
-		if(getIntent().getBooleanExtra("IS_FROM_WX", false)){
+		if (getIntent().getBooleanExtra("IS_FROM_WX", false)) {
 			isFromWX = true;
 		}
 		initHeader();
@@ -73,7 +72,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		mListView = (ListView) findViewById(R.id.phone_order_dish_combo_list_view);
 		mAdapter = new DishComboAdapter(OrderDetailActivity.this);
 		mListView.setAdapter(mAdapter);
-		confirmLayout = (LinearLayout) findViewById(R.id.confirm_layout);
+		// confirmLayout = (LinearLayout) findViewById(R.id.confirm_layout);
 	}
 
 	private void initHeader() {
@@ -120,6 +119,9 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	}
 
 	private void getDishCombo() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, "正在提交", true,
+				true, null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ORDERID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("orderId", String.valueOf(orderID));
@@ -142,10 +144,12 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 										"oops! the server msg is :"
 												+ respon.getString("msg"));
 							}
+
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 					@Override
@@ -158,22 +162,23 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	}
 
 	private void setHaderContent(JSONObject jsonObj) throws JSONException {
-		
+
 		orderInfo = new OrderInfoModel();
 		orderInfo.setAddress(jsonObj.getString("address"));
 		orderInfo.setAddrId(jsonObj.getString("addressId"));
 		orderInfo.setCreateTime(jsonObj.getString("createTime"));
 		orderInfo.setOrderAddr(jsonObj.getString("orderAddress"));
 		orderInfo.setOrderId(jsonObj.getString("orderId"));
+		DebugFlags.logD(TAG, "订单ID" + orderInfo.getOrderId());
 		orderInfo.setOrderSn(jsonObj.getString("orderSn"));
 		orderInfo.setOrderStatus(jsonObj.getString("orderStatus"));
 		orderInfo.setOrderTel(jsonObj.getString("orderTel"));
 		orderInfo.setTotalPay(jsonObj.getDouble("totalPay"));
-		
+
 		telEditView.setText(orderInfo.getOrderTel());
 		dateView.setText(orderInfo.getCreateTime());
 		addrEditView.setText(orderInfo.getOrderAddr());
-		
+
 		this.totalPrice.setText(String.format(
 				getResources().getString(R.string.total_price_text),
 				String.valueOf(orderInfo.getTotalPay())));
@@ -187,10 +192,11 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 			temp.setAskFor(item.getString("askFor"));
 			temp.setTotalPrice(item.getDouble("totalPrice"));
 			temp.setGoodsName(item.getString("goodsName"));
-			
-			if(temp.getAttachName().length() > 0){//设置菜单组合
-				temp.setComboName(temp.getGoodsName() + temp.getAttachName().replace(",", " + "));
-			}else{
+
+			if (temp.getAttachName().length() > 0) {// 设置菜单组合
+				temp.setComboName(temp.getGoodsName() + " + "
+						+ temp.getAttachName().replace(",", " + "));
+			} else {
 				temp.setComboName(temp.getGoodsName());
 			}
 			temp.setRemarkName(temp.getAskFor().replace(",", " + "));
@@ -204,26 +210,68 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	public void onClick(View v) {
 		if (isFromWX) {
 			// update order state
-			if (updateOrderState()) {// 更新状态成功
-				Toast.makeText(OrderDetailActivity.this, "提交订单成功",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(OrderDetailActivity.this, "未能提交订单",
-						Toast.LENGTH_SHORT).show();
-				return;
+			try {
+				updateOrderState();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				DebugFlags.logD(TAG, "JSON ERROR");
 			}
+		} else {// 直接打印
+			printAction();
 		}
+
+	}
+
+	void printAction() {
 		if (mApplication.getBTService().getState() == BlueToothService.STATE_CONNECTED) {
-//			mApplication.getBTService().PrintCharacters(
-//					getPrintString(dishCombo));
+			mApplication.getBTService().PrintCharacters(
+					getPrintString(dishCombo));
 		} else {
 			Toast.makeText(OrderDetailActivity.this, "请查看打印机状态!",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	boolean updateOrderState() {
-		return true;
+	void updateOrderState() throws JSONException {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, "正在提交", true,
+				true, null);
+		String url = Constants.HOST_HEAD + Constants.UPDATE_ORDER_STATUS;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("orderId", orderInfo.getOrderId());
+		builder.appendQueryParameter("orderStatus", String.valueOf(1));
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "JSON String" + respon);
+						try {
+							if (respon.getString("code").equals("0")) {
+								Toast.makeText(OrderDetailActivity.this,
+										"提交成功!", Toast.LENGTH_SHORT).show();
+								printAction();
+							} else {
+								Toast.makeText(OrderDetailActivity.this,
+										"提交失败!", Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						Toast.makeText(OrderDetailActivity.this,
+								"VolleyError 提交失败!", Toast.LENGTH_SHORT).show();
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
 	}
 
 	@Override
@@ -233,21 +281,20 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void rightBtnListener() {
-		// TODO Auto-generated method stub
 
 	}
 
-	String getPrintString(ArrayList<MenuItemModel> dataSrc) {
+	String getPrintString(ArrayList<OrderDetailModel> dataSrc) {
 		if (!(dataSrc.size() > 0)) {
 			return "";
 		}
 		String printString = "";
 		StringBuilder sb = new StringBuilder();
 		sb.append(getHeadString());
-		for (MenuItemModel item : dataSrc) {
+		for (OrderDetailModel item : dataSrc) {
 			String temp = "";
-			temp = "配餐：" + item.getName() + "\n" + "小计：" + item.getPrice()
-					+ "\n" + "备注：" + "\r\n";
+			temp = "配餐：" + item.getComboName() + "\n" + "小计："
+					+ item.getTotalPrice() + "\n" + "备注：" + "\r\n";
 			sb.append(temp);
 		}
 		sb.append("\r\n\r\n\r\n");

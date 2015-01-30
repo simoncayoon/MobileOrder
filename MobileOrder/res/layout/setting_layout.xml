@@ -29,26 +29,26 @@
             android:paddingLeft="@dimen/content_padding_left"
             android:paddingTop="@dimen/content_padding_each_side"
             android:text="@string/printer_text"
-            android:textSize="22sp"
-            android:textColor="@color/GENERAL_TEXT_COLOR" />
+            android:textColor="@color/GENERAL_TEXT_COLOR"
+            android:textSize="22sp" />
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             >
+            android:layout_height="wrap_content" >
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/printer_connector_switcher"
                 style="@style/SwitchButtonStyle"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="20dp"
-                app:onColor="@color/TAB_TEXT_COLOR_SELECTED"
-                android:layout_gravity="center_vertical" />
-            <Button 
+                app:onColor="@color/TAB_TEXT_COLOR_SELECTED" />
+
+            <Button
                 android:id="@+id/summySwitchBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="20dp"
+                android:background="@android:color/transparent" />
         </FrameLayout>
     </LinearLayout>
 
@@ -79,7 +79,8 @@
                 android:layout_margin="5dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="invisible">
+                android:visibility="invisible" >
+
                 <TextView
                     android:id="@+id/scan_prompt_text"
                     android:layout_width="wrap_content"
@@ -102,14 +103,33 @@
             android:cacheColorHint="@android:color/transparent"
             android:fadingEdge="none" />
 
-        <Button
-            android:id="@+id/start_scan_btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:text="扫描" />
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/start_scan_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:background="@drawable/general_corner_small_frame_selector"
+                android:textColor="@color/COLOR_WHITE"
+                android:layout_weight="1"
+                 />
+
+            <Button
+                android:id="@+id/close_scan_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:background="@drawable/setting_general_corner_gray_frame"
+                android:textColor="@color/COLOR_WHITE"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
     <ListView

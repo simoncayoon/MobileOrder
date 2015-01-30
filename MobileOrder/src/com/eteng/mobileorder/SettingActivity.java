@@ -11,6 +11,9 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -38,7 +41,7 @@ public class SettingActivity extends Activity implements
 
 	public static final String TAG = "SettingActivity";
 	private static String GET_BONDED_DEVICES = "get_bonded_devices";
-	private static String GET_NEW_DEVICES = "get_bonded_devices";
+	private static String GET_NEW_DEVICES = "get_new_devices";
 	private static final int REQUEST_EX = 1;
 	public static final int MESSAGE_STATE_CHANGE = 1;
 	public static final int MESSAGE_READ = 2;
@@ -47,11 +50,8 @@ public class SettingActivity extends Activity implements
 	public static final int MESSAGE_TOAST = 5;
 	public static final int STATE_NONE = 0; // we're doing nothing
 	public static final int STATE_LISTEN = 1; // now listening for incoming
-												// connections
 	public static final int STATE_CONNECTING = 2; // now initiating an outgoing
-													// connection
 	public static final int STATE_CONNECTED = 3; // now connected to a remote
-													// device
 	public static final int LOSE_CONNECT = 4;
 	public static final int FAILED_CONNECT = 5;
 	public static final int SUCCESS_CONNECT = 6; // now connected to a remote
@@ -63,7 +63,7 @@ public class SettingActivity extends Activity implements
 	private SwitchButton printerConnector;
 	private ListView devList, settingFuncList;
 	private LinearLayout scanDevLayout, promptlayout;
-	private Button summyBtn, scanNewDevBtn;
+	private Button summyBtn, scanNewDevBtn, closeBtn;
 	private TextView promptText;
 
 	private String[] menuList = new String[] { "我的资料", "菜单上传", "备注信息", "客户信息" };
@@ -97,9 +97,13 @@ public class SettingActivity extends Activity implements
 		scanNewDevBtn = (Button) scanDevLayout
 				.findViewById(R.id.start_scan_btn);
 		scanNewDevBtn.setOnClickListener(this);
+		closeBtn = (Button) findViewById(R.id.close_scan_btn);
+		closeBtn.setOnClickListener(this);
+		closeBtn.setText(getResources().getString(R.string.scan_invisible_text));
 		promptlayout = (LinearLayout) scanDevLayout
 				.findViewById(R.id.prompt_layout);
-		promptText = (TextView) promptlayout.findViewById(R.id.scan_prompt_text);
+		promptText = (TextView) promptlayout
+				.findViewById(R.id.scan_prompt_text);
 		settingFuncList = (ListView) findViewById(R.id.setting_func_list__view);
 		settingFuncList.setOnItemClickListener(this);
 		settingFuncList.setAdapter(new FuncListAdapter());
@@ -144,35 +148,45 @@ public class SettingActivity extends Activity implements
 				return;
 			}
 			if (mBTService.GetScanState() == BlueToothService.STATE_SCANING) {
+				mBTService.StopScan();
 				Message msg = new Message();
 				msg.what = 2;
 				handler.sendMessage(msg);
 			}
 			if (mBTService.getState() == BlueToothService.STATE_CONNECTING) {
 				promptlayout.setVisibility(View.VISIBLE);
-				promptText.setText("正在连接");
+				promptText.setText("正在连接...");
 				return;
 			}
-			if(mBTService.getState() == BlueToothService.STATE_NONE){
+			if (mBTService.getState() == BlueToothService.STATE_NONE) {
 				promptlayout.setVisibility(View.VISIBLE);
-				promptText.setText("正在连接");
+				promptText.setText("正在连接...");
 			}
 
 			String info = ((TextView) view).getText().toString();
+			if (info.length() < 17) {
+				return;
+			}
 			String address = info.substring(info.length() - 17);
 			mBTService.DisConnected();
 			mBTService.ConnectToDevice(address);// 连接蓝牙
 
 		} else if (vId == R.id.setting_func_list__view) {// 功能列表
-			if(position == 0){//我的资料
-				startActivity(new Intent(SettingActivity.this, SettingOwnProfile.class));
+			if (position == 0) {// 我的资料
+				startActivity(new Intent(SettingActivity.this,
+						SettingOwnProfile.class));
 			}
-			if(position == 1){
-				startActivity(new Intent(SettingActivity.this, SettingUploadActivity.class));
+			if (position == 1) {
+				startActivity(new Intent(SettingActivity.this,
+						SettingUploadActivity.class));
 			}
-//			if(position == 2){//备注信息
-//				startActivity(new Intent(SettingActivity.this, RemarkInfoActivity.class));
-//			}
+			// if(position == 2){//备注信息
+			// startActivity(new Intent(SettingActivity.this,
+			// RemarkInfoActivity.class));
+			// }
+			if(position == 3){
+				startActivity(new Intent(SettingActivity.this, CustomerInfoActivity.class));
+			}
 		}
 	}
 
@@ -186,7 +200,6 @@ public class SettingActivity extends Activity implements
 			if (scanDevLayout.isShown()) {
 				scanDevLayout.setVisibility(View.GONE);
 			}
-			
 		}
 	}
 
@@ -206,8 +219,11 @@ public class SettingActivity extends Activity implements
 		int id = v.getId();
 		if (id == R.id.summySwitchBtn) {
 			if (!printerConnector.isChecked()) {// 为选择
-				if(mBTService.getState() == BlueToothService.STATE_CONNECTED){
+				if (mBTService.getState() == BlueToothService.STATE_CONNECTED) {
 					printerConnector.setChecked(true);
+				}
+				if (mBTService.GetScanState() == BlueToothService.STATE_SCANING) {
+					mBTService.StopScan();
 				}
 				// 打开选择列表弹出框
 				scanDevLayout.setVisibility(View.VISIBLE);
@@ -215,20 +231,27 @@ public class SettingActivity extends Activity implements
 				if (mBTService.HasDevice()) {
 					getAvailableDev(GET_BONDED_DEVICES);
 				} else {// 该设备没有蓝牙装置
-					Toast.makeText(SettingActivity.this, "为发现蓝牙装置",
+					Toast.makeText(SettingActivity.this, "未在该设备上发现蓝牙装置！",
 							Toast.LENGTH_SHORT).show();
 				}
 			} else {
+				mBTService.DisConnected();
 				printerConnector.setChecked(false);
 			}
 		}
 		if (id == R.id.start_scan_btn) {
+
 			getAvailableDev(GET_NEW_DEVICES);
-			new Thread() {
-				public void run() {
-					mBTService.ScanDevice();
-				}
-			}.start();
+
+		}
+
+		if (id == R.id.close_scan_btn) {
+			if (scanDevLayout.isShown()) {
+				scanDevLayout.setVisibility(View.GONE);
+			}
+			if (mBTService.GetScanState() == BlueToothService.STATE_SCANING) {
+				mBTService.StopScan();
+			}
 		}
 	}
 
@@ -240,11 +263,13 @@ public class SettingActivity extends Activity implements
 			mBTService.OpenDevice();
 			return;
 		}
-		if (flag.equals(GET_BONDED_DEVICES)) {
+		if (flag.equals(GET_BONDED_DEVICES)) {// 产看已配对的设配
+			scanNewDevBtn.setText(getResources().getString(
+					R.string.scan_dev_text));
 			promptlayout.setVisibility(View.GONE);
 			devices = mBTService.GetBondedDevice();
+			devDataAdapter.clear();
 			if (devices.size() > 0) {
-
 				for (BluetoothDevice device : devices) {
 					devDataAdapter.add(device.getName() + "\n"
 							+ device.getAddress());
@@ -252,7 +277,7 @@ public class SettingActivity extends Activity implements
 							device.getName() + "\n" + device.getAddress());
 				}
 			} else {
-				String noDevices = "没有设备";
+				String noDevices = "没有已配对的设备";
 				DebugFlags.logD(noDevices, noDevices);
 				devDataAdapter.add(noDevices);
 			}
@@ -261,17 +286,13 @@ public class SettingActivity extends Activity implements
 		}
 		if (flag.equals(GET_NEW_DEVICES)) {
 			promptlayout.setVisibility(View.VISIBLE);
-			if (mBTService.getState() == BlueToothService.STATE_SCANING) {
+			if (mBTService.GetScanState() == BlueToothService.STATE_SCANING) {
 				return;
 			}
-
-			if (mBTService.GetScanState() == mBTService.STATE_SCANING)
-				return;
 			mNewDevicesArrayAdapter.clear();
 			devices = mBTService.GetBondedDevice();
 
 			if (devices.size() > 0) {
-
 				for (BluetoothDevice device : devices) {
 					mNewDevicesArrayAdapter.add(device.getName() + "\n"
 							+ device.getAddress());
@@ -298,13 +319,14 @@ public class SettingActivity extends Activity implements
 				break;
 			case 1:// 扫描完毕
 				mBTService.StopScan();
-				DebugFlags.logD(TAG, "扫描完毕后状态"  + mBTService.getState());
 				promptlayout.setVisibility(View.GONE);
 				Toast.makeText(SettingActivity.this, "扫描完毕", Toast.LENGTH_SHORT)
 						.show();
+				scanNewDevBtn.setText(getResources().getString(
+						R.string.scan_again_text));
 				break;
 			case 2:// 停止扫描
-				promptText.setText("正在连接");
+				promptText.setText("正在连接...");
 				break;
 			}
 		}
@@ -388,12 +410,14 @@ public class SettingActivity extends Activity implements
 				case BlueToothService.STATE_NONE:
 					break;
 				case BlueToothService.SUCCESS_CONNECT:
-					DebugFlags.logD(TAG, "xxxxx成功！！");
+					Toast.makeText(SettingActivity.this, "连接打印机成功！",
+							Toast.LENGTH_SHORT).show();
 					printerConnector.setChecked(true);
 					scanDevLayout.setVisibility(View.GONE);
 					break;
 				case BlueToothService.FAILED_CONNECT:
-					DebugFlags.logD(TAG, "xxxxx失败！！");
+					Toast.makeText(SettingActivity.this, "未能连接打印机！",
+							Toast.LENGTH_SHORT).show();
 					promptlayout.setVisibility(View.GONE);
 
 					break;

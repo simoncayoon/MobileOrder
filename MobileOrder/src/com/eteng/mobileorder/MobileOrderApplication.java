@@ -7,6 +7,7 @@ import com.eteng.mobileorder.service.BlueToothService;
 
 public class MobileOrderApplication extends Application{
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "MobileOrderApplication";
 //	private static final int REQUEST_EX = 1;
 //	public static final int MESSAGE_STATE_CHANGE = 1;

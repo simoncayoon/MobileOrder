@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +23,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,7 +34,6 @@ import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonPostRequest;
-import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 
 public class FragmentMain extends BaseFragment implements OnClickListener {
@@ -195,53 +192,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		final String orderAddr = comboAddr();
 		final ProgressHUD mProgressHUD;
 		mProgressHUD = ProgressHUD
-				.show(getActivity(), "正在提交", true, true, null);
+				.show(getActivity(), "正在提交", true, false, null);
 		String url = Constants.HOST_HEAD + Constants.COMMIT_ORDER_INFO;
-//		Uri.Builder builder = Uri.parse(url).buildUpon();
-//		builder.appendQueryParameter("orderInfo", orderInfo);
-//		builder.appendQueryParameter("orderDetailsList", orderDetail);
-//		builder.appendQueryParameter("addressInfo", orderAddr);
-//		DebugFlags.logD(TAG, "URL is " + builder.toString());
-//		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
-//				Request.Method.POST, url, null,
-//				new Response.Listener<JSONObject>() {
-//
-//					@Override
-//					public void onResponse(JSONObject respon) {
-//						DebugFlags.logD(TAG, "JSON String" + respon);
-//						try {
-//							if (respon.getString("code").equals("0")) {
-//								printAction();
-//							} else {
-//								Toast.makeText(getActivity(), "提交失败!",
-//										Toast.LENGTH_SHORT).show();
-//							}
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//						mProgressHUD.dismiss();
-//					}
-//				}, new Response.ErrorListener() {
-//					@Override
-//					public void onErrorResponse(VolleyError arg0) {
-//						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-//						Toast.makeText(getActivity(), "提交失败!",
-//								Toast.LENGTH_SHORT).show();
-//						mProgressHUD.dismiss();
-//					}
-//				}) {
-
-//			@Override
-//			public Map<String, String> getHeaders() throws AuthFailureError {
-//				Map<String, String> headers = new HashMap<String, String>();
-//				headers.put("Accept", "application/json");
-//				headers.put("Content-Type", "application/json; charset=UTF-8");
-//				return headers;
-//			}
-//		};
-//		NetController.getInstance(getApplicationContext()).addToRequestQueue(
-//				getMenuRequest, TAG);
-
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("orderInfo", orderInfo);
 		params.put("orderDetailsList", orderDetail);

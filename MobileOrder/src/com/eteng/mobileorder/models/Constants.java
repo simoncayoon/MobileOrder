@@ -53,6 +53,16 @@ public class Constants {
 	public static final String COMMIT_ORDER_INFO = "addOrder";
 	
 	/**
+	 * WS修改订单状态接口名称
+	 */
+	public static final String UPDATE_ORDER_STATUS = "updateOrderStatus";
+	
+	/**
+	 * WS查询用户信息接口名称
+	 */
+	public static final String QUERY_CUSTOMER_INFO = "querySellerCustomerById";
+	
+	/**
 	 * 历史订单查询类型
 	 */
 	public static final String ORDER_QUERY_TYPE_HISTORY = "1";

@@ -73,7 +73,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="@string/total_price_text"
             android:textColor="@color/PHONE_ORDER_COLLOCATE_TEXT_COLOR_NORMAL"
             android:textSize="20sp" />
 

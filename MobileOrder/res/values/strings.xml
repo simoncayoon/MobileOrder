@@ -10,6 +10,7 @@
     <string name="cancel">取消</string>
     <string name="camera_commit">提&#160;&#160;&#160;交</string>
     <string name="dish_category_choice">类型选择</string>
+    <string name="custom_info_sync">信息同步</string>
 
     <!-- 登陆页面相关 -->
     <string name="login_account_text_hint">账户</string>
@@ -36,7 +37,10 @@
     <string name="printer_text">打印机</string>
     <string name="scan_list_title">蓝牙设备</string>
     <string name="setting_func_list_help">帮助</string>
-    <string name="exit">退出</string>
+    <string name="exit">退&#160;&#160;出</string>
+    <string name="scan_dev_text">扫描设备</string>
+    <string name="scan_again_text">重新扫描</string>
+    <string name="scan_invisible_text">关&#160;&#160;闭</string>
     <string name="setting_menu_category_title_text">菜品类目</string>
     <string name="menu_put_on_shelves_text">上架</string>
     <string name="menu_put_off_shelves_text">下架</string>
@@ -66,5 +70,8 @@
     <!-- 备注信息相关 -->
     <string name="setting_remark_info_remind_text">备注信息将会在粉面类目菜单显示\n每隔限制输入2个字&#160;&#160;共可添加6个备注</string>
     <string name="setting_remark_category_title_text">类目选择</string>
+    
+    <string name="customer_tel_text">电话</string>
+    <string name="customer_addr_text">地址</string>
 
 </resources>
