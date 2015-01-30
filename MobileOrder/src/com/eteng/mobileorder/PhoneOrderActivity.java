@@ -7,7 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -134,6 +136,14 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					.get(position).getMenuId());
 			bundle.putBoolean(OrderPhoneFragment.INTENT_IS_NOODLE, menuArray
 					.get(position).isNoodle());
+			if (menuArray.get(position).isNoodle()) {// 保存粉面的ID
+				Editor editor = getSharedPreferences(
+						Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE)
+						.edit();
+				editor.putString(Constants.NOODLE_ID,
+						String.valueOf(menuArray.get(position).getMenuId()));
+				editor.commit();
+			}
 			fragment.setArguments(bundle);
 			return fragment;
 		}

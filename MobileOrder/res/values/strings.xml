@@ -73,5 +73,7 @@
     
     <string name="customer_tel_text">电话</string>
     <string name="customer_addr_text">地址</string>
+    
+    <string name="remark_edit_category_title">类目</string>
 
 </resources>

@@ -2,24 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/GENERAL_VIEW_BG_COLOR" >
-    
-	<ListView
-	    android:id="@+id/setting_remark_info_list_view"
-	    android:layout_width="match_parent"
-	    android:layout_height="0dip"
-	    android:layout_weight="1"
-	    android:cacheColorHint="@android:color/transparent"
-	    android:fadingEdge="none"
-	    android:divider="@android:color/transparent"
-	    android:dividerHeight="5dp"/>
-	<TextView
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:textSize="15sp"
-	    android:textColor="#000000"
-	    android:text="@string/setting_remark_info_remind_text"
-	    android:gravity="center"
-	    android:layout_marginBottom="20dp"/>
+    android:background="@color/GENERAL_VIEW_BG_COLOR"
+    android:orientation="vertical" >
+
+    <com.eteng.mobileorder.cusomview.TopNavigationBar
+        android:id="@+id/general_navi_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+
+    <!--
+         <ListView
+        android:id="@+id/setting_remark_info_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5dp"
+        android:fadingEdge="none" />
+    -->
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="vertical"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/GENERAL_TEXT_COLOR"
+                android:textSize="20sp"
+                android:text="@string/remark_edit_category_title" />
+
+            <Button
+                android:id="@+id/remark_edit_menu_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:textColor="@color/TAB_TEXT_COLOR_SELECTED" />
+        </LinearLayout>
+
+        <com.eteng.mobileorder.cusomview.RemarkListView
+            android:id="@+id/remark_edit_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:visibility="visible" >
+        </com.eteng.mobileorder.cusomview.RemarkListView>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text="@string/setting_remark_info_remind_text"
+        android:textColor="@color/GENERAL_TEXT_COLOR"
+        android:textSize="15sp" />
+
 </LinearLayout>

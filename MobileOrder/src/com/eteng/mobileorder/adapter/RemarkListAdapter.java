@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.eteng.mobileorder.OrderPhoneFragment.RemarkModel;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.cusomview.RemarkListInterface.RemarkNameAdapter;
+import com.eteng.mobileorder.models.RemarkModel;
 
 public class RemarkListAdapter extends RemarkNameAdapter {
 

@@ -63,7 +63,7 @@
                 android:id="@+id/order_history_query_begin_btn"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@drawable/general_rectangle_bg"
+                android:background="@drawable/general_gray_rectangle_bg"
                 android:padding="3dp"
                 android:textColor="@color/query_btn_text_color"
                 android:textSize="15sp" />
@@ -86,7 +86,7 @@
                 android:id="@+id/order_history_query_end_btn"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@drawable/general_rectangle_bg"
+                android:background="@drawable/general_gray_rectangle_bg"
                 android:padding="3dp"
                 android:textColor="@color/query_btn_text_color"
                 android:textSize="15sp"  />

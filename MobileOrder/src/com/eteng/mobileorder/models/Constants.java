@@ -63,6 +63,16 @@ public class Constants {
 	public static final String QUERY_CUSTOMER_INFO = "querySellerCustomerById";
 	
 	/**
+	 * WS新增备注接口名称
+	 */
+	public static final String ADD_REMARK_BY_CATEGORY = "addClassOption";
+	
+	/**
+	 * WS更新备注接口
+	 */
+	public static final String UPDATE_REMARK_BY_CATEGORY = "updateOrDeleteOptions";
+	
+	/**
 	 * 历史订单查询类型
 	 */
 	public static final String ORDER_QUERY_TYPE_HISTORY = "1";
@@ -120,5 +130,10 @@ public class Constants {
 	/**
 	 * SharePerference 通用文件名
 	 */
-	public static final String SP_GENERAL_PROFILE_NAME = "own_profile_name";
+	public static final String SP_GENERAL_PROFILE_NAME = "own_general_profile_name";
+	
+	/**
+	 * 粉面属性的ID
+	 */
+	public static final String NOODLE_ID = "noodle_id";
 }

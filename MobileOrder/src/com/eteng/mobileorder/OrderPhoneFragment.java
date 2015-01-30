@@ -27,6 +27,7 @@ import com.eteng.mobileorder.cusomview.RemarkListView;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.RemarkModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 
@@ -174,7 +175,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 	}
 	
 	/***
-	 * 获取相应种类下的所有数据
+	 * 获取相应种类下的备注数据
 	 */
 	private void getOptions() {
 		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
@@ -187,7 +188,6 @@ public class OrderPhoneFragment extends BaseFragment implements
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								JSONArray options = new JSONArray(respon.getString("optionList"));
@@ -332,20 +332,20 @@ public class OrderPhoneFragment extends BaseFragment implements
 		return mAdapter;
 	}
 	
-	public class RemarkModel {
-		private String remarkName;
-		private boolean isSelectStat;//设置默认值
-		public String getRemarkName() {
-			return remarkName;
-		}
-		public void setRemarkName(String remarkName) {
-			this.remarkName = remarkName;
-		}
-		public boolean isSelectStat() {
-			return isSelectStat;
-		}
-		public void setSelectStat(boolean isSelectStat) {
-			this.isSelectStat = isSelectStat;
-		}
-	}
+//	public class RemarkModel {
+//		private String remarkName;
+//		private boolean isSelectStat;//设置默认值
+//		public String getRemarkName() {
+//			return remarkName;
+//		}
+//		public void setRemarkName(String remarkName) {
+//			this.remarkName = remarkName;
+//		}
+//		public boolean isSelectStat() {
+//			return isSelectStat;
+//		}
+//		public void setSelectStat(boolean isSelectStat) {
+//			this.isSelectStat = isSelectStat;
+//		}
+//	}
 }

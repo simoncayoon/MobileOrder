@@ -42,6 +42,7 @@
         <activity android:name="com.eteng.mobileorder.SettingDishImgUpload"/>
         <activity android:name="com.eteng.mobileorder.LoginActivity"/>
         <activity android:name="com.eteng.mobileorder.CustomerInfoActivity"/>
+        <activity android:name="com.eteng.mobileorder.RemarkEditActivity"/>
         <!-- </activity> -->
 
         <receiver android:name="com.eteng.mobileorder.receiver.TestBroadrReceiver" >

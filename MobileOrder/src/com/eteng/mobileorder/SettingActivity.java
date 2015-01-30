@@ -11,9 +11,6 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -176,16 +173,17 @@ public class SettingActivity extends Activity implements
 				startActivity(new Intent(SettingActivity.this,
 						SettingOwnProfile.class));
 			}
-			if (position == 1) {
+			if (position == 1) {// 菜单上传
 				startActivity(new Intent(SettingActivity.this,
 						SettingUploadActivity.class));
 			}
-			// if(position == 2){//备注信息
-			// startActivity(new Intent(SettingActivity.this,
-			// RemarkInfoActivity.class));
-			// }
-			if(position == 3){
-				startActivity(new Intent(SettingActivity.this, CustomerInfoActivity.class));
+			if (position == 2) {// 备注信息
+				startActivity(new Intent(SettingActivity.this,
+						RemarkEditActivity.class));
+			}
+			if (position == 3) {// 客户信息
+				startActivity(new Intent(SettingActivity.this,
+						CustomerInfoActivity.class));
 			}
 		}
 	}
