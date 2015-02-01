@@ -15,4 +15,6 @@
     <!-- 设置相关 -->
     <dimen name="content_padding_left">40dp</dimen>
     <dimen name="content_padding_each_side">10dp</dimen>
+    
+    <dimen name="dish_combo_list_text_size">18sp</dimen>
 </resources>

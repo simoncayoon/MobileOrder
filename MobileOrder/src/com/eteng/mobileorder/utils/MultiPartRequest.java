@@ -1,16 +1,17 @@
 package com.eteng.mobileorder.utils;
 
-import java.io.File;
 import java.util.Map;
+
+import android.graphics.Bitmap;
 
 public interface MultiPartRequest {
 
 	
-	public void addFileUpload(String param,File file);   
+	public void addFileUpload(String param,Bitmap file);   
     
     public void addStringUpload(String param,String content);   
       
-    public Map<String,File> getFileUploads();  
+    public Map<String,Bitmap> getFileUploads();  
       
     public Map<String,String> getStringUploads();   
 }

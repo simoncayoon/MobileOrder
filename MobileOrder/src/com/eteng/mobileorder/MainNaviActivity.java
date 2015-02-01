@@ -1,18 +1,23 @@
 package com.eteng.mobileorder;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.utils.DisplayMetrics;
@@ -30,6 +35,7 @@ public class MainNaviActivity extends FragmentActivity implements
 	private TopNavigationBar naviTitleView;
 
 	private String[] tabNames;
+	private boolean isExit = false;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -91,8 +97,7 @@ public class MainNaviActivity extends FragmentActivity implements
 			}
 			TextView textView = (TextView) convertView;
 			textView.setText(tabNames[position]);
-			textView.setTextSize((float) DisplayMetrics.sp2px(
-					MainNaviActivity.this, 4));
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 21);
 			Drawable top = getResources().getDrawable(tabIcons[position]);
 			top.setBounds(new Rect(0, 0, DisplayMetrics.dip2px(
 					MainNaviActivity.this, 30), DisplayMetrics.dip2px(
@@ -133,4 +138,38 @@ public class MainNaviActivity extends FragmentActivity implements
 		// 跳转到设置页面
 		startActivity(new Intent(MainNaviActivity.this, SettingActivity.class));
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {  
+            exit();  
+            return false;  
+        } else {  
+            return super.onKeyDown(keyCode, event);  
+        }  
+	}
+	public void exit(){  
+        if (!isExit) {  
+            isExit = true;  
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();  
+            mHandler.sendEmptyMessageDelayed(0, 2000);  
+        } else {  
+            Intent intent = new Intent(Intent.ACTION_MAIN);  
+            intent.addCategory(Intent.CATEGORY_HOME);  
+            startActivity(intent);  
+            System.exit(0);  
+        }  
+    }  
+	
+	@SuppressLint("HandlerLeak")
+	Handler mHandler = new Handler() {  
+		  
+        @Override  
+        public void handleMessage(Message msg) {  
+            // TODO Auto-generated method stub  
+            super.handleMessage(msg);  
+            isExit = false;  
+        }  
+  
+    };  
 }

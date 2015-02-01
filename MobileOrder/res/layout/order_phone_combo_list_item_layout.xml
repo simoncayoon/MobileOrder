@@ -18,6 +18,7 @@
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/general_dot"
             android:contentDescription="@string/img_desc" />
     </LinearLayout>
@@ -38,14 +39,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_each_item_dish_name" />
+                android:text="@string/title_each_item_dish_name"
+                android:textSize="@dimen/dish_combo_list_text_size" />
 
             <TextView
                 android:id="@+id/order_phone_dish_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:textSize="@dimen/dish_combo_list_text_size" />
         </LinearLayout>
 
         <!-- 第二行：小计 -->
@@ -58,13 +61,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_each_item_count" />
+                android:text="@string/title_each_item_count"
+                android:textSize="@dimen/dish_combo_list_text_size" />
 
             <TextView
                 android:id="@+id/order_phone_dish_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left" />
+                android:gravity="left"
+                android:textSize="@dimen/dish_combo_list_text_size" />
         </LinearLayout>
 
         <!-- 第三行：备注 -->
@@ -77,14 +82,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_each_item_remark" />
+                android:text="@string/title_each_item_remark"
+                android:textSize="@dimen/dish_combo_list_text_size" />
 
             <TextView
                 android:id="@+id/order_phone_dish_remark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:textSize="@dimen/dish_combo_list_text_size" />
         </LinearLayout>
     </LinearLayout>
 

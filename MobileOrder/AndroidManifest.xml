@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name="com.eteng.mobileorder.MainNaviActivity"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"/>
         <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
         <activity android:name="com.eteng.mobileorder.SettingActivity" />
         <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
@@ -40,7 +40,7 @@
         <activity android:name="com.eteng.mobileorder.SettingUploadActivity"/>
         <activity android:name="com.eteng.mobileorder.SettingMenuByCategory"/>
         <activity android:name="com.eteng.mobileorder.SettingDishImgUpload"/>
-        <activity android:name="com.eteng.mobileorder.LoginActivity"/>
+        <activity android:name="com.eteng.mobileorder.LoginActivity" android:launchMode="singleTop"/>
         <activity android:name="com.eteng.mobileorder.CustomerInfoActivity"/>
         <activity android:name="com.eteng.mobileorder.RemarkEditActivity"/>
         <!-- </activity> -->

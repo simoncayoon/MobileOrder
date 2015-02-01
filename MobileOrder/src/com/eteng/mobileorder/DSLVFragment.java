@@ -140,14 +140,11 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
 		mDslv = (DragSortListView) getListView();
-
 		mDslv.setDropListener(onDrop);
 		mDslv.setRemoveListener(onRemove);
 		mDslv.setOnItemClickListener(this);
 		mDslv.setOnItemLongClickListener(this);
-
 		// setListAdapter();
 	}
 

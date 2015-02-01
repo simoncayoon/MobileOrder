@@ -14,6 +14,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,9 +38,7 @@ import com.eteng.mobileorder.utils.NetController;
 public class LoginActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "LoginActivity";
-	private static final String SP_SAVE_PWD_STATE = "sp_save_pwd_state";
-	private static final String SP_LOGIN_ACCOUNT = "sp_login_account";
-	private static final String SP_LOGIN_PWD = "sp_login_pwd";
+
 
 	private TextView titleView;
 	private EditText accountEdit, pwdEdit;
@@ -47,6 +48,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private String accountName = "";
 	private String pwd = "";
 	private boolean isSaveState = false;
+	private boolean isExit = false;
 
 	private SharedPreferences sp;
 
@@ -89,12 +91,12 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
 				Context.MODE_PRIVATE);
-		isSaveState = sp.getBoolean(SP_SAVE_PWD_STATE, false);
-		accountName = sp.getString(SP_LOGIN_ACCOUNT, "");
-		pwd = sp.getString(SP_LOGIN_PWD, "");
+		isSaveState = sp.getBoolean(Constants.SP_SAVE_PWD_STATE, false);
+		accountName = sp.getString(Constants.SP_LOGIN_ACCOUNT, "");
+		pwd = sp.getString(Constants.SP_LOGIN_PWD, "");
 		if (isSaveState) {
 			accountEdit.setText(accountName);
-			pwd = sp.getString(SP_LOGIN_PWD, "");
+			pwd = sp.getString(Constants.SP_LOGIN_PWD, "");
 			pwdEdit.setText(pwd);
 			saveCheck.setChecked(true);
 		}
@@ -142,17 +144,17 @@ public class LoginActivity extends Activity implements OnClickListener {
 						try {
 							if (respon.getString("code").equals("0")) {
 								Editor inputSp = sp.edit();
-								inputSp.putString(SP_LOGIN_ACCOUNT, accountName);
-								inputSp.putString(SP_LOGIN_PWD, pwd);
+								inputSp.putString(Constants.SP_LOGIN_ACCOUNT, accountName);
+								inputSp.putString(Constants.SP_LOGIN_PWD, pwd);
 								inputSp.putString(
 										Constants.SELLER_ID,
 										new JSONObject(respon
 												.getString("seller"))
 												.getString("sellerId"));
 								if (saveCheck.isChecked()) {// 添加保存状态
-									inputSp.putBoolean(SP_SAVE_PWD_STATE, true);
+									inputSp.putBoolean(Constants.SP_SAVE_PWD_STATE, true);
 								} else {
-									inputSp.putBoolean(SP_SAVE_PWD_STATE, false);
+									inputSp.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
 								}
 								inputSp.commit();
 								startActivity(new Intent(LoginActivity.this,
@@ -179,4 +181,37 @@ public class LoginActivity extends Activity implements OnClickListener {
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {  
+            exit();  
+            return false;  
+        } else {  
+            return super.onKeyDown(keyCode, event);  
+        }  
+	}
+	public void exit(){  
+        if (!isExit) {  
+            isExit = true;  
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();  
+            mHandler.sendEmptyMessageDelayed(0, 2000);  
+        } else {  
+            Intent intent = new Intent(Intent.ACTION_MAIN);  
+            intent.addCategory(Intent.CATEGORY_HOME);  
+            startActivity(intent);  
+            System.exit(0);  
+        }  
+    }  
+	
+	Handler mHandler = new Handler() {  
+		  
+        @Override  
+        public void handleMessage(Message msg) {  
+            // TODO Auto-generated method stub  
+            super.handleMessage(msg);  
+            isExit = false;  
+        }  
+  
+    };  
 }

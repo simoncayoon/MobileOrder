@@ -72,6 +72,12 @@ public class Constants {
 	 */
 	public static final String UPDATE_REMARK_BY_CATEGORY = "updateOrDeleteOptions";
 	
+	
+	/**
+	 * 上传新菜品接口名称
+	 */
+	public static final String UPLOAD_NEW_DISH = "uploadFileByForm";
+	
 	/**
 	 * 历史订单查询类型
 	 */
@@ -131,6 +137,10 @@ public class Constants {
 	 * SharePerference 通用文件名
 	 */
 	public static final String SP_GENERAL_PROFILE_NAME = "own_general_profile_name";
+	
+	public static final String SP_SAVE_PWD_STATE = "sp_save_pwd_state";
+	public static final String SP_LOGIN_ACCOUNT = "sp_login_account";
+	public static final String SP_LOGIN_PWD = "sp_login_pwd";
 	
 	/**
 	 * 粉面属性的ID

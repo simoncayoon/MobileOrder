@@ -1,10 +1,13 @@
 package com.eteng.mobileorder;
 
 import java.util.Set;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,9 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
 import com.eteng.mobileorder.service.BlueToothService.OnReceiveDataHandleEvent;
@@ -39,7 +42,6 @@ public class SettingActivity extends Activity implements
 	public static final String TAG = "SettingActivity";
 	private static String GET_BONDED_DEVICES = "get_bonded_devices";
 	private static String GET_NEW_DEVICES = "get_new_devices";
-	private static final int REQUEST_EX = 1;
 	public static final int MESSAGE_STATE_CHANGE = 1;
 	public static final int MESSAGE_READ = 2;
 	public static final int MESSAGE_WRITE = 3;
@@ -60,7 +62,7 @@ public class SettingActivity extends Activity implements
 	private SwitchButton printerConnector;
 	private ListView devList, settingFuncList;
 	private LinearLayout scanDevLayout, promptlayout;
-	private Button summyBtn, scanNewDevBtn, closeBtn;
+	private Button summyBtn, scanNewDevBtn, closeBtn, exitBtn;
 	private TextView promptText;
 
 	private String[] menuList = new String[] { "我的资料", "菜单上传", "备注信息", "客户信息" };
@@ -104,6 +106,8 @@ public class SettingActivity extends Activity implements
 		settingFuncList = (ListView) findViewById(R.id.setting_func_list__view);
 		settingFuncList.setOnItemClickListener(this);
 		settingFuncList.setAdapter(new FuncListAdapter());
+		exitBtn = (Button) findViewById(R.id.exit_app_btn);
+		exitBtn.setOnClickListener(this);
 	}
 
 	private void initData() {
@@ -251,6 +255,17 @@ public class SettingActivity extends Activity implements
 				mBTService.StopScan();
 			}
 		}
+		if(id == R.id.exit_app_btn){
+			SharedPreferences sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+					Context.MODE_PRIVATE);
+			Editor editor = sp.edit();
+			editor.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
+			editor.putString(Constants.SP_LOGIN_ACCOUNT, "");
+			editor.putString(Constants.SP_LOGIN_PWD, "");
+			editor.commit();
+			startActivity(new Intent(SettingActivity.this, LoginActivity.class));
+			finish();
+		}
 	}
 
 	/**
@@ -307,6 +322,7 @@ public class SettingActivity extends Activity implements
 
 	}
 
+	@SuppressLint("HandlerLeak")
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -386,6 +402,7 @@ public class SettingActivity extends Activity implements
 				.sendToTarget();
 	}
 
+	@SuppressLint("HandlerLeak")
 	@Override
 	public void connectting() {
 		// TODO Auto-generated method stub
@@ -394,6 +411,7 @@ public class SettingActivity extends Activity implements
 				.sendToTarget();
 	}
 
+	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);

@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +35,6 @@ import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.models.OrderDetailModel;
-import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.StringMaker;
@@ -122,8 +122,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			textView.setPadding(30, 0, 30, 0);
 			textView.setTextColor(getResources().getColor(
 					R.color.GENERAL_TEXT_COLOR));
-			textView.setTextSize(DisplayMetrics.sp2px(PhoneOrderActivity.this,
-					8));
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 			return convertView;
 		}
 

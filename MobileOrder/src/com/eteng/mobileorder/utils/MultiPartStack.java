@@ -1,6 +1,6 @@
 package com.eteng.mobileorder.utils;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -18,12 +18,15 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -152,10 +155,14 @@ public class MultiPartStack extends HurlStack {
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  
   
         // Iterate the fileUploads  
-        Map<String, File> fileUpload = ((MultiPartRequest) request).getFileUploads();  
-        for (Map.Entry<String, File> entry : fileUpload.entrySet()) {  
-  
-            builder.addPart(((String) entry.getKey()), new FileBody((File) entry.getValue()));  
+        Map<String, Bitmap> fileUpload = ((MultiPartRequest) request).getFileUploads();  
+        for (Map.Entry<String, Bitmap> entry : fileUpload.entrySet()) {  
+        	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            entry.getValue().compress(CompressFormat.JPEG, 75, bos);
+            byte[] data = bos.toByteArray();
+            ByteArrayBody bab = new ByteArrayBody(data, "new_dish_img.jpg");
+            builder.addPart(((String) entry.getKey()), bab); 
+//            builder.addPart(((String) entry.getKey()), new FileBody((File) entry.getValue()));  
         }  
   
         ContentType contentType = ContentType.create(HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);  

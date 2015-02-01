@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.debug.DebugFlags;
-import com.eteng.mobileorder.utils.DisplayMetrics;
 
 public class TopNavigationBar extends RelativeLayout {
 
@@ -98,7 +98,7 @@ public class TopNavigationBar extends RelativeLayout {
         lp.addRule(RelativeLayout.CENTER_VERTICAL);  
         lp.setMargins(10, 0, 10, 0);  
         newButton.setLayoutParams(lp);   
-        newButton.setTextSize(DisplayMetrics.sp2px(mContext, 5));  
+        newButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);  
         newButton.setTextColor(Color.WHITE);  
   
         // set button drawable  
@@ -134,7 +134,7 @@ public class TopNavigationBar extends RelativeLayout {
         lp.addRule(RelativeLayout.CENTER_VERTICAL);  
         lp.setMargins(10, 0, 10, 0);  
         newButton.setLayoutParams(lp);   
-        newButton.setTextSize(DisplayMetrics.sp2px(mContext, 5));  
+        newButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);  
         newButton.setTextColor(Color.WHITE);  
   
         // set button drawable  

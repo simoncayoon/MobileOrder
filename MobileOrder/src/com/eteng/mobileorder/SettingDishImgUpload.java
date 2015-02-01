@@ -1,6 +1,10 @@
 package com.eteng.mobileorder;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,15 +26,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
+import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.MultiPartStack;
+import com.eteng.mobileorder.utils.MultiPartStringRequest;
 
 public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		OnClickListener {
 
 	private static final String TAG = "SettingDishImgUpload";
+	private static final String filePrefix = "com.eteng.mobileorder";
 	private static final int REQUEST_EX = 1;
 	private static final int DISH_TYPE_MAIN = 1;
 	private static final int DISH_TYPE_APPEND = 2;
@@ -43,12 +59,15 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 
 	private int categoryId = -1;
 	private Bitmap btMap = null;// 缓存图片
+	private String bmpName = "";
 	private int CURRENT_SELECT_DISH_TYPE = -1;// 当前选中的菜品类型
+	RequestQueue mSingleQueue;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_dish_upload_layout);
+		mSingleQueue = Volley.newRequestQueue(this, new MultiPartStack());
 		initView();
 		initData();
 	}
@@ -77,6 +96,7 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		dishPriceEdit = (EditText) findViewById(R.id.dish_price_edit_view);
 		typeSelector = (Button) findViewById(R.id.category_type_selector);
 		commitBtn = (Button) findViewById(R.id.general_commit_btn);
+		commitBtn.setOnClickListener(this);
 	}
 
 	@Override
@@ -102,8 +122,67 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 			showSelectDialog();
 		}
 		if (vId == R.id.general_commit_btn) {// 提交按钮
+			if(btMap == null){
+				Toast.makeText(SettingDishImgUpload.this, "请选择菜品图片", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if(dishNameEdit.getText().toString().length() == 0){
+				Toast.makeText(SettingDishImgUpload.this, "请输入菜名", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if(dishPriceEdit.getText().toString().length() == 0){
+				Toast.makeText(SettingDishImgUpload.this, "请输入价格", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if(CURRENT_SELECT_DISH_TYPE == -1){
+				Toast.makeText(SettingDishImgUpload.this, "请选择类型", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			
+			postImgAction();
 		}
+	}
+	
+	private void postImgAction(){
+		
+		String url = Constants.HOST_HEAD + Constants.UPLOAD_NEW_DISH;
+		MultiPartStringRequest multiPartRequest = new MultiPartStringRequest(
+	            Request.Method.POST, url, new Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "提交结果 " + respon);
+						
+					}
+				}, new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						DebugFlags.logD(TAG, "onErrorResponse " + error.getMessage());
+					}
+				}) {
+
+	        @Override
+	        public Map<String, Bitmap> getFileUploads() {
+	        	Map<String, Bitmap> fileParams = new HashMap<String, Bitmap>(); 
+	        	fileParams.put("testImage", btMap);
+	            return fileParams;
+	        }
+
+	        @Override
+	        public Map<String, String> getStringUploads() {
+	        	Map<String, String> strParams = new HashMap<String, String>();
+	        	strParams.put("sellerId", Constants.SELLER_ID);
+	        	strParams.put("classId", String.valueOf(categoryId));
+	        	strParams.put("goodsName", dishNameEdit.getText().toString());
+	        	strParams.put("goodsPrice", dishPriceEdit.getText().toString());
+	        	strParams.put("goodsType", String.valueOf(CURRENT_SELECT_DISH_TYPE));
+	            return strParams;
+	        }
+
+	    };
+	    mSingleQueue.add(multiPartRequest);
 	}
 
 	@Override
@@ -113,6 +192,11 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		if (requestCode == REQUEST_EX && resultCode == RESULT_OK
 				&& null != data) {
 			Uri selectedImage = data.getData();
+			bmpName = data.getDataString();
+			if(bmpName.length() == 0){
+				Toast.makeText(SettingDishImgUpload.this, "该图片没有名称！", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			ContentResolver cr = this.getContentResolver();
 
 			try {
@@ -142,10 +226,10 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		int width = BitmapOrg.getWidth();
 		int height = BitmapOrg.getHeight();
 		int newWidth = w;
-		int newHeight = h;
+//		int newHeight = h;
 
 		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
+//		float scaleHeight = ((float) newHeight) / height;
 		Matrix matrix = new Matrix();
 		matrix.postScale(scaleWidth, scaleWidth);
 		Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
@@ -166,15 +250,7 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 					public void onClick(DialogInterface dialog, int which) {
 						CURRENT_SELECT_DISH_TYPE = which;
 						typeSelector.setText(typeSet[which]);
-					}
-				});
-
-		// 添加一个确定按钮
-		builder.setPositiveButton(" 确 定 ",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if(which == -1)//默认选中第一个
-							typeSelector.setText(typeSet[0]);
+						dialog.dismiss();
 					}
 				});
 		// 创建一个单选按钮对话框
