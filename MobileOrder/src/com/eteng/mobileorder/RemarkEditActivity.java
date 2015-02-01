@@ -17,7 +17,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -74,9 +73,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 					public void onItemSelected(View selectItemView, int select) {
 						String tempName = "";
 						String flag = "";
-						DebugFlags.logD(TAG, "select + " + select
-								+ " list size " + remarkList.size());
-						if (select < (remarkList.size() - 1)) {// 修改备注名称
+						if (select < (remarkList.size())) {// 修改备注名称
 							tempName = remarkList.get(select).getRemarkName();
 							flag = FLAG_UPDATE;
 						} else {
@@ -172,8 +169,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									return;
 								}
 								remarkList.clear();
-								DebugFlags.logD(TAG,
-										"oops!!! 数据源" + options.length());
 								for (int i = 0; i < options.length(); i++) {
 									JSONObject temp = options.getJSONObject(i);
 									RemarkModel item = new RemarkModel();
@@ -193,6 +188,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 								remarkListView.setVisibility(View.VISIBLE);
 								mAdapter = new RemarkAdapter();
 								remarkListView.setAdapter(mAdapter);
+								mAdapter.notifyDataSetChanged();
 							} else {
 								try {
 									throw new VolleyError();
@@ -245,7 +241,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									int which) {
 								String newName = remarkEdit.getText()
 										.toString();
-								DebugFlags.logD(TAG, "test " + newName);
 								
 								if (!newName.equals(tempName)) {// 不一样的内容
 								// 提交新的类目名称
@@ -263,29 +258,32 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	}
 
 	private void postRemarkName(String newName, String flag, int position) {
-		DebugFlags.logD(TAG, "FLAG" + flag);
 		mProgressHUD.show();
 		String url = "";
-		int method;
-		DebugFlags.logD(TAG, "seleerID" + sellerId);
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("optionName", newName);
-		DebugFlags.logD(TAG, "optionName " + newName);
-		params.put("sellerId", sellerId);
-		DebugFlags.logD(TAG, "sellerId " + sellerId);
-		params.put("classId", categoryId);
-		DebugFlags.logD(TAG, "classId " + categoryId);
+		
 		if (flag.equals(FLAG_UPDATE)) {
-			url = Constants.HOST_HEAD + Constants.UPDATE_REMARK_BY_CATEGORY;
-			params.put("id", String.valueOf(remarkList.get(position).getId()));
-			DebugFlags.logD(TAG, "id" + remarkList.get(position).getId());
-			method = Request.Method.GET;
+			String urlHead = Constants.HOST_HEAD + Constants.UPDATE_REMARK_BY_CATEGORY;
+			Uri.Builder builder = Uri.parse(urlHead).buildUpon();
+			builder.appendQueryParameter("optionName", newName);
+			builder.appendQueryParameter("sellerId", sellerId);
+			builder.appendQueryParameter("classId", categoryId);
+			builder.appendQueryParameter("id",  String.valueOf(remarkList.get(position).getId()));
+			url = builder.toString();
+			updateRemark(url);
 		} else {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("optionName", newName);
+			params.put("sellerId", sellerId);
+			params.put("classId", categoryId);
 			url = Constants.HOST_HEAD + Constants.ADD_REMARK_BY_CATEGORY;
-			method = Request.Method.POST;
+			addNewRemark(url, params);
 		}
-		DebugFlags.logD(TAG, "test url" + url);
-		JsonPostRequest getOrderInfoRequest = new JsonPostRequest(method, url,
+		
+	}
+	
+	void updateRemark(String url){
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, url, null,
 				new Response.Listener<JSONObject>() {
 
 					@Override
@@ -293,7 +291,43 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
-								getOptions();
+								Toast.makeText(RemarkEditActivity.this, "更改成功！",
+										Toast.LENGTH_SHORT).show();
+								getOptions();//刷新列表
+							} else {
+								Toast.makeText(RemarkEditActivity.this, "更改失败",
+										Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						Toast.makeText(RemarkEditActivity.this, "更改失败",
+								Toast.LENGTH_SHORT).show();
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
+	}
+	
+	void addNewRemark(String url, Map<String, String> params){
+		JsonPostRequest getOrderInfoRequest = new JsonPostRequest(Request.Method.POST, url,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						DebugFlags.logD(TAG, "JSON String" + respon);
+						try {
+							if (respon.getString("code").equals("0")) {
+								Toast.makeText(RemarkEditActivity.this,
+										"添加成功!", Toast.LENGTH_SHORT).show();
+								getOptions();//刷新列表
 							} else {
 								Toast.makeText(RemarkEditActivity.this,
 										"提交失败!", Toast.LENGTH_SHORT).show();

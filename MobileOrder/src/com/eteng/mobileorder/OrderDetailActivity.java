@@ -1,7 +1,6 @@
 package com.eteng.mobileorder;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,12 +97,9 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		addDrawable = getResources().getDrawable(R.drawable.header_addr_icon);// 地址图标
 		addDrawable.setBounds(0, 0, drawableSize, drawableSize);
 		headerAddr.setCompoundDrawables(addDrawable, null, null, null);
-
 		telEditView = (EditText) findViewById(R.id.header_tel_edit_view);
 		telEditView.setEnabled(false);
 		dateView = (TextView) findViewById(R.id.header_date_edit_view);
-		Date data = new Date();
-		// dateView.setText(new SimpleDateFormat("yy/MM/dd").format(data));
 		addrEditView = (EditText) findViewById(R.id.header_addr_edit_view);
 		addrEditView.setEnabled(false);
 		totalPrice = (TextView) findViewById(R.id.phone_order_combo_count);// 显示总价
