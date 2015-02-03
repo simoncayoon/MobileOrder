@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
     <item android:state_selected="true" android:color="@color/PHONE_ORDER_REMARK_FOCUS_BG"></item>
     <item android:color="@color/COLOR_WHITE"></item>
+    -->
+    <item android:state_selected="true" android:drawable="@android:color/transparent"/>
+    <item android:drawable="@color/GENERAL_VIEW_BG_COLOR"/>
 
 </selector>

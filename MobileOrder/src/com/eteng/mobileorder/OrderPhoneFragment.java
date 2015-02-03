@@ -331,21 +331,4 @@ public class OrderPhoneFragment extends BaseFragment implements
 		}
 		return mAdapter;
 	}
-	
-//	public class RemarkModel {
-//		private String remarkName;
-//		private boolean isSelectStat;//设置默认值
-//		public String getRemarkName() {
-//			return remarkName;
-//		}
-//		public void setRemarkName(String remarkName) {
-//			this.remarkName = remarkName;
-//		}
-//		public boolean isSelectStat() {
-//			return isSelectStat;
-//		}
-//		public void setSelectStat(boolean isSelectStat) {
-//			this.isSelectStat = isSelectStat;
-//		}
-//	}
 }

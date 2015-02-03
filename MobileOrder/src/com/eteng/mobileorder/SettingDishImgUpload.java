@@ -4,14 +4,18 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -28,25 +32,26 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.MultiPartJSONRequest;
 import com.eteng.mobileorder.utils.MultiPartStack;
-import com.eteng.mobileorder.utils.MultiPartStringRequest;
 
 public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		OnClickListener {
 
 	private static final String TAG = "SettingDishImgUpload";
-	private static final String filePrefix = "com.eteng.mobileorder";
 	private static final int REQUEST_EX = 1;
 	private static final int DISH_TYPE_MAIN = 1;
 	private static final int DISH_TYPE_APPEND = 2;
@@ -59,9 +64,8 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 
 	private int categoryId = -1;
 	private Bitmap btMap = null;// 缓存图片
-	private String bmpName = "";
 	private int CURRENT_SELECT_DISH_TYPE = -1;// 当前选中的菜品类型
-	RequestQueue mSingleQueue;
+	private RequestQueue mSingleQueue;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,67 +126,107 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 			showSelectDialog();
 		}
 		if (vId == R.id.general_commit_btn) {// 提交按钮
-			if(btMap == null){
-				Toast.makeText(SettingDishImgUpload.this, "请选择菜品图片", Toast.LENGTH_SHORT).show();
+			if (btMap == null) {
+				Toast.makeText(SettingDishImgUpload.this, "请选择菜品图片",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			if(dishNameEdit.getText().toString().length() == 0){
-				Toast.makeText(SettingDishImgUpload.this, "请输入菜名", Toast.LENGTH_SHORT).show();
+			if (dishNameEdit.getText().toString().length() == 0) {
+				Toast.makeText(SettingDishImgUpload.this, "请输入菜名",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			if(dishPriceEdit.getText().toString().length() == 0){
-				Toast.makeText(SettingDishImgUpload.this, "请输入价格", Toast.LENGTH_SHORT).show();
+			if (dishPriceEdit.getText().toString().length() == 0) {
+				Toast.makeText(SettingDishImgUpload.this, "请输入价格",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			if(CURRENT_SELECT_DISH_TYPE == -1){
-				Toast.makeText(SettingDishImgUpload.this, "请选择类型", Toast.LENGTH_SHORT).show();
+			if (CURRENT_SELECT_DISH_TYPE == -1) {
+				Toast.makeText(SettingDishImgUpload.this, "请选择类型",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			
-			postImgAction();
+
+			postImgAction();// 发送表单信息
 		}
 	}
-	
-	private void postImgAction(){
-		
+
+	private void postImgAction() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(SettingDishImgUpload.this,
+				getResources().getString(R.string.toast_remind_uploading),
+				true, false, new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
+
 		String url = Constants.HOST_HEAD + Constants.UPLOAD_NEW_DISH;
-		MultiPartStringRequest multiPartRequest = new MultiPartStringRequest(
-	            Request.Method.POST, url, new Listener<JSONObject>() {
+		MultiPartJSONRequest multiPartRequest = new MultiPartJSONRequest(
+				Request.Method.POST, url, new Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "提交结果 " + respon);
-						
+						try {
+							if (!respon.getString("code").equals(1)) {
+								Toast.makeText(SettingDishImgUpload.this,
+										"上传成功！", Toast.LENGTH_SHORT).show();
+							}else{
+								Toast.makeText(SettingDishImgUpload.this, "上传失败！" + respon.getString("msg"),
+										Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
 					}
 				}, new ErrorListener() {
 
 					@Override
 					public void onErrorResponse(VolleyError error) {
 						// TODO Auto-generated method stub
-						DebugFlags.logD(TAG, "onErrorResponse " + error.getMessage());
+						DebugFlags.logD(TAG,
+								"onErrorResponse " + error.getMessage());
+						Toast.makeText(SettingDishImgUpload.this, "上传失败！",
+								Toast.LENGTH_SHORT).show();
+						mProgressHUD.dismiss();
 					}
 				}) {
 
-	        @Override
-	        public Map<String, Bitmap> getFileUploads() {
-	        	Map<String, Bitmap> fileParams = new HashMap<String, Bitmap>(); 
-	        	fileParams.put("testImage", btMap);
-	            return fileParams;
-	        }
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("Content-Disposition", String.format(
+						"form-data; name=\"%s\"; filename=\"%s\"", "file",
+						"new_dish_img.png"));
 
-	        @Override
-	        public Map<String, String> getStringUploads() {
-	        	Map<String, String> strParams = new HashMap<String, String>();
-	        	strParams.put("sellerId", Constants.SELLER_ID);
-	        	strParams.put("classId", String.valueOf(categoryId));
-	        	strParams.put("goodsName", dishNameEdit.getText().toString());
-	        	strParams.put("goodsPrice", dishPriceEdit.getText().toString());
-	        	strParams.put("goodsType", String.valueOf(CURRENT_SELECT_DISH_TYPE));
-	            return strParams;
-	        }
+				return map;
+			}
 
-	    };
-	    mSingleQueue.add(multiPartRequest);
+			@Override
+			public Map<String, Bitmap> getFileUploads() {
+				Map<String, Bitmap> fileParams = new HashMap<String, Bitmap>();
+				fileParams.put("file", btMap);
+				return fileParams;
+			}
+
+			@Override
+			public Map<String, String> getStringUploads() {
+				Map<String, String> strParams = new HashMap<String, String>();
+				strParams.put("sellerId", Constants.SELLER_ID);
+				strParams.put("classId", String.valueOf(categoryId));
+				strParams.put("goodsName", dishNameEdit.getText().toString());
+				strParams.put("goodsPrice", dishPriceEdit.getText().toString());
+				strParams.put("goodsType",
+						String.valueOf(CURRENT_SELECT_DISH_TYPE));
+				return strParams;
+			}
+
+		};
+		mSingleQueue.add(multiPartRequest);
 	}
 
 	@Override
@@ -192,13 +236,20 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		if (requestCode == REQUEST_EX && resultCode == RESULT_OK
 				&& null != data) {
 			Uri selectedImage = data.getData();
-			bmpName = data.getDataString();
-			if(bmpName.length() == 0){
-				Toast.makeText(SettingDishImgUpload.this, "该图片没有名称！", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			ContentResolver cr = this.getContentResolver();
+			DebugFlags.logD(TAG, "data Schema " + selectedImage.getScheme());
 
+			String filePath = "";
+			if ("content".equalsIgnoreCase(selectedImage.getScheme())) {
+
+				// Return the remote address
+				if (isGooglePhotosUri(selectedImage))
+					filePath = selectedImage.getLastPathSegment();
+
+				filePath = getDataColumn(SettingDishImgUpload.this,
+						selectedImage, null, null);
+			}
+			DebugFlags.logD(TAG, "file PATH " + filePath);
+			ContentResolver cr = this.getContentResolver();
 			try {
 				btMap = BitmapFactory.decodeStream(cr
 						.openInputStream(selectedImage));
@@ -221,15 +272,46 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		}
 	}
 
+	public static String getDataColumn(Context context, Uri uri,
+			String selection, String[] selectionArgs) {
+
+		Cursor cursor = null;
+		final String column = "_data";
+		final String[] projection = { column };
+
+		try {
+			cursor = context.getContentResolver().query(uri, projection,
+					selection, selectionArgs, null);
+			if (cursor != null && cursor.moveToFirst()) {
+				final int index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(index);
+			}
+		} finally {
+			if (cursor != null)
+				cursor.close();
+		}
+		return null;
+	}
+
+	public static boolean isExternalStorageDocument(Uri uri) {
+		return "com.android.externalstorage.documents".equals(uri
+				.getAuthority());
+	}
+
+	public static boolean isGooglePhotosUri(Uri uri) {
+		return "com.google.android.apps.photos.content".equals(uri
+				.getAuthority());
+	}
+
 	public static Bitmap resizeImage(Bitmap bitmap, int w, int h) {
 		Bitmap BitmapOrg = bitmap;
 		int width = BitmapOrg.getWidth();
 		int height = BitmapOrg.getHeight();
 		int newWidth = w;
-//		int newHeight = h;
+		// int newHeight = h;
 
 		float scaleWidth = ((float) newWidth) / width;
-//		float scaleHeight = ((float) newHeight) / height;
+		// float scaleHeight = ((float) newHeight) / height;
 		Matrix matrix = new Matrix();
 		matrix.postScale(scaleWidth, scaleWidth);
 		Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
@@ -244,11 +326,17 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		// 0: 默认第一个单选按钮被选中
 		final String[] typeSet = getResources().getStringArray(
 				R.array.dish_category_array);
-		
-		builder.setSingleChoiceItems(R.array.dish_category_array, CURRENT_SELECT_DISH_TYPE,
+
+		builder.setSingleChoiceItems(R.array.dish_category_array,
+				CURRENT_SELECT_DISH_TYPE,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						CURRENT_SELECT_DISH_TYPE = which;
+						if (which == 0) {
+							CURRENT_SELECT_DISH_TYPE = DISH_TYPE_MAIN;
+						} else if (which == 1) {
+							CURRENT_SELECT_DISH_TYPE = DISH_TYPE_APPEND;
+						}
 						typeSelector.setText(typeSet[which]);
 						dialog.dismiss();
 					}
@@ -256,4 +344,5 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		// 创建一个单选按钮对话框
 		builder.create().show();
 	}
+
 }

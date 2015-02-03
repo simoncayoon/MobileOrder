@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.SettingMenuCategoryAdapter;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
@@ -91,7 +93,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		dataList = new ArrayList<MenuItemModel>();
 		topBar.setTitle(menuName);
 		nameView.setText(menuName);
-		getDataList();
+		
 	}
 
 	/**
@@ -112,6 +114,15 @@ public class SettingMenuByCategory extends ListActivity implements
 	 * 获取相应种类下的所有数据
 	 */
 	private void getDataList() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this, getResources().getString(R.string.toast_remind_loading), true, false,
+				new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
@@ -142,12 +153,14 @@ public class SettingMenuByCategory extends ListActivity implements
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -281,5 +294,13 @@ public class SettingMenuByCategory extends ListActivity implements
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		dataList.clear();
+		getDataList();
 	}
 }

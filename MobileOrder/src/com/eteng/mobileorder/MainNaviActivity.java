@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.utils.DisplayMetrics;
@@ -97,7 +98,7 @@ public class MainNaviActivity extends FragmentActivity implements
 			}
 			TextView textView = (TextView) convertView;
 			textView.setText(tabNames[position]);
-			textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 21);
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 			Drawable top = getResources().getDrawable(tabIcons[position]);
 			top.setBounds(new Rect(0, 0, DisplayMetrics.dip2px(
 					MainNaviActivity.this, 30), DisplayMetrics.dip2px(
@@ -138,38 +139,40 @@ public class MainNaviActivity extends FragmentActivity implements
 		// 跳转到设置页面
 		startActivity(new Intent(MainNaviActivity.this, SettingActivity.class));
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {  
-            exit();  
-            return false;  
-        } else {  
-            return super.onKeyDown(keyCode, event);  
-        }  
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			exit();
+			return false;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
 	}
-	public void exit(){  
-        if (!isExit) {  
-            isExit = true;  
-            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();  
-            mHandler.sendEmptyMessageDelayed(0, 2000);  
-        } else {  
-            Intent intent = new Intent(Intent.ACTION_MAIN);  
-            intent.addCategory(Intent.CATEGORY_HOME);  
-            startActivity(intent);  
-            System.exit(0);  
-        }  
-    }  
-	
+
+	public void exit() {
+		if (!isExit) {
+			isExit = true;
+			Toast.makeText(getApplicationContext(), "再按一次退出程序",
+					Toast.LENGTH_SHORT).show();
+			mHandler.sendEmptyMessageDelayed(0, 2000);
+		} else {
+			Intent intent = new Intent(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_HOME);
+			startActivity(intent);
+			System.exit(0);
+		}
+	}
+
 	@SuppressLint("HandlerLeak")
-	Handler mHandler = new Handler() {  
-		  
-        @Override  
-        public void handleMessage(Message msg) {  
-            // TODO Auto-generated method stub  
-            super.handleMessage(msg);  
-            isExit = false;  
-        }  
-  
-    };  
+	Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			isExit = false;
+		}
+
+	};
 }

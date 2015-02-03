@@ -121,7 +121,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	void loginRemote() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(LoginActivity.this, "正在登陆", true, false,
+		mProgressHUD = ProgressHUD.show(LoginActivity.this, getResources().getString(R.string.toast_remind_logining), true, false,
 				new OnCancelListener() {
 
 					@Override

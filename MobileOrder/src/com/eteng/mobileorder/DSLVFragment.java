@@ -6,7 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -21,6 +23,7 @@ import android.widget.ArrayAdapter;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -133,8 +136,15 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 		mDslv.setFloatViewManager(mController);
 		mDslv.setOnTouchListener(mController);
 		mDslv.setDragEnabled(dragEnabled);
-		getListData();
+//		getListData();
 		return mDslv;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		getListData();
 	}
 
 	@Override
@@ -149,6 +159,15 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	}
 
 	private void getListData() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(getActivity(), getResources().getString(R.string.toast_remind_loading), true, false,
+				new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
@@ -160,11 +179,13 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 					public void onResponse(JSONObject respon) {
 						menuArray = getMenuList(respon);
 						setListAdapter();
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getActivity().getApplicationContext())

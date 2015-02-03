@@ -14,5 +14,6 @@
 	    android:textColor="@color/order_phone_remark_text_selector"
 	    android:textSize="22sp"
 	    android:layout_margin="8dp"
+	    
 	    />
 </LinearLayout>

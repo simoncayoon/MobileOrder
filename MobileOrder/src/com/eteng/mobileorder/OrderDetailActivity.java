@@ -116,7 +116,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	private void getDishCombo() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, "正在提交", true,
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_commiting), true,
 				true, null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ORDERID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
@@ -231,7 +231,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	void updateOrderState() throws JSONException {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, "正在提交", true,
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_commiting), true,
 				true, null);
 		String url = Constants.HOST_HEAD + Constants.UPDATE_ORDER_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();

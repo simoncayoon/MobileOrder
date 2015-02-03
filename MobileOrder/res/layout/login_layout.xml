@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="2.5"
+        android:layout_weight="5"
         android:orientation="vertical" >
 
         <TextView
@@ -59,7 +59,7 @@
             android:button="@null"
             android:drawablePadding="5dp"
             android:layout_marginTop="10dp"
-            
+            android:layout_marginLeft="@dimen/login_edit_box_margin_size"
             android:text="@string/login_remenber_my_acount"
             android:textColor="@color/GENERAL_TEXT_COLOR"
             android:textSize="15sp"
@@ -83,7 +83,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="bottom"

@@ -90,7 +90,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	 * 获取菜单类型
 	 */
 	void getMenuCategory() {
-		mProgressHUD = ProgressHUD.show(RemarkEditActivity.this, "正在加载", true,
+		mProgressHUD = ProgressHUD.show(RemarkEditActivity.this, getResources().getString(R.string.toast_remind_loading), true,
 				false, new OnCancelListener() {
 
 					@Override

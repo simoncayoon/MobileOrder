@@ -191,8 +191,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		final String orderDetail = comboOrderDetail();
 		final String orderAddr = comboAddr();
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD
-				.show(getActivity(), "正在提交", true, false, null);
+		mProgressHUD = ProgressHUD.show(getActivity(), getResources()
+				.getString(R.string.toast_remind_commiting), true, false, null);
 		String url = Constants.HOST_HEAD + Constants.COMMIT_ORDER_INFO;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("orderInfo", orderInfo);

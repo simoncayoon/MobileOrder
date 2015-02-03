@@ -122,7 +122,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 
 	private void getHistoryData() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(getActivity(), "加载中...", true, false,
+		mProgressHUD = ProgressHUD.show(getActivity(), getResources().getString(R.string.toast_remind_loading), true, false,
 				null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();

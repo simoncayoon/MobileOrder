@@ -75,5 +75,11 @@
     <string name="customer_addr_text">地址</string>
     
     <string name="remark_edit_category_title">类目</string>
+    
+    <!-- 提示语相关 -->
+    <string name="toast_remind_loading">正在加载..</string>
+    <string name="toast_remind_uploading">正在上传..</string>
+    <string name="toast_remind_logining">正在登陆..</string>
+    <string name="toast_remind_commiting">正在提交..</string>
 
 </resources>

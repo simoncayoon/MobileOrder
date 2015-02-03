@@ -70,7 +70,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 
 	private void getData() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(CustomerInfoActivity.this, "正在加载",
+		mProgressHUD = ProgressHUD.show(CustomerInfoActivity.this, getResources().getString(R.string.toast_remind_loading),
 				true, false, new OnCancelListener() {
 
 					@Override

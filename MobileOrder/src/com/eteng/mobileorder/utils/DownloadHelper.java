@@ -14,12 +14,15 @@ public class DownloadHelper {
 
 	/**
 	 * 应用下载
+	 * 
 	 * @param context
 	 * @param fileUrl
 	 * @param mDialog
 	 * @param dialogBar
 	 */
-	public static void downloadApp(final Context context,String fileUrl,final Dialog mDialog,final ProgressBar dialogBar,final TextView rateTextView){
+	public static void downloadApp(final Context context, String fileUrl,
+			final Dialog mDialog, final ProgressBar dialogBar,
+			final TextView rateTextView) {
 		Log.d("DownloadHelper", "fileUrl:" + fileUrl);
 		FinalHttp fh = new FinalHttp();
 		// 调用download方法开始下载
@@ -33,8 +36,8 @@ public class DownloadHelper {
 					public void onFailure(Throwable t, int errorNo,
 							String strMsg) {
 						mDialog.dismiss();
-						Toast.makeText(context, strMsg,
-								Toast.LENGTH_LONG).show();
+						Toast.makeText(context, strMsg, Toast.LENGTH_LONG)
+								.show();
 						super.onFailure(t, errorNo, strMsg);
 					}
 
@@ -44,7 +47,8 @@ public class DownloadHelper {
 						dialogBar.setMax((int) count);
 						dialogBar.setProgress((int) current);
 						dialogBar.postInvalidate();
-						rateTextView.setText(CommonUtil.getPercent(current, count));
+						rateTextView.setText(CommonUtil.getPercent(current,
+								count));
 
 						super.onLoading(count, current);
 					}
@@ -52,7 +56,7 @@ public class DownloadHelper {
 					@Override
 					public void onSuccess(Object t) {
 						mDialog.dismiss();
-						
+
 						// 安装应用
 						InstallHelper.install(context,
 								"/mnt/sdcard/testapk.apk");
@@ -62,13 +66,12 @@ public class DownloadHelper {
 
 					@Override
 					public void onStart() {
-						
+
 						super.onStart();
 					}
 
 					@Override
-					public AjaxCallBack progress(boolean progress,
-							int rate) {
+					public AjaxCallBack progress(boolean progress, int rate) {
 
 						return super.progress(progress, rate);
 					}

@@ -8,7 +8,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
@@ -158,6 +161,16 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	 * 获取菜单类型
 	 */
 	void getMenuCategory() {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(PhoneOrderActivity.this, getResources()
+				.getString(R.string.toast_remind_loading), true, false,
+				new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
@@ -169,11 +182,13 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					public void onResponse(JSONObject respon) {
 						menuArray = getMenuList(respon);
 						indicatorViewPager.setAdapter(mAdapter);
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
