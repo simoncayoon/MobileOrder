@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
 
 public class RemarkItemContainer extends LinearLayout implements RemarkListInterface{
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "RemarkItemContainer";
 	
 	private RemarkNameAdapter mAdapter;
 	private OnItemSelectedListener onItemSelectedListener;
-	private int mSelectedRemarkIndex = -1;
 	
 	public RemarkItemContainer(Context context) {
 		super(context);

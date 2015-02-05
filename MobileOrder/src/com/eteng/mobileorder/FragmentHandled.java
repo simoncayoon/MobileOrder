@@ -179,10 +179,8 @@ public class FragmentHandled extends BaseFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// 跳转到详细页面
-		DebugFlags.logD(TAG, "当前的位置 " + position);
 		try {
 			int orderId = orderDataList.get(position - 1).getOrderId();
-			DebugFlags.logD(TAG, "订单ID" + orderId);
 			Intent mIntent = new Intent(getActivity(),
 					OrderDetailActivity.class);
 			mIntent.putExtra("ORDER_DETAIL_ID", orderId);

@@ -40,7 +40,7 @@ public class SettingUploadActivity extends FragmentActivity implements
 	private boolean mRemoveEnabled = false;
 	private int mRemoveMode = DragSortController.MISS;
 	private boolean mSortEnabled = false;
-	private boolean mDragEnabled = true;
+	private boolean mDragEnabled = false;
 	private String mTag = "dslvTag";
 
 	private boolean isEditStat = false;
@@ -97,14 +97,17 @@ public class SettingUploadActivity extends FragmentActivity implements
 
 	@Override
 	public void rightBtnListener() {
+		DragSortController mController = fragment.getController();
 		if (isEditStat) {// 弹出编辑框
 			showDialog();
 		} else {
 			topBar.setRightBtnText("新增");
 			isEditStat = true;
-			DragSortController mController = fragment.getController();
 			mController.setDragInitMode(DragSortController.ON_DRAG);
 			mController.setSortEnabled(true);// 开启滑动排序功能
+//			mController.setRemoveEnabled(true);
+//			mController.setRemoveMode(DragSortController.FLING_REMOVE);
+			fragment.setTapbarAction();
 		}
 	}
 
@@ -123,8 +126,8 @@ public class SettingUploadActivity extends FragmentActivity implements
 								String newName = categoryEdit.getText()
 										.toString();
 								if (newName.length() > 0) {
-									for (String str : fragment.menuArray) {
-										if (newName.equals(str)) {// 判断已有列表是否有同样名称
+									for (MenuCategoryModel item : fragment.menuArray) {
+										if (newName.equals(item.getCategoryName())) {// 判断已有列表是否有同样名称
 											Toast.makeText(
 													SettingUploadActivity.this,
 													"已存在同样的类目！",
@@ -154,11 +157,7 @@ public class SettingUploadActivity extends FragmentActivity implements
 							if (respon.getString("code").equals("0")) {
 								parseJsonSrc(new JSONObject(
 										respon.getString("goodsClass")));
-//								fragment.adapter.insert(
-//										menuCategory.getCategoryName(),
-//										fragment.adapter.getCount());
-								fragment.menuArray.add(menuCategory.getCategoryName());
-								fragment.menuIdArray.add(menuCategory.getCategoryId());
+								fragment.menuArray.add(menuCategory);
 								fragment.adapter.notifyDataSetChanged();
 							} else {
 								Toast.makeText(SettingUploadActivity.this,

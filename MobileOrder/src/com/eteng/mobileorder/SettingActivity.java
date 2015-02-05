@@ -1,6 +1,7 @@
 package com.eteng.mobileorder;
 
 import java.util.Set;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -26,8 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
@@ -141,7 +142,6 @@ public class SettingActivity extends Activity implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		int vId = parent.getId();
-		DebugFlags.logD(TAG, "the id is " + vId);
 		if (vId == R.id.devices_list_view) {// 设备列表
 			// 获取蓝牙物理地址
 			if (!mBTService.IsOpen()) {// 判断蓝牙是否打开
@@ -198,7 +198,6 @@ public class SettingActivity extends Activity implements
 			// devList.setVisibility(View.VISIBLE);
 
 		} else {
-			DebugFlags.logD(TAG, "关闭触发");
 			if (scanDevLayout.isShown()) {
 				scanDevLayout.setVisibility(View.GONE);
 			}
@@ -255,9 +254,9 @@ public class SettingActivity extends Activity implements
 				mBTService.StopScan();
 			}
 		}
-		if(id == R.id.exit_app_btn){
-			SharedPreferences sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-					Context.MODE_PRIVATE);
+		if (id == R.id.exit_app_btn) {
+			SharedPreferences sp = getSharedPreferences(
+					Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE);
 			Editor editor = sp.edit();
 			editor.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
 			editor.putString(Constants.SP_LOGIN_ACCOUNT, "");
@@ -286,12 +285,9 @@ public class SettingActivity extends Activity implements
 				for (BluetoothDevice device : devices) {
 					devDataAdapter.add(device.getName() + "\n"
 							+ device.getAddress());
-					DebugFlags.logD(TAG,
-							device.getName() + "\n" + device.getAddress());
 				}
 			} else {
 				String noDevices = "没有已配对的设备";
-				DebugFlags.logD(noDevices, noDevices);
 				devDataAdapter.add(noDevices);
 			}
 			devDataAdapter.notifyDataSetChanged();
@@ -380,24 +376,18 @@ public class SettingActivity extends Activity implements
 
 	@Override
 	public void connectSucceed() {
-		// TODO Auto-generated method stub
-		DebugFlags.logD(TAG, "connectSucceed()");
 		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, SUCCESS_CONNECT, -1)
 				.sendToTarget();
 	}
 
 	@Override
 	public void connectFailed() {
-		// TODO Auto-generated method stub
-		DebugFlags.logD(TAG, "connectFailed() ");
 		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, FAILED_CONNECT, -1)
 				.sendToTarget();
 	}
 
 	@Override
 	public void connectLose() {
-		// TODO Auto-generated method stub
-		DebugFlags.logD(TAG, "connectLose() ");
 		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, -1)
 				.sendToTarget();
 	}
@@ -405,8 +395,6 @@ public class SettingActivity extends Activity implements
 	@SuppressLint("HandlerLeak")
 	@Override
 	public void connectting() {
-		// TODO Auto-generated method stub
-		DebugFlags.logD(TAG, "connectting()");
 		mHandler.obtainMessage(MESSAGE_STATE_CHANGE, LOSE_CONNECT, 0)
 				.sendToTarget();
 	}
@@ -440,11 +428,9 @@ public class SettingActivity extends Activity implements
 				case BlueToothService.LOSE_CONNECT:
 					switch (msg.arg2) {
 					case -1:
-						DebugFlags.logD(TAG, "xxxxx丢失-1！！");
 						printerConnector.setChecked(false);
 						break;
 					case 0:
-						DebugFlags.logD(TAG, "xxxxx丢失0！！");
 						break;
 					}
 				}

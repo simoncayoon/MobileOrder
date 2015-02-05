@@ -1,9 +1,7 @@
 package com.eteng.mobileorder.cusomview;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -157,11 +155,11 @@ public class TopNavigationBar extends RelativeLayout {
 		leftBtn.setBackgroundResource(drawableId);
 	}
 	
-	@SuppressLint("NewApi")
-	public void setLeftImg(Drawable drawableId) {
-		leftBtn.setVisibility(View.VISIBLE);
-		leftBtn.setBackground(drawableId);
-	}
+//	@SuppressLint("NewApi")
+//	public void setLeftImg(Drawable drawableId) {
+//		leftBtn.setVisibility(View.VISIBLE);
+//		leftBtn.setBackground;
+//	}
 
 	public void setRightImg(int drawableId) {
 		rightBtn.setVisibility(View.VISIBLE);

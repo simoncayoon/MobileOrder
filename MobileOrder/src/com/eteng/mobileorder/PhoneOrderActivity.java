@@ -203,6 +203,9 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject tmp = new JSONObject(jsonArray.getString(i));
 				MenuCategory item = new MenuCategory();
+				if(!tmp.getString("classStatus").equals("1")){
+					continue;
+				}
 				item.setMenuId(tmp.getInt("classId"));
 				item.setMenuName(tmp.getString("className"));
 				if (tmp.getInt("isNoodle") == 1) {

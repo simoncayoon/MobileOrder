@@ -28,7 +28,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.service.BlueToothService;
@@ -178,7 +177,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 						.show();
 				return;
 			}
-			DebugFlags.logD(TAG, "PrintString " + printString);
 			btService.PrintCharacters(printString);
 		} else {
 			Toast.makeText(getActivity(), "请查看蓝牙状态", Toast.LENGTH_SHORT).show();
@@ -203,7 +201,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								printAction();
@@ -244,7 +241,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		addrJson.put("detailAddress", addrEditView.getText().toString());
 		addrJson.put("createDate", "");
 		addrJson.put("addStatus", "1");
-		DebugFlags.logD(TAG, "订单地址信息" + addrJson.toString());
 		return addrJson.toString();
 	}
 
@@ -273,7 +269,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 			item.put("goodsId", dataItem.getGoodsId());
 			detailList.put(item);
 		}
-		DebugFlags.logD(TAG, "订单详情信息" + detailList.toString());
 		return detailList.toString();
 	}
 
@@ -300,7 +295,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		infoJson.put("besurePerson", "");
 		infoJson.put("orderAddress", addrEditView.getText().toString());
 		infoJson.put("besureTime", "");
-		DebugFlags.logD(TAG, "订单总信息" + infoJson.toString());
 		return infoJson.toString();
 	}
 

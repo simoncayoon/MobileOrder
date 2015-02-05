@@ -53,10 +53,13 @@ public class BlueToothService {
 
 	private static final int WRITE_READ = 2;
 	private static final int WRITE_WAIT = 3;
+	@SuppressWarnings("unused")
 	private static int writeState = 2;
 	public static int times = 0;
 	private static int PrinterType = 0;
+	@SuppressWarnings("unused")
 	private static int PrinterTypeNow = 0;
+	@SuppressWarnings("unused")
 	private int timeout;
 	private CustomBTStateListener mDummyCallBacks = new CustomBTStateListener() {
 
@@ -215,6 +218,7 @@ public class BlueToothService {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		private void OnFinished() {
 			// TODO Auto-generated method stub
 
@@ -894,27 +898,11 @@ public class BlueToothService {
 				r = (rgba[index] & 0xff000000) >> 24;
 				g = (rgba[index] & 0xff0000) >> 16;
 				b = (rgba[index] & 0xff00) >> 8;
-				// rgb to yuv
 				y = ((66 * r + 129 * g + 25 * b + 128) >> 8) + 16;
 				u = ((-38 * r - 74 * g + 112 * b + 128) >> 8) + 128;
 				v = ((112 * r - 94 * g - 18 * b + 128) >> 8) + 128;
-				// clip y
-				// yuv420sp[index++] = (byte) ((y < 0) ? 0 : ((y > 255) ? 255 :
-				// y));
 				byte temp = (byte) ((y < 0) ? 0 : ((y > 255) ? 255 : y));
 				yuv420sp[index++] = temp > 0 ? (byte) 1 : (byte) 0;
-
-				// {
-				// if (f == 0) {
-				// yuv420sp[index++] = 0;
-				// f = 1;
-				// } else {
-				// yuv420sp[index++] = 1;
-				// f = 0;
-				// }
-
-				// }
-
 			}
 
 		}

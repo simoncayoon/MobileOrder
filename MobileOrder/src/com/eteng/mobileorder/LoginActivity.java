@@ -39,7 +39,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "LoginActivity";
 
-
 	private TextView titleView;
 	private EditText accountEdit, pwdEdit;
 	private Button loginBtn;
@@ -121,7 +120,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	void loginRemote() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(LoginActivity.this, getResources().getString(R.string.toast_remind_logining), true, false,
+		mProgressHUD = ProgressHUD.show(LoginActivity.this, getResources()
+				.getString(R.string.toast_remind_logining), true, false,
 				new OnCancelListener() {
 
 					@Override
@@ -140,11 +140,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								Editor inputSp = sp.edit();
-								inputSp.putString(Constants.SP_LOGIN_ACCOUNT, accountName);
+								inputSp.putString(Constants.SP_LOGIN_ACCOUNT,
+										accountName);
 								inputSp.putString(Constants.SP_LOGIN_PWD, pwd);
 								inputSp.putString(
 										Constants.SELLER_ID,
@@ -152,16 +152,22 @@ public class LoginActivity extends Activity implements OnClickListener {
 												.getString("seller"))
 												.getString("sellerId"));
 								if (saveCheck.isChecked()) {// 添加保存状态
-									inputSp.putBoolean(Constants.SP_SAVE_PWD_STATE, true);
+									inputSp.putBoolean(
+											Constants.SP_SAVE_PWD_STATE, true);
 								} else {
-									inputSp.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
+									inputSp.putBoolean(
+											Constants.SP_SAVE_PWD_STATE, false);
 								}
 								inputSp.commit();
 								startActivity(new Intent(LoginActivity.this,
 										MainNaviActivity.class));
 								finish();
 							} else {
-								Toast.makeText(LoginActivity.this, "登陆失败",
+								Toast.makeText(
+										LoginActivity.this,
+										getResources()
+												.getString(
+														R.string.toast_remind_logining_failed),
 										Toast.LENGTH_SHORT).show();
 							}
 						} catch (JSONException e) {
@@ -173,7 +179,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-						Toast.makeText(LoginActivity.this, "登陆失败",
+						Toast.makeText(
+								LoginActivity.this,
+								getResources().getString(
+										R.string.toast_remind_logining_failed),
 								Toast.LENGTH_SHORT).show();
 						mProgressHUD.dismiss();
 					}
@@ -181,37 +190,39 @@ public class LoginActivity extends Activity implements OnClickListener {
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {  
-            exit();  
-            return false;  
-        } else {  
-            return super.onKeyDown(keyCode, event);  
-        }  
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			exit();
+			return false;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
 	}
-	public void exit(){  
-        if (!isExit) {  
-            isExit = true;  
-            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();  
-            mHandler.sendEmptyMessageDelayed(0, 2000);  
-        } else {  
-            Intent intent = new Intent(Intent.ACTION_MAIN);  
-            intent.addCategory(Intent.CATEGORY_HOME);  
-            startActivity(intent);  
-            System.exit(0);  
-        }  
-    }  
-	
-	Handler mHandler = new Handler() {  
-		  
-        @Override  
-        public void handleMessage(Message msg) {  
-            // TODO Auto-generated method stub  
-            super.handleMessage(msg);  
-            isExit = false;  
-        }  
-  
-    };  
+
+	public void exit() {
+		if (!isExit) {
+			isExit = true;
+			Toast.makeText(getApplicationContext(), "再按一次退出程序",
+					Toast.LENGTH_SHORT).show();
+			mHandler.sendEmptyMessageDelayed(0, 2000);
+		} else {
+			Intent intent = new Intent(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_HOME);
+			startActivity(intent);
+			System.exit(0);
+		}
+	}
+
+	Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			isExit = false;
+		}
+
+	};
 }

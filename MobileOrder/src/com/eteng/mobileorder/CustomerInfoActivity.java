@@ -39,6 +39,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 	private ListView contentList;
 	private Button commitBtn;
 
+	@SuppressWarnings("unused")
 	private ArrayList<CustomerInfoModel> dataList;
 	private ArrayList<Map<String, String>> dataMaps;
 	SimpleAdapter mAdapter = null;
@@ -50,28 +51,28 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 		setContentView(R.layout.customer_info_layout);
 		topBar = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		topBar.setTitle("客户信息");
-		topBar.setLeftImg(getResources().getDrawable(
-				R.drawable.setting_back_btn_bg));
+		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
 		contentList = (ListView) findViewById(R.id.general_pull_refresh_list);
 		commitBtn = (Button) findViewById(R.id.setting_own_profile_save_btn);
 		commitBtn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				getData();
 				mAdapter.notifyDataSetChanged();
 			}
 		});
-		
+
 		dataList = new ArrayList<CustomerInfoModel>();
-		dataMaps = new ArrayList<Map<String,String>>();
+		dataMaps = new ArrayList<Map<String, String>>();
 		getData();
 	}
 
 	private void getData() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(CustomerInfoActivity.this, getResources().getString(R.string.toast_remind_loading),
-				true, false, new OnCancelListener() {
+		mProgressHUD = ProgressHUD.show(CustomerInfoActivity.this,
+				getResources().getString(R.string.toast_remind_loading), true,
+				false, new OnCancelListener() {
 
 					@Override
 					public void onCancel(DialogInterface dialog) {
@@ -127,12 +128,12 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 		dataMaps.clear();
 		for (int i = 0; i < dataList.length(); i++) {
 			JSONObject temp = new JSONObject(dataList.getString(i));
-//			CustomerInfoModel item = new CustomerInfoModel();
-//			item.setTel(temp.getString("tel"));
-//			item.setAddr(temp.getString("address"));
-//			item.setTotalNumber(temp.getString("totalNumber"));
-//			item.setTotalMoney(temp.getString("totalMoney"));
-//			this.dataList.add(item);
+			// CustomerInfoModel item = new CustomerInfoModel();
+			// item.setTel(temp.getString("tel"));
+			// item.setAddr(temp.getString("address"));
+			// item.setTotalNumber(temp.getString("totalNumber"));
+			// item.setTotalMoney(temp.getString("totalMoney"));
+			// this.dataList.add(item);
 			Map<String, String> mapItem = new HashMap<String, String>();
 			mapItem.put("tel", temp.getString("tel"));
 			mapItem.put("address", temp.getString("address"));

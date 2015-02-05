@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
@@ -30,6 +29,7 @@ import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeList
 public class MainNaviActivity extends FragmentActivity implements
 		TopNavigationBar.NaviBtnListener {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "MainNaviActivity";
 
 	private IndicatorViewPager indicatorViewPager;
@@ -130,12 +130,10 @@ public class MainNaviActivity extends FragmentActivity implements
 
 	@Override
 	public void leftBtnListener() {
-		DebugFlags.logD(TAG, "leftBtnListener");
 	}
 
 	@Override
 	public void rightBtnListener() {
-		DebugFlags.logD(TAG, "test");
 		// 跳转到设置页面
 		startActivity(new Intent(MainNaviActivity.this, SettingActivity.class));
 	}

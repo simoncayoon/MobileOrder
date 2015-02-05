@@ -171,17 +171,27 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 					public void onResponse(JSONObject respon) {
 						try {
 							if (!respon.getString("code").equals(1)) {
-								Toast.makeText(SettingDishImgUpload.this,
-										"上传成功！", Toast.LENGTH_SHORT).show();
-							}else{
-								Toast.makeText(SettingDishImgUpload.this, "上传失败！" + respon.getString("msg"),
+								Toast.makeText(
+										SettingDishImgUpload.this,
+										getResources()
+												.getString(
+														R.string.toast_remind_upload_succeed),
+										Toast.LENGTH_SHORT).show();
+								mProgressHUD.dismiss();
+								finish();
+							} else {
+								Toast.makeText(
+										SettingDishImgUpload.this,
+										getResources()
+												.getString(
+														R.string.toast_remind_upload_failed)
+												+ respon.getString("msg"),
 										Toast.LENGTH_SHORT).show();
 							}
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
+							mProgressHUD.dismiss();
 							e.printStackTrace();
 						}
-						mProgressHUD.dismiss();
 					}
 				}, new ErrorListener() {
 
@@ -190,7 +200,10 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 						// TODO Auto-generated method stub
 						DebugFlags.logD(TAG,
 								"onErrorResponse " + error.getMessage());
-						Toast.makeText(SettingDishImgUpload.this, "上传失败！",
+						Toast.makeText(
+								SettingDishImgUpload.this,
+								getResources().getString(
+										R.string.toast_remind_upload_failed),
 								Toast.LENGTH_SHORT).show();
 						mProgressHUD.dismiss();
 					}
@@ -226,6 +239,7 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 			}
 
 		};
+
 		mSingleQueue.add(multiPartRequest);
 	}
 
@@ -236,19 +250,6 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		if (requestCode == REQUEST_EX && resultCode == RESULT_OK
 				&& null != data) {
 			Uri selectedImage = data.getData();
-			DebugFlags.logD(TAG, "data Schema " + selectedImage.getScheme());
-
-			String filePath = "";
-			if ("content".equalsIgnoreCase(selectedImage.getScheme())) {
-
-				// Return the remote address
-				if (isGooglePhotosUri(selectedImage))
-					filePath = selectedImage.getLastPathSegment();
-
-				filePath = getDataColumn(SettingDishImgUpload.this,
-						selectedImage, null, null);
-			}
-			DebugFlags.logD(TAG, "file PATH " + filePath);
 			ContentResolver cr = this.getContentResolver();
 			try {
 				btMap = BitmapFactory.decodeStream(cr
@@ -257,14 +258,10 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (btMap.getHeight() > 384) {
-				// btMap = BitmapFactory.decodeFile(picPath);
-				btMap = resizeImage(btMap, DisplayMetrics.dip2px(this, 200),
-						DisplayMetrics.dip2px(this, 100));
-				BitmapDrawable bd = new BitmapDrawable(getResources(), btMap);
-				addBitMapBtn.setImageDrawable(bd);
-
-			} else {
+			// if (btMap.getHeight() > 384) {
+			// // btMap = BitmapFactory.decodeFile(picPath);
+			btMap = resizeImage(btMap);
+			if (btMap != null) {
 				BitmapDrawable bd = new BitmapDrawable(getResources(), btMap);
 				addBitMapBtn.setImageDrawable(bd);
 			}
@@ -303,20 +300,27 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 				.getAuthority());
 	}
 
-	public static Bitmap resizeImage(Bitmap bitmap, int w, int h) {
+	public Bitmap resizeImage(Bitmap bitmap) {
+		float hscalew = (float) 204 / (float) 318;// 产品图片比例
 		Bitmap BitmapOrg = bitmap;
 		int width = BitmapOrg.getWidth();
 		int height = BitmapOrg.getHeight();
-		int newWidth = w;
-		// int newHeight = h;
+		// int newWidth = width;
+		int newHeight = (int) (width * hscalew);
 
-		float scaleWidth = ((float) newWidth) / width;
-		// float scaleHeight = ((float) newHeight) / height;
+		int retY = (height - newHeight) / 2;
 		Matrix matrix = new Matrix();
-		matrix.postScale(scaleWidth, scaleWidth);
-		Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
-				height, matrix, true);
-		return resizedBitmap;
+		matrix.postScale(1, 1);
+		try {
+			Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, retY,
+					width, newHeight, matrix, true);
+			return resizedBitmap;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			Toast.makeText(SettingDishImgUpload.this, "截图失败！",
+					Toast.LENGTH_SHORT).show();
+			return null;
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -344,5 +348,4 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 		// 创建一个单选按钮对话框
 		builder.create().show();
 	}
-
 }

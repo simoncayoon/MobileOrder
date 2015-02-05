@@ -239,6 +239,9 @@ public class OrderPhoneFragment extends BaseFragment implements
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
 			MenuItemModel item = new MenuItemModel();
+			if(!temp.getString("goodsStatus").equals("1")){
+				continue;
+			}
 			item.setId(temp.getInt("goodsId"));
 			item.setSerial(temp.getString("goodsSerial"));
 			item.setName(temp.getString("goodsName"));

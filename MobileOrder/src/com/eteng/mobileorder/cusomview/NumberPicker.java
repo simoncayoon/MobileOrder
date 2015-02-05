@@ -20,6 +20,7 @@ package com.eteng.mobileorder.cusomview;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -279,6 +280,7 @@ public class NumberPicker extends LinearLayout {
 	/**
 	 * The {@link Drawable} for pressed virtual (increment/decrement) buttons.
 	 */
+	@SuppressWarnings("unused")
 	private final Drawable mVirtualButtonPressedDrawable = null;
 
 	/**
@@ -416,6 +418,7 @@ public class NumberPicker extends LinearLayout {
 	/**
 	 * The virtual id of the last hovered child.
 	 */
+	@SuppressWarnings("unused")
 	private int mLastHoveredChildVirtualViewId;
 
 	/**
@@ -1393,6 +1396,7 @@ public class NumberPicker extends LinearLayout {
 		return TOP_AND_BOTTOM_FADING_EDGE_STRENGTH;
 	}
 
+	@SuppressLint("MissingSuperCall")
 	@Override
 	protected void onDetachedFromWindow() {
 		removeAllCallbacks();

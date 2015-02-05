@@ -8,16 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.utils.MyClickListener;
 import com.eteng.mobileorder.utils.NetController;
 
 public class SettingMenuCategoryAdapter extends BaseAdapter {
+
+	@SuppressWarnings("unused")
+	private static final String TAG = SettingMenuCategoryAdapter.class
+			.getSimpleName();
 
 	private LayoutInflater mInflater;
 	private ArrayList<MenuItemModel> dataSrc;
@@ -28,9 +32,6 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 		this.context = context;
 		this.dataSrc = dataSrc;
 		mInflater = LayoutInflater.from(context);
-//		if (context instanceof PutBtnListener) {
-//			mCallBack = (PutBtnListener) context;
-//		}
 	}
 
 	@Override
@@ -63,10 +64,12 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 					.findViewById(R.id.menu_with_category_img);
 			holder.shadowImg = (ImageView) convertView
 					.findViewById(R.id.menu_with_category_shadow_img);
-			holder.putOnBtn = (Button) convertView
+			holder.putOnBtn = (TextView) convertView
 					.findViewById(R.id.menu_put_on_shelves_btn);
-			holder.putOffBtn = (Button) convertView
+			holder.putOffBtn = (TextView) convertView
 					.findViewById(R.id.menu_put_off_shelves_btn);
+			holder.putOnBtn.setTag(R.id.KEY_POSITION, position);
+			holder.putOffBtn.setTag(R.id.KEY_POSITION, position);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -78,7 +81,21 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 		holder.dishImg.setImageUrl(((MenuItemModel) item).getImgUrl(),
 				NetController.getInstance(context.getApplicationContext())
 						.getImageLoader());
-		
+		if (item.getStatus().equals("1")) {// 当前为可显示状态
+			holder.putOnBtn
+					.setBackgroundResource(R.drawable.setting_general_corner_gray_frame);
+			holder.putOffBtn
+					.setBackgroundResource(R.drawable.setting_general_corner_red_frame);
+			holder.putOnBtn.setClickable(false);
+			holder.putOffBtn.setOnClickListener(MyClickListener.getInstance(context));
+		} else {
+			holder.putOnBtn
+					.setBackgroundResource(R.drawable.setting_general_corner_red_frame);
+			holder.putOffBtn
+					.setBackgroundResource(R.drawable.setting_general_corner_gray_frame);
+			holder.putOffBtn.setClickable(false);
+			holder.putOnBtn.setOnClickListener(MyClickListener.getInstance(context));
+		}
 		if (((MenuItemModel) item).isChoiceState()) {
 			holder.shadowImg.setBackgroundColor(Color.parseColor("#49000000"));
 		} else {
@@ -91,12 +108,6 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 		public TextView dishName, dishPrice;
 		public NetworkImageView dishImg;
 		public ImageView shadowImg;
-		public Button putOnBtn, putOffBtn;
+		public TextView putOnBtn, putOffBtn;
 	}
-
-//	public interface PutBtnListener {
-//		public void putShelvesListener(int position);
-//
-////		public void putOffShelvesListener();
-//	}
 }

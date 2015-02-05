@@ -64,8 +64,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 				Context.MODE_PRIVATE).getString(Constants.SELLER_ID, "");
 		topBar = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		topBar.setTitle("备注信息");
-		topBar.setLeftImg(getResources().getDrawable(
-				R.drawable.setting_back_btn_bg));
+		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
 		menuName = (Button) findViewById(R.id.remark_edit_menu_name);
 		remarkListView = (RemarkListView) findViewById(R.id.remark_edit_list_view);
 		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {// 备注选项信息
@@ -90,8 +89,9 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	 * 获取菜单类型
 	 */
 	void getMenuCategory() {
-		mProgressHUD = ProgressHUD.show(RemarkEditActivity.this, getResources().getString(R.string.toast_remind_loading), true,
-				false, new OnCancelListener() {
+		mProgressHUD = ProgressHUD.show(RemarkEditActivity.this, getResources()
+				.getString(R.string.toast_remind_loading), true, false,
+				new OnCancelListener() {
 
 					@Override
 					public void onCancel(DialogInterface dialog) {
@@ -241,11 +241,12 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									int which) {
 								String newName = remarkEdit.getText()
 										.toString();
-								
+
 								if (!newName.equals(tempName)) {// 不一样的内容
-								// 提交新的类目名称
-									if(!flag.equals(FLAG_UPDATE)){//newName 不能添加空项
-										if(newName.length() == 0){
+									// 提交新的类目名称
+									if (!flag.equals(FLAG_UPDATE)) {// newName
+																	// 不能添加空项
+										if (newName.length() == 0) {
 											return;
 										}
 									}
@@ -260,14 +261,16 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	private void postRemarkName(String newName, String flag, int position) {
 		mProgressHUD.show();
 		String url = "";
-		
+
 		if (flag.equals(FLAG_UPDATE)) {
-			String urlHead = Constants.HOST_HEAD + Constants.UPDATE_REMARK_BY_CATEGORY;
+			String urlHead = Constants.HOST_HEAD
+					+ Constants.UPDATE_REMARK_BY_CATEGORY;
 			Uri.Builder builder = Uri.parse(urlHead).buildUpon();
 			builder.appendQueryParameter("optionName", newName);
 			builder.appendQueryParameter("sellerId", sellerId);
 			builder.appendQueryParameter("classId", categoryId);
-			builder.appendQueryParameter("id",  String.valueOf(remarkList.get(position).getId()));
+			builder.appendQueryParameter("id",
+					String.valueOf(remarkList.get(position).getId()));
 			url = builder.toString();
 			updateRemark(url);
 		} else {
@@ -278,22 +281,21 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 			url = Constants.HOST_HEAD + Constants.ADD_REMARK_BY_CATEGORY;
 			addNewRemark(url, params);
 		}
-		
+
 	}
-	
-	void updateRemark(String url){
+
+	void updateRemark(String url) {
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, url, null,
 				new Response.Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
-								Toast.makeText(RemarkEditActivity.this, "更改成功！",
-										Toast.LENGTH_SHORT).show();
-								getOptions();//刷新列表
+								Toast.makeText(RemarkEditActivity.this,
+										"更改成功！", Toast.LENGTH_SHORT).show();
+								getOptions();// 刷新列表
 							} else {
 								Toast.makeText(RemarkEditActivity.this, "更改失败",
 										Toast.LENGTH_SHORT).show();
@@ -315,19 +317,18 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}
-	
-	void addNewRemark(String url, Map<String, String> params){
-		JsonPostRequest getOrderInfoRequest = new JsonPostRequest(Request.Method.POST, url,
-				new Response.Listener<JSONObject>() {
+
+	void addNewRemark(String url, Map<String, String> params) {
+		JsonPostRequest getOrderInfoRequest = new JsonPostRequest(
+				Request.Method.POST, url, new Response.Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								Toast.makeText(RemarkEditActivity.this,
 										"添加成功!", Toast.LENGTH_SHORT).show();
-								getOptions();//刷新列表
+								getOptions();// 刷新列表
 							} else {
 								Toast.makeText(RemarkEditActivity.this,
 										"提交失败!", Toast.LENGTH_SHORT).show();

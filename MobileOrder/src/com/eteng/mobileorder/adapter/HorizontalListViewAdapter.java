@@ -72,6 +72,7 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 
 	private static class ViewHolder {
 		private TextView mTitle;
+		@SuppressWarnings("unused")
 		boolean isSelect = false;
 	}
 

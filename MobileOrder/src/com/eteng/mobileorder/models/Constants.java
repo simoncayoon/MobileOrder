@@ -79,6 +79,11 @@ public class Constants {
 	public static final String UPLOAD_NEW_DISH = "uploadFileByForm";
 	
 	/**
+	 * 修改类目显示状态
+	 */
+	public static final String CHANGE_CATEGORY_SHOWN_STATUS = "changeObjectState";
+	
+	/**
 	 * 历史订单查询类型
 	 */
 	public static final String ORDER_QUERY_TYPE_HISTORY = "1";
@@ -101,14 +106,40 @@ public class Constants {
 	/**
 	 * 分页查询中每页数量属性
 	 */
-	public static final String PAGE_COUNT = "20";
+	public static final String PAGE_COUNT = "100";
 	
 	/**
-	 * 菜单类别排序接口名称
+	 * WS菜单类别排序接口名称
 	 */
-	public static final String MENU_SORT = "changeClassOrder";
+	public static final String SORT_MENU = "changeClassOrder";
 	
+	/**
+	 * WS菜品排序接口名称
+	 */
+	public static final String SORT_DISH = "changeGoodsOrder";
+	
+	/**
+	 * WS菜品删除接口名称
+	 */
+	public static final String DISH_DELETE = "deleteGoods";
+	
+	/**
+	 * WS编辑卖家信息接口名称
+	 */
 	public static final String EDIT_PROFILE = "editSellerInfo";
+	
+	/**
+	 * 显示状态修改类型：菜品
+	 */
+	public static final String SHOWN_TYPE_DISH = "1";
+	/**
+	 * 显示状态修改类型：类目
+	 */
+	public static final String SHOWN_TYPE_CATEGORY = "2";
+	/**
+	 * 显示状态修改类型：备注
+	 */
+	public static final String SHOWN_TYPE_REMARK = "3";
 	
 	/**
 	 * 测试id

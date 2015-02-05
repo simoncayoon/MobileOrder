@@ -10,10 +10,13 @@ import org.json.JSONObject;
 
 import android.graphics.Bitmap;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
@@ -22,7 +25,6 @@ import com.eteng.mobileorder.debug.DebugFlags;
 public class MultiPartJSONRequest extends Request<JSONObject> implements
 		MultiPartRequest {
 
-	@SuppressWarnings("unused")
 	private static final String TAG = MultiPartJSONRequest.class
 			.getSimpleName();
 	protected static final String TYPE_UTF8_CHARSET = "charset=UTF-8";
@@ -50,6 +52,25 @@ public class MultiPartJSONRequest extends Request<JSONObject> implements
 			Listener<JSONObject> listener, ErrorListener errorListener) {
 		super(method, url, errorListener);
 		mListener = listener;
+		setRetryPolicy(new RetryPolicy() {
+
+			@Override
+			public void retry(VolleyError arg0) throws VolleyError {
+			
+			}
+
+			@Override
+			public int getCurrentTimeout() {
+				// TODO Auto-generated method stub
+				return DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 12;
+			}
+
+			@Override
+			public int getCurrentRetryCount() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		});
 	}
 
 	public void addFileUpload(String param, Bitmap file) {
@@ -102,6 +123,7 @@ public class MultiPartJSONRequest extends Request<JSONObject> implements
 		try {
 			String jsonString = new String(response.data,
 					HttpHeaderParser.parseCharset(response.headers));
+			DebugFlags.logD(TAG, "方法里获得的JSON   " + jsonString);
 			return Response.success(new JSONObject(jsonString),
 					HttpHeaderParser.parseCacheHeaders(response));
 		} catch (UnsupportedEncodingException e) {

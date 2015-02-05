@@ -109,14 +109,13 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	void initData() {
 		dishCombo = new ArrayList<OrderDetailModel>();
-		DebugFlags.logD(TAG, "接收订单ID" + orderID);
 		mApplication = MobileOrderApplication.getInstance();
 		getDishCombo();
 	}
 
 	private void getDishCombo() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_commiting), true,
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_loading), true,
 				true, null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ORDERID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
@@ -127,7 +126,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								setHaderContent(new JSONObject(
@@ -165,7 +163,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		orderInfo.setCreateTime(jsonObj.getString("createTime"));
 		orderInfo.setOrderAddr(jsonObj.getString("orderAddress"));
 		orderInfo.setOrderId(jsonObj.getString("orderId"));
-		DebugFlags.logD(TAG, "订单ID" + orderInfo.getOrderId());
 		orderInfo.setOrderSn(jsonObj.getString("orderSn"));
 		orderInfo.setOrderStatus(jsonObj.getString("orderStatus"));
 		orderInfo.setOrderTel(jsonObj.getString("orderTel"));
@@ -211,7 +208,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				DebugFlags.logD(TAG, "JSON ERROR");
 			}
 		} else {// 直接打印
 			printAction();
@@ -243,7 +239,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, "JSON String" + respon);
 						try {
 							if (respon.getString("code").equals("0")) {
 								Toast.makeText(OrderDetailActivity.this,

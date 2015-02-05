@@ -26,7 +26,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -39,13 +38,10 @@ public class MultiPartStack extends HurlStack {
 	private static final String TAG = MultiPartStack.class.getSimpleName();
 	private final static String HEADER_CONTENT_TYPE = "Content-Type";
 
-	static int testtest = 0;
-
 	@Override
 	public HttpResponse performRequest(Request<?> request,
 			Map<String, String> additionalHeaders) throws IOException,
 			AuthFailureError {
-
 		if (!(request instanceof MultiPartRequest)) {
 			return super.performRequest(request, additionalHeaders);
 		} else {
@@ -142,7 +138,6 @@ public class MultiPartStack extends HurlStack {
 	private static void setMultiPartBody(
 			HttpEntityEnclosingRequestBase httpRequest, Request<?> request)
 			throws AuthFailureError {
-
 		// Return if Request is not MultiPartRequest
 		if (!(request instanceof MultiPartRequest)) {
 			DebugFlags.logD(TAG,
@@ -158,10 +153,18 @@ public class MultiPartStack extends HurlStack {
 				.getFileUploads();
 		for (Map.Entry<String, Bitmap> entry : fileUpload.entrySet()) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			entry.getValue().compress(CompressFormat.PNG, 100, bos);
+
+			int options = 10;
+			entry.getValue().compress(Bitmap.CompressFormat.JPEG, options, bos);
+			while (bos.size() / 1024 > 30 && options > 0) {
+				bos.reset();
+				options -= 10;
+				entry.getValue().compress(Bitmap.CompressFormat.JPEG, options,
+						bos);
+			}
 			byte[] data = bos.toByteArray();
 			ByteArrayBody bab = new ByteArrayBody(data, "new_dish_img.png");
-			
+
 			builder.addPart(((String) entry.getKey()), bab);
 		}
 

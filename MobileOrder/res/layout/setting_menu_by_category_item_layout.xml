@@ -64,27 +64,31 @@
         android:layout_marginLeft="10dp"
         android:layout_alignParentRight="true" >
 
-        <Button
+        <TextView
             android:id="@+id/menu_put_on_shelves_btn"
             android:layout_width="0dip"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:layout_weight="1"
             android:background="@drawable/setting_general_corner_red_frame"
             android:text="@string/menu_put_on_shelves_text"
             android:textColor="@color/COLOR_WHITE"
-            android:textSize="12sp"
-            android:layout_margin="3dp" />
+            android:textSize="13sp"
+            android:layout_margin="3dp"
+            android:gravity="center"
+            android:clickable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/menu_put_off_shelves_btn"
             android:layout_width="0dip"
-            android:layout_height="20dp"
+            android:layout_height="25dp"
             android:layout_weight="1"
             android:background="@drawable/setting_general_corner_gray_frame"
             android:text="@string/menu_put_off_shelves_text"
             android:textColor="@color/COLOR_WHITE"
-            android:textSize="12sp"
-            android:layout_margin="3dp" />
+            android:textSize="13sp"
+            android:layout_margin="3dp"
+            android:gravity="center"
+            android:clickable="true" />
     </LinearLayout>
 
 </RelativeLayout>

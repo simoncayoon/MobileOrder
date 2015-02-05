@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 
 public class SettingOwnProfile extends Activity implements
 		TopNavigationBar.NaviBtnListener {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "SettingOwnProfile";
 	private static final String OWN_PROFILE_NAME = "own_profile_name";
 	private static final String OWN_PROFILE_TEL = "own_profile_tel";
@@ -34,12 +34,6 @@ public class SettingOwnProfile extends Activity implements
 		setContentView(R.layout.setting_own_profile_layout);
 		sp = getSharedPreferences(Constants.SP_OWN_PROFILE_NAME,
 				Activity.MODE_PRIVATE);
-		if (sp == null) {
-			DebugFlags.logD(TAG, "sp null");
-		} else {
-			DebugFlags.logD(TAG, "sp null xxxx");
-		}
-
 		initView();
 		initData();
 	}
@@ -56,8 +50,7 @@ public class SettingOwnProfile extends Activity implements
 
 	void initData() {
 		topBar.setTitle("我的资料");
-		topBar.setLeftImg(getResources().getDrawable(
-				R.drawable.setting_back_btn_bg));
+		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
 		nameEdit.setText(sp.getString(OWN_PROFILE_NAME, ""));
 		telEdit.setText(sp.getString(OWN_PROFILE_TEL, ""));
 		dishEdit.setText(sp.getString(OWN_PROFILE_DISH, ""));
@@ -80,8 +73,8 @@ public class SettingOwnProfile extends Activity implements
 	public void rightBtnListener() {
 
 	}
-	
-	void editRemoteInfo(){
-		
+
+	void editRemoteInfo() {
+
 	}
 }

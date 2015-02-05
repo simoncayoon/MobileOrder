@@ -7,8 +7,8 @@
     android:padding="3dp" >
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="70dp" >
+        android:layout_width="match_parent"
+        android:layout_height="51dp" >
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/menu_with_category_img"
@@ -30,12 +30,16 @@
         android:id="@+id/menu_with_category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/GENERAL_TEXT_COLOR" />
+        android:textColor="@color/GENERAL_TEXT_COLOR"
+        android:singleLine="true"
+        android:ellipsize="marquee" />
 
     <TextView
         android:id="@+id/menu_with_category_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/TAB_TEXT_COLOR_SELECTED" />
+        android:textColor="@color/TAB_TEXT_COLOR_SELECTED"
+        android:singleLine="true"
+        android:ellipsize="marquee" />
 
 </LinearLayout>

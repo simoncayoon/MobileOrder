@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +16,10 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -35,6 +39,7 @@ import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
+import com.eteng.mobileorder.utils.MyClickListener.PutAction;
 import com.eteng.mobileorder.utils.NetController;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
@@ -42,7 +47,7 @@ import com.mobeta.android.dslv.DragSortListView.DropListener;
 
 public class SettingMenuByCategory extends ListActivity implements
 		NaviBtnListener, OnItemClickListener, OnItemLongClickListener,
-		DropListener, View.OnClickListener {
+		DropListener, View.OnClickListener, PutAction {
 
 	private static final String TAG = "SettingMenuByCategory";
 
@@ -56,7 +61,7 @@ public class SettingMenuByCategory extends ListActivity implements
 	DragSortController mController = null;
 	private int categoryId;
 	private String menuName = "";
-	
+
 	private boolean isEditState = false;
 
 	@Override
@@ -93,7 +98,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		dataList = new ArrayList<MenuItemModel>();
 		topBar.setTitle(menuName);
 		nameView.setText(menuName);
-		
+
 	}
 
 	/**
@@ -104,7 +109,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		DragSortController controller = new DragSortController(dslv);
 		controller.setDragHandleId(R.id.image_layout);
 		controller.setRemoveEnabled(false);
-		controller.setSortEnabled(true);
+		controller.setSortEnabled(false);
 		controller.setDragInitMode(DragSortController.ON_DRAG);
 		// controller.setRemoveMode(removeMode);
 		return controller;
@@ -115,8 +120,9 @@ public class SettingMenuByCategory extends ListActivity implements
 	 */
 	private void getDataList() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this, getResources().getString(R.string.toast_remind_loading), true, false,
-				new OnCancelListener() {
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this,
+				getResources().getString(R.string.toast_remind_loading), true,
+				false, new OnCancelListener() {
 
 					@Override
 					public void onCancel(DialogInterface dialog) {
@@ -179,11 +185,13 @@ public class SettingMenuByCategory extends ListActivity implements
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
 			MenuItemModel item = new MenuItemModel();
+			item.setId(temp.getInt("goodsId"));
 			item.setDiscountPrice(temp.getDouble("discountPrice"));
 			item.setImgUrl(temp.getString("goodsImgPath"));
 			item.setPrice(temp.getDouble("goodsPrice"));
 			item.setName(temp.getString("goodsName"));
 			item.setType(temp.getString("goodsType"));
+			item.setStatus(temp.getString("goodsStatus"));
 			dataList.add(item);
 		}
 	}
@@ -195,42 +203,116 @@ public class SettingMenuByCategory extends ListActivity implements
 
 	@Override
 	public void rightBtnListener() {
-		if(isEditState){
-			Intent mIntent = new Intent(SettingMenuByCategory.this, SettingDishImgUpload.class);
+		if (isEditState) {
+			Intent mIntent = new Intent(SettingMenuByCategory.this,
+					SettingDishImgUpload.class);
 			mIntent.putExtra("CATEGORY_ID", categoryId);
 			startActivity(mIntent);
 		} else {
 			isEditState = true;
 			topBar.setRightBtnText("新增");
 			mController.setRemoveMode(DragSortController.FLING_REMOVE);
+			mController.setSortEnabled(true);
 		}
 	}
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		DebugFlags.logD(TAG, "onItemLongClick");
-		return false;
+		showDeleteDialog(position, getResources().getString(R.string.dialog_dish_delete_text));
+		return true;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		DebugFlags.logD(TAG, "onItemClick");
 	}
 
 	@Override
 	public void drop(int from, int to) {
-
-		MenuItemModel temp = dataList.get(from);
-		dataList.remove(from);
-		dataList.add(to, temp);
-		mAdapter.notifyDataSetChanged();
+		updateRemoteSort(from, to);
 	}
 
 	@Override
 	public void onClick(View v) {
 		showDialog();
+	}
+
+	void showDeleteDialog(final int position, String promptText) {
+		Builder builder = new android.app.AlertDialog.Builder(this);
+		builder.setTitle("请选择状态");
+		// 0: 默认第一个单选按钮被选中
+		TextView promptView = new TextView(this);
+		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		promptView.setLayoutParams(layoutParams);
+		promptView.setGravity(Gravity.CENTER);
+		promptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+		promptView.setText(promptText);
+		builder.setView(promptView);
+		builder.setPositiveButton("确定", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				postdishDelete(position);
+			}
+
+		});
+		builder.setNegativeButton("取消", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+		// 创建一个单选按钮对话框
+		builder.create().show();
+	}
+	
+	private void postdishDelete(final int position) {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this, getResources()
+				.getString(R.string.toast_remind_deleting), true, false,
+				new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
+
+		String url = Constants.HOST_HEAD + Constants.DISH_DELETE;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("goodsId", String.valueOf(dataList.get(position).getId()));
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						try {
+							if (respon.getString("code").equals("0")) {
+								showToast(getResources().getString(R.string.toast_remind_delete_succeed));
+								dataList.remove(position);
+								mAdapter.notifyDataSetChanged();
+							} else {
+								showToast(getResources().getString(R.string.toast_remind_delete_failed));
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						showToast(getResources().getString(R.string.toast_remind_delete_failed));
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
+		
 	}
 
 	public void showDialog() {
@@ -248,8 +330,8 @@ public class SettingMenuByCategory extends ListActivity implements
 								String newName = categoryEdit.getText()
 										.toString();
 								if (newName.length() > 0
-										&& !newName.equals(menuName)) {//不一样的内容
-									//提交新的类目名称
+										&& !newName.equals(menuName)) {// 不一样的内容
+									// 提交新的类目名称
 									postCategoryName(newName);
 								} else if (newName.length() == 0) {
 									Toast.makeText(SettingMenuByCategory.this,
@@ -259,7 +341,7 @@ public class SettingMenuByCategory extends ListActivity implements
 						}).setNegativeButton("取消", null)// 设置对话框[否定]按钮
 				.show();
 	}
-	
+
 	private void postCategoryName(final String newName) {
 		String url = Constants.HOST_HEAD + Constants.UPDATE_CATEGORY_NAME;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
@@ -272,7 +354,6 @@ public class SettingMenuByCategory extends ListActivity implements
 
 					@Override
 					public void onResponse(JSONObject respon) {
-						DebugFlags.logD(TAG, respon.toString());
 						try {
 							if (respon.getString("code").equals("0")) {
 								menuName = newName;
@@ -295,12 +376,141 @@ public class SettingMenuByCategory extends ListActivity implements
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		dataList.clear();
 		getDataList();
+	}
+
+	@Override
+	public void postDishState(int position) {
+		MenuItemModel item = dataList.get(position);
+		String postState = "";
+		if (item.getStatus().equals("1")) {// 将进行下架操作
+			postState = "2";
+		} else {// 将进行上架操作
+			postState = "1";
+		}
+		postDishShownState(postState, position);
+	}
+
+	/**
+	 * 提交修改后的显示状态 0，下架；1， 上架
+	 */
+	private void postDishShownState(final String status, final int position) {
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this,
+				getResources().getString(R.string.toast_remind_loading), true,
+				false, new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
+		String url = Constants.HOST_HEAD
+				+ Constants.CHANGE_CATEGORY_SHOWN_STATUS;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_DISH);
+		builder.appendQueryParameter("goodsId",
+				String.valueOf(dataList.get(position).getId()));
+		builder.appendQueryParameter("status", status);
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						try {
+							if (respon.getString("code").equals("0")) {
+								showToast(getResources().getString(
+										R.string.toast_remind_commit_succeed));
+								dataList.get(position).setStatus(status);
+								mAdapter.notifyDataSetChanged();
+							}
+						} catch (JSONException e) {
+							showToast(getResources().getString(
+									R.string.toast_remind_commit_failed));
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						showToast(getResources().getString(
+								R.string.toast_remind_commit_failed));
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
+
+	}
+
+	void showToast(String content) {
+		Toast.makeText(SettingMenuByCategory.this, content, Toast.LENGTH_SHORT)
+				.show();
+	}
+
+	protected void updateRemoteSort(final int from, final int to) {
+
+		final ProgressHUD mProgressHUD;
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this,
+				getResources().getString(R.string.toast_remind_commiting),
+				true, false, new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
+					}
+				});
+		String url = Constants.HOST_HEAD + Constants.SORT_DISH;
+		Uri.Builder builder = Uri.parse(url).buildUpon();
+		builder.appendQueryParameter("downGoodsId",
+				String.valueOf(dataList.get(to).getId()));
+		builder.appendQueryParameter("downGoodsOrder", String.valueOf(to));
+		builder.appendQueryParameter("upGoodsId",
+				String.valueOf(dataList.get(from).getId()));
+		builder.appendQueryParameter("upGoodsOrder", String.valueOf(from));
+		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
+				Request.Method.GET, builder.toString(), null,
+				new Response.Listener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject respon) {
+						try {
+							if (respon.getString("code").equals("0")) {
+								MenuItemModel temp = dataList.get(from);
+								dataList.remove(from);
+								dataList.add(to, temp);
+								mAdapter.notifyDataSetChanged();
+								showToast(getResources().getString(
+										R.string.toast_remind_commit_succeed));
+							} else {
+								showToast(getResources().getString(
+										R.string.toast_remind_commit_failed));
+							}
+						} catch (JSONException e) {
+							showToast(getResources().getString(
+									R.string.toast_remind_commit_failed));
+							e.printStackTrace();
+						}
+						mProgressHUD.dismiss();
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError arg0) {
+						showToast(getResources().getString(
+								R.string.toast_remind_commit_failed));
+						mProgressHUD.dismiss();
+					}
+				});
+		NetController.getInstance(getApplicationContext()).addToRequestQueue(
+				getMenuRequest, TAG);
 	}
 }

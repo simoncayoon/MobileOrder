@@ -15,10 +15,12 @@
         android:textSize="20sp"
         android:paddingLeft="30dp" />
 
-    <ImageView
+    <TextView
         android:id="@+id/upload_menu_drag_handle"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:contentDescription="@string/img_desc"/>
+        android:contentDescription="@string/img_desc"
+        android:clickable="false"
+        android:gravity="center"/>
 
 </LinearLayout>

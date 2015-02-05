@@ -5,4 +5,8 @@
         <item>主食</item>
         <item>附加</item>
     </string-array>
+    <string-array name="dish_put_array">
+        <item>上架</item>
+        <item>下架</item>
+    </string-array>
 </resources>

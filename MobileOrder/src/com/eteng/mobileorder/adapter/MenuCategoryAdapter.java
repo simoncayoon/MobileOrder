@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.utils.NetController;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
@@ -156,9 +155,6 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 		this.mItemResId = itemResId;
 		this.mContext = context;
 		this.isSingleSelect = isSingleSelect;
-		if (isSingleSelect) {
-			DebugFlags.logD(TAG, "不是粉面adapter！测试");
-		}
 		mInflater = LayoutInflater.from(context);
 	}
 
