@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
     <!-- 管理蓝牙设备的权限 -->
@@ -14,6 +14,8 @@
     <!-- 网络访问权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name="com.eteng.mobileorder.MobileOrderApplication"
@@ -32,7 +34,12 @@
         </activity>
         <activity
             android:name="com.eteng.mobileorder.MainNaviActivity"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"
+            android:windowSoftInputMode="adjustPan" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.ANSWER"/>
+            </intent-filter>
+        </activity>
         <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
         <activity android:name="com.eteng.mobileorder.SettingActivity" />
         <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
@@ -46,9 +53,12 @@
         <activity android:name="com.eteng.mobileorder.CustomerInfoActivity" />
         <activity android:name="com.eteng.mobileorder.RemarkEditActivity" />
 
-        <receiver android:name="com.eteng.mobileorder.receiver.TestBroadrReceiver" >
+        <service android:name="com.eteng.mobileorder.server.PhoneCallListenerService" />
+
+        <receiver android:name="com.eteng.mobileorder.receiver.BootActionReceiver" >
             <intent-filter>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" >
+                </action>
             </intent-filter>
         </receiver>
     </application>

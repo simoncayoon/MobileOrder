@@ -35,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.server.PhoneCallListenerService;
 import com.eteng.mobileorder.utils.DownloadHelper;
 import com.eteng.mobileorder.utils.NetController;
 import com.shizhefei.view.indicator.IndicatorViewPager;
@@ -66,6 +67,8 @@ public class AppStart extends Activity {
 				 * Create an Intent that will start the Main WordPress
 				 * Activity.
 				 */
+				Intent serviceIntent = new Intent(getApplicationContext(), PhoneCallListenerService.class);
+				startService(serviceIntent);
 				Intent mainIntent = new Intent(AppStart.this,
 						LoginActivity.class);
 				AppStart.this.startActivity(mainIntent);

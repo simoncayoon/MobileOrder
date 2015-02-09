@@ -28,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.service.BlueToothService;
@@ -51,6 +52,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private MobileOrderApplication mApplication;
 
 	private Double totalPriceNum = 0.0;
+	private String callNumber = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +114,13 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	}
 
 	void initData() {
+		if(getArguments() != null){
+			callNumber = getArguments().getString("CALL_NUMBER");
+		}
+		if (callNumber != null) {
+			telEditView.setText(callNumber);
+		}
+
 		mApplication = MobileOrderApplication.getInstance();
 		if (!(dishCombo.size() > 0)) {
 			confirmLayout.setVisibility(View.INVISIBLE);
@@ -341,6 +350,13 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(getArguments() != null){
+			callNumber = getArguments().getString("CALL_NUMBER");
+			DebugFlags.logD(TAG, "callNumber " + callNumber);
+		}
+		if (callNumber.length() > 0) {
+			telEditView.setText(callNumber);
+		}
 		if (!(dishCombo.size() > 0))
 			return;
 		double totalPrice = 0.0;

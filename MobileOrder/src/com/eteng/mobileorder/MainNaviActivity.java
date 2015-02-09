@@ -37,6 +37,7 @@ public class MainNaviActivity extends FragmentActivity implements
 
 	private String[] tabNames;
 	private boolean isExit = false;
+	private MyAdapter mAdapter;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -50,9 +51,10 @@ public class MainNaviActivity extends FragmentActivity implements
 		naviTitleView = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		ViewPager viewPager = (ViewPager) findViewById(R.id.tabmain_viewPager);
 		Indicator indicator = (Indicator) findViewById(R.id.tabmain_indicator);
+		mAdapter = new MyAdapter(getSupportFragmentManager());
 		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
 		indicatorViewPager
-				.setAdapter(new MyAdapter(getSupportFragmentManager()));
+				.setAdapter(mAdapter);
 		// 禁止viewpager的滑动事件
 		viewPager.setCanScroll(false);
 		// 设置viewpager保留界面不重新加载的页面数量
@@ -173,4 +175,14 @@ public class MainNaviActivity extends FragmentActivity implements
 		}
 
 	};
+	
+	protected void onNewIntent(Intent intent) {
+		String callNumber = intent.getStringExtra("incoming_call_number");
+		if(callNumber != null){
+			Bundle callBundle = new Bundle();
+			callBundle.putString("CALL_NUMBER", callNumber);
+			mAdapter.getFragmentForPage(0).setArguments(callBundle);
+		}
+		
+	}
 }
