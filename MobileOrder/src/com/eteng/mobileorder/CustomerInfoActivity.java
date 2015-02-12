@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.net.Uri;
@@ -81,7 +82,11 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 				});
 		String url = Constants.HOST_HEAD + Constants.QUERY_CUSTOMER_INFO;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {

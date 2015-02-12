@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.eteng.mobileorder.cusomview.BadgeView;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
@@ -56,6 +57,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	private ViewPager viewPager;
 	private ScrollIndicatorView indicator;
 	private Button addToComboList;
+	private BadgeView countView;
 
 	private ArrayList<MenuCategory> menuArray;
 	private ArrayList<OrderDetailModel> comboList;
@@ -81,6 +83,15 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		TopNavigationBar navi = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		navi.setLeftImg(R.drawable.order_phone_navi_left_btn_selector);
 		navi.setTitle("电话订餐");// 设置标题
+		countView = new BadgeView(this, navi.getLeftBtn());
+		
+		countView.setTextColor(Color.WHITE);
+		countView.setBackgroundColor(Color.RED);
+		countView.setTextSize(12); 
+		countView.setText("6");
+		countView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+		countView.show();
+		
 		addToComboList = (Button) findViewById(R.id.add_combolist_btn);
 		addToComboList.setOnClickListener(this);
 		initMenuView();
@@ -173,7 +184,11 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -203,7 +218,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject tmp = new JSONObject(jsonArray.getString(i));
 				MenuCategory item = new MenuCategory();
-				if(!tmp.getString("classStatus").equals("1")){
+				if (!tmp.getString("classStatus").equals("1")) {
 					continue;
 				}
 				item.setMenuId(tmp.getInt("classId"));
@@ -256,8 +271,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			Bundle mBundle = new Bundle();
 			mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT,
 					comboList);
-			// mBundle.putParcelableArrayList(Constants.DISH_COMBO_RESULT_ATTACH,
-			// attachList);
 			mIntent.putExtras(mBundle);
 			// 提交到配餐列表
 			setResult(Constants.RESULT_CODE, mIntent);// resultCode错误
@@ -355,6 +368,9 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		} else {
 			hasDish = true;
 			allComboList.add(comboList);
+			countView.setText(allComboList.size() + "");//
+			countView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+			countView.show();
 			// comboList.clear();// 清空所选菜品
 			for (int i = 0; i < menuArray.size(); i++) {
 				tempFragment = getFragWithposition(i);

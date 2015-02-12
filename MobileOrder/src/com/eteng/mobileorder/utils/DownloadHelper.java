@@ -28,7 +28,7 @@ public class DownloadHelper {
 		// 调用download方法开始下载
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		HttpHandler handler = fh.download(fileUrl, // 这里是下载的路径
-				"/mnt/sdcard/testapk.apk", // 这是保存到本地的路径
+				"/mnt/sdcard/mobile_order.apk", // 这是保存到本地的路径
 				// true,// true:断点续传 false:不断点续传（全新下载）
 				new AjaxCallBack() {
 
@@ -59,7 +59,7 @@ public class DownloadHelper {
 
 						// 安装应用
 						InstallHelper.install(context,
-								"/mnt/sdcard/testapk.apk");
+								"/mnt/sdcard/mobile_order.apk");
 
 						super.onSuccess(t);
 					}

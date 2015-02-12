@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -218,7 +219,13 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -321,7 +328,13 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 		String url = Constants.HOST_HEAD
 				+ Constants.CHANGE_CATEGORY_SHOWN_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_CATEGORY);
 		builder.appendQueryParameter("classId",
 				String.valueOf(menuArray.get(position).getCategoryId()));

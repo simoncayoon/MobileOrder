@@ -105,8 +105,8 @@ public class SettingUploadActivity extends FragmentActivity implements
 			isEditStat = true;
 			mController.setDragInitMode(DragSortController.ON_DRAG);
 			mController.setSortEnabled(true);// 开启滑动排序功能
-//			mController.setRemoveEnabled(true);
-//			mController.setRemoveMode(DragSortController.FLING_REMOVE);
+			// mController.setRemoveEnabled(true);
+			// mController.setRemoveMode(DragSortController.FLING_REMOVE);
 			fragment.setTapbarAction();
 		}
 	}
@@ -127,7 +127,8 @@ public class SettingUploadActivity extends FragmentActivity implements
 										.toString();
 								if (newName.length() > 0) {
 									for (MenuCategoryModel item : fragment.menuArray) {
-										if (newName.equals(item.getCategoryName())) {// 判断已有列表是否有同样名称
+										if (newName.equals(item
+												.getCategoryName())) {// 判断已有列表是否有同样名称
 											Toast.makeText(
 													SettingUploadActivity.this,
 													"已存在同样的类目！",
@@ -145,7 +146,11 @@ public class SettingUploadActivity extends FragmentActivity implements
 	private void postCategoryName(String newName) {
 		String url = Constants.HOST_HEAD + Constants.ADD_CATEGORY_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));
 		builder.appendQueryParameter("className", newName);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.POST, builder.toString(), null,

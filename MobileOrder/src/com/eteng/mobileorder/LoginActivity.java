@@ -3,6 +3,7 @@ package com.eteng.mobileorder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -147,7 +148,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 										accountName);
 								inputSp.putString(Constants.SP_LOGIN_PWD, pwd);
 								inputSp.putString(
-										Constants.SELLER_ID,
+										Constants.SP_SELLER_ID,
 										new JSONObject(respon
 												.getString("seller"))
 												.getString("sellerId"));
@@ -215,6 +216,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	@SuppressLint("HandlerLeak")
 	Handler mHandler = new Handler() {
 
 		@Override

@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -73,7 +74,13 @@ public class FragmentWxOrder extends BaseFragment implements
 	private void getData() {
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		builder.appendQueryParameter("queryType", Constants.ORDER_QUERY_TYPE_WX);
 		builder.appendQueryParameter("page", "00");
 		builder.appendQueryParameter("pageCount", "00");

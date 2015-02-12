@@ -110,7 +110,7 @@ public class TopNavigationBar extends RelativeLayout {
 		// remove the old button (if there is one)   
         if (tempBtn != null){
         	return;
-        }       
+        }
         Button newButton = new Button(mContext);
   
         // set OnClickListener  
@@ -142,6 +142,10 @@ public class TopNavigationBar extends RelativeLayout {
         this.addView(tempBtn);  
 	}
 	
+	public Button getLeftBtn() {
+		return leftBtn;
+	}
+	
 	public void setLeftBtnText(String str){
 		tempBtn.setText(str);
 	}
@@ -154,12 +158,6 @@ public class TopNavigationBar extends RelativeLayout {
 		leftBtn.setVisibility(View.VISIBLE);
 		leftBtn.setBackgroundResource(drawableId);
 	}
-	
-//	@SuppressLint("NewApi")
-//	public void setLeftImg(Drawable drawableId) {
-//		leftBtn.setVisibility(View.VISIBLE);
-//		leftBtn.setBackground;
-//	}
 
 	public void setRightImg(int drawableId) {
 		rightBtn.setVisibility(View.VISIBLE);

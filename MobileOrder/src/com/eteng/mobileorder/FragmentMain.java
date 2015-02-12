@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -53,12 +54,24 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	private Double totalPriceNum = 0.0;
 	private String callNumber = "";
+	private GetCallNum mDummyCall = new GetCallNum() {
+
+		@Override
+		public String getCallNum() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
+	private GetCallNum callback = mDummyCall;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		dishCombo = new ArrayList<OrderDetailModel>();
+		if (getActivity() instanceof GetCallNum) {
+			callback = (GetCallNum) getActivity();
+		}
 	}
 
 	@Override
@@ -114,13 +127,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	}
 
 	void initData() {
-		if(getArguments() != null){
-			callNumber = getArguments().getString("CALL_NUMBER");
-		}
-		if (callNumber != null) {
-			telEditView.setText(callNumber);
-		}
-
 		mApplication = MobileOrderApplication.getInstance();
 		if (!(dishCombo.size() > 0)) {
 			confirmLayout.setVisibility(View.INVISIBLE);
@@ -289,7 +295,13 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private String comboOrderInfo() throws JSONException {
 
 		JSONObject infoJson = new JSONObject();
-		infoJson.put("sellerUserId", Constants.SELLER_ID);
+		infoJson.put(
+				"sellerUserId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		infoJson.put("orderSn", "");
 		infoJson.put("shouldPay", totalPriceNum);
 		infoJson.put("buyerUserId", "");
@@ -350,10 +362,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(getArguments() != null){
-			callNumber = getArguments().getString("CALL_NUMBER");
-			DebugFlags.logD(TAG, "callNumber " + callNumber);
-		}
+		callNumber = callback.getCallNum();
+		DebugFlags.logD(TAG, "callNumber " + callNumber);
 		if (callNumber.length() > 0) {
 			telEditView.setText(callNumber);
 		}
@@ -367,5 +377,15 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		this.totalPrice.setText(String.format(
 				getResources().getString(R.string.total_price_text),
 				String.valueOf(totalPrice)));
+	}
+
+	@Override
+	public void onDestroy() {
+		callback = mDummyCall;
+		super.onDestroy();
+	}
+
+	interface GetCallNum {
+		String getCallNum();
 	}
 }

@@ -23,15 +23,6 @@
         android:textColor="@color/COLOR_WHITE"
         android:textSize="28sp" />
 
-    
-<!--     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:visibility="gone" /> -->
     <Button
         android:id="@+id/general_navi_right_btn"
         android:layout_width="25dp"

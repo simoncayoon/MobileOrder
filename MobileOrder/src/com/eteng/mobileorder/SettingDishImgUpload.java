@@ -229,7 +229,7 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 			@Override
 			public Map<String, String> getStringUploads() {
 				Map<String, String> strParams = new HashMap<String, String>();
-				strParams.put("sellerId", Constants.SELLER_ID);
+				strParams.put("sellerId", Constants.SP_SELLER_ID);
 				strParams.put("classId", String.valueOf(categoryId));
 				strParams.put("goodsName", dishNameEdit.getText().toString());
 				strParams.put("goodsPrice", dishPriceEdit.getText().toString());

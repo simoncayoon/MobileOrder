@@ -48,6 +48,11 @@ public class Constants {
 	public static final String LOGIN = "login";
 	
 	/**
+	 * WS检查更新接口名称
+	 */
+	public static final String GET_VERSION_INFO = "queryCurrentVersionInfo";
+	
+	/**
 	 * WS提交订单接口名称
 	 */
 	public static final String COMMIT_ORDER_INFO = "addOrder";
@@ -142,11 +147,6 @@ public class Constants {
 	public static final String SHOWN_TYPE_REMARK = "3";
 	
 	/**
-	 * 测试id
-	 */
-	public static final String SELLER_ID = "1";
-	
-	/**
 	 * 配餐完成返回小票列表数据表示符
 	 */
 	public static final String DISH_COMBO_RESULT = "dish_combo_result";
@@ -169,9 +169,10 @@ public class Constants {
 	 */
 	public static final String SP_GENERAL_PROFILE_NAME = "own_general_profile_name";
 	
-	public static final String SP_SAVE_PWD_STATE = "sp_save_pwd_state";
-	public static final String SP_LOGIN_ACCOUNT = "sp_login_account";
-	public static final String SP_LOGIN_PWD = "sp_login_pwd";
+	public static final String SP_SAVE_PWD_STATE = "sp_save_pwd_state";//sharePreference 键值名称
+	public static final String SP_LOGIN_ACCOUNT = "sp_login_account";//sharePreference 键值名称
+	public static final String SP_LOGIN_PWD = "sp_login_pwd";//sharePreference 键值名称
+	public static final String SP_SELLER_ID = "sp_seller_id";
 	
 	/**
 	 * 粉面属性的ID

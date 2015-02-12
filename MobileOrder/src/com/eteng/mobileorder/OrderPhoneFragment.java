@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,11 +39,11 @@ public class OrderPhoneFragment extends BaseFragment implements
 	private static final String KEY_LIST_POSITION = "key_list_position";
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";
 	public static final String INTENT_IS_NOODLE = "is_noodle";
-	
+
 	private GridView mGridView;
 	private RemarkListView remarkListView;
-	
-	public int categoryId;	
+
+	public int categoryId;
 	public boolean isSingleSelect;
 	private int mFirstVisible;
 	private ArrayList<MenuItemModel> mainList;
@@ -91,12 +92,12 @@ public class OrderPhoneFragment extends BaseFragment implements
 		super.onViewCreated(view, savedInstanceState);
 		mGridView = (GridView) findViewById(R.id.asset_grid);
 		remarkListView = (RemarkListView) findViewById(R.id.menu_remark_list);
-		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {//备注选项信息
-			@Override
-			public void onItemSelected(View selectItemView, int select) {
-				mRemarkAdapter.setChoiceState(select);
-			}
-		});
+		remarkListView.setOnItemSelectListener(new OnItemSelectedListener() {// 备注选项信息
+					@Override
+					public void onItemSelected(View selectItemView, int select) {
+						mRemarkAdapter.setChoiceState(select);
+					}
+				});
 		mGridView.setOnItemClickListener(this);
 
 		if (savedInstanceState != null) {
@@ -122,7 +123,13 @@ public class OrderPhoneFragment extends BaseFragment implements
 	private void getDataList() {
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
 		builder.appendQueryParameter("page", Constants.PAGE);
 		builder.appendQueryParameter("pageCount", Constants.PAGE_COUNT);
@@ -137,19 +144,21 @@ public class OrderPhoneFragment extends BaseFragment implements
 								String jsonString = respon
 										.getString("goodsList");
 								parseJson(jsonString);
-								if(isSingleSelect){
+								if (isSingleSelect) {
 									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
 											getApplicationContext(),
 											mainList,
 											attachList,
 											R.layout.header,
-											R.layout.order_phone_item_category_layout, isSingleSelect);
-								}else{
+											R.layout.order_phone_item_category_layout,
+											isSingleSelect);
+								} else {
 									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
 											getApplicationContext(),
 											mainList,
 											R.layout.header,
-											R.layout.order_phone_item_category_layout, false);
+											R.layout.order_phone_item_category_layout,
+											false);
 								}
 								mGridView.setAdapter(mAdapter);
 							} else {
@@ -173,14 +182,20 @@ public class OrderPhoneFragment extends BaseFragment implements
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
 	}
-	
+
 	/***
 	 * 获取相应种类下的备注数据
 	 */
 	private void getOptions() {
 		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getActivity()
+						.getSharedPreferences(
+								Constants.SP_GENERAL_PROFILE_NAME,
+								Context.MODE_PRIVATE).getString(
+								Constants.SP_SELLER_ID, ""));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -190,20 +205,23 @@ public class OrderPhoneFragment extends BaseFragment implements
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
-								JSONArray options = new JSONArray(respon.getString("optionList"));
-								if(!(options.length() > 0)){
+								JSONArray options = new JSONArray(
+										respon.getString("optionList"));
+								if (!(options.length() > 0)) {
 									return;
 								}
 								remarkList.clear();
-								for(int i = 0; i < options.length(); i++){
-									String temp = options.getJSONObject(i).getString("optionName");
+								for (int i = 0; i < options.length(); i++) {
+									String temp = options.getJSONObject(i)
+											.getString("optionName");
 									RemarkModel item = new RemarkModel();
 									item.setRemarkName(temp);
-									item.setSelectStat(false);//默认不选中任何备注
+									item.setSelectStat(false);// 默认不选中任何备注
 									remarkList.add(item);
 								}
 								remarkListView.setVisibility(View.VISIBLE);
-								mRemarkAdapter = new RemarkListAdapter(getActivity(), remarkList);
+								mRemarkAdapter = new RemarkListAdapter(
+										getActivity(), remarkList);
 								remarkListView.setAdapter(mRemarkAdapter);
 							} else {
 								try {
@@ -239,7 +257,7 @@ public class OrderPhoneFragment extends BaseFragment implements
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
 			MenuItemModel item = new MenuItemModel();
-			if(!temp.getString("goodsStatus").equals("1")){
+			if (!temp.getString("goodsStatus").equals("1")) {
 				continue;
 			}
 			item.setId(temp.getInt("goodsId"));
@@ -248,10 +266,10 @@ public class OrderPhoneFragment extends BaseFragment implements
 			item.setPrice(temp.getDouble("goodsPrice"));
 			item.setDiscountPrice(temp.getDouble("discountPrice"));
 			item.setImgUrl(temp.getString("goodsImgPath"));
-			item.setType(temp.getString("goodsType"));			
+			item.setType(temp.getString("goodsType"));
 			item.setStatus(temp.getString("goodsStatus"));
 			item.setOwnId(temp.getInt("goodsClass"));
-			if(item.getType().equals("1")){
+			if (item.getType().equals("1")) {
 				mainList.add(item);
 			} else {
 				attachList.add(item);
@@ -328,9 +346,9 @@ public class OrderPhoneFragment extends BaseFragment implements
 							: ListView.CHOICE_MODE_NONE);
 		}
 	}
-	
-	public MenuCategoryAdapter<MenuItemModel> getAdapter(){
-		if(this.mAdapter == null){
+
+	public MenuCategoryAdapter<MenuItemModel> getAdapter() {
+		if (this.mAdapter == null) {
 		}
 		return mAdapter;
 	}

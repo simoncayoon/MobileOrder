@@ -131,7 +131,11 @@ public class SettingMenuByCategory extends ListActivity implements
 				});
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));
 		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
 		builder.appendQueryParameter("page", Constants.PAGE);
 		builder.appendQueryParameter("pageCount", Constants.PAGE_COUNT);
@@ -219,7 +223,8 @@ public class SettingMenuByCategory extends ListActivity implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		showDeleteDialog(position, getResources().getString(R.string.dialog_dish_delete_text));
+		showDeleteDialog(position,
+				getResources().getString(R.string.dialog_dish_delete_text));
 		return true;
 	}
 
@@ -267,12 +272,12 @@ public class SettingMenuByCategory extends ListActivity implements
 		// 创建一个单选按钮对话框
 		builder.create().show();
 	}
-	
+
 	private void postdishDelete(final int position) {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this, getResources()
-				.getString(R.string.toast_remind_deleting), true, false,
-				new OnCancelListener() {
+		mProgressHUD = ProgressHUD.show(SettingMenuByCategory.this,
+				getResources().getString(R.string.toast_remind_deleting), true,
+				false, new OnCancelListener() {
 
 					@Override
 					public void onCancel(DialogInterface dialog) {
@@ -282,7 +287,8 @@ public class SettingMenuByCategory extends ListActivity implements
 
 		String url = Constants.HOST_HEAD + Constants.DISH_DELETE;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("goodsId", String.valueOf(dataList.get(position).getId()));
+		builder.appendQueryParameter("goodsId",
+				String.valueOf(dataList.get(position).getId()));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -291,11 +297,13 @@ public class SettingMenuByCategory extends ListActivity implements
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								showToast(getResources().getString(R.string.toast_remind_delete_succeed));
+								showToast(getResources().getString(
+										R.string.toast_remind_delete_succeed));
 								dataList.remove(position);
 								mAdapter.notifyDataSetChanged();
 							} else {
-								showToast(getResources().getString(R.string.toast_remind_delete_failed));
+								showToast(getResources().getString(
+										R.string.toast_remind_delete_failed));
 							}
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -306,13 +314,14 @@ public class SettingMenuByCategory extends ListActivity implements
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-						showToast(getResources().getString(R.string.toast_remind_delete_failed));
+						showToast(getResources().getString(
+								R.string.toast_remind_delete_failed));
 						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
-		
+
 	}
 
 	public void showDialog() {
@@ -345,7 +354,11 @@ public class SettingMenuByCategory extends ListActivity implements
 	private void postCategoryName(final String newName) {
 		String url = Constants.HOST_HEAD + Constants.UPDATE_CATEGORY_NAME;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));// 测试ID，以后用shareperference保存
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		builder.appendQueryParameter("className", newName);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
@@ -414,7 +427,11 @@ public class SettingMenuByCategory extends ListActivity implements
 		String url = Constants.HOST_HEAD
 				+ Constants.CHANGE_CATEGORY_SHOWN_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", Constants.SELLER_ID);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter(
+				"sellerId",
+				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
+						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
+						""));
 		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_DISH);
 		builder.appendQueryParameter("goodsId",
 				String.valueOf(dataList.get(position).getId()));

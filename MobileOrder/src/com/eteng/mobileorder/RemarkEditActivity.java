@@ -61,7 +61,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_remark_info_layout);
 		sellerId = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE).getString(Constants.SELLER_ID, "");
+				Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID, "");
 		topBar = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		topBar.setTitle("备注信息");
 		topBar.setLeftImg(R.drawable.setting_back_btn_bg);

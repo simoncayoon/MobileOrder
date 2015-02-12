@@ -261,6 +261,7 @@ public class SettingActivity extends Activity implements
 			editor.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
 			editor.putString(Constants.SP_LOGIN_ACCOUNT, "");
 			editor.putString(Constants.SP_LOGIN_PWD, "");
+			editor.putString(Constants.SP_SELLER_ID, "");
 			editor.commit();
 			startActivity(new Intent(SettingActivity.this, LoginActivity.class));
 			finish();

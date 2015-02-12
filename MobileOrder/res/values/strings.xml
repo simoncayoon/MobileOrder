@@ -11,6 +11,7 @@
     <string name="camera_commit">提&#160;&#160;&#160;交</string>
     <string name="dish_category_choice">类型选择</string>
     <string name="custom_info_sync">信息同步</string>
+    <string name="update_immediately">立即更新</string>
 
     <!-- 登陆页面相关 -->
     <string name="login_account_text_hint">账户</string>

@@ -8,14 +8,16 @@
     <ProgressBar
         android:id="@+id/pb_dialog"
         style="@style/ProgressStyle_AppUpgrade_dialog"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="40dip"
         android:minHeight="30dip"
         android:minWidth="120dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="27dp" />
+        android:layout_marginTop="27dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
 
     <TextView
         android:id="@+id/tv_rate"
