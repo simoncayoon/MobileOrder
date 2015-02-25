@@ -43,14 +43,12 @@
             android:id="@+id/menu_with_category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/test_text"
             android:textSize="15sp" />
 
         <TextView
             android:id="@+id/menu_with_category_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/test_text"
             android:textColor="@color/PHONE_ORDER_ITEM_COLOR_PRICE"
             android:textSize="15sp" />
     </LinearLayout>

@@ -298,12 +298,8 @@ public class MainNaviActivity extends FragmentActivity implements
 			public void onClick(View v) {
 				upButton.setVisibility(View.INVISIBLE);
 				view.findViewById(R.id.progressbar_layout).setVisibility(View.VISIBLE);
-//				mDialog.dismiss();
-//				View upView = LayoutInflater.from(MainNaviActivity.this)
-//						.inflate(R.layout.upgrade_app_dialog, null);
 				rateTextView = (TextView) view.findViewById(R.id.tv_rate);
 				upAppBar = (ProgressBar) view.findViewById(R.id.pb_dialog);
-//				showProcessDialog(MainNaviActivity.this, upView);
 				DownloadHelper.downloadApp(getApplicationContext(), url,
 						mDialog, upAppBar, rateTextView);
 			}
@@ -330,6 +326,8 @@ public class MainNaviActivity extends FragmentActivity implements
 					return true;
 				}
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
+//					mDialog.dismiss();
+					arg0.dismiss();
 					return true;
 				}
 				return false;
@@ -345,7 +343,6 @@ public class MainNaviActivity extends FragmentActivity implements
 		WindowManager.LayoutParams lp = mWindow.getAttributes();
 		lp.x = Gravity.CENTER_HORIZONTAL; // 新位置X坐标
 		lp.y = Gravity.BOTTOM; // 新位置Y坐标
-		lp.width = DisplayMetrics.dip2px(mContext, 100);
 		mDialog.onWindowAttributesChanged(lp);
 		mDialog.setCancelable(false);
 		mDialog.show();

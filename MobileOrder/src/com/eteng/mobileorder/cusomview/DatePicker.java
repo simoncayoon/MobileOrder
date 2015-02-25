@@ -98,8 +98,6 @@ public class DatePicker extends FrameLayout {
 	}
 
 	private void updateDate() {
-		System.out.println("Month: " + mCalendar.get(Calendar.MONTH) + " Max: "
-				+ mCalendar.getActualMaximum(Calendar.DATE));
 		mDayPicker.setMinValue(mCalendar.getActualMinimum(Calendar.DATE));
 		mDayPicker.setMaxValue(mCalendar.getActualMaximum(Calendar.DATE));
 		mDayPicker.setValue(mCalendar.get(Calendar.DATE));

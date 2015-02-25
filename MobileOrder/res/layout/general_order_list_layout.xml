@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:text="@string/test_text"
             android:textSize="20sp"
             android:singleLine="true" />
 
@@ -27,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_weight="1.5"
-            android:text="@string/test_text"
             android:textSize="22sp"
             android:singleLine="true" />
     </LinearLayout>

@@ -60,6 +60,8 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 	private Calendar mCalendar;
 	private ArrayList<OrderWXModel> orderDataList;
 	private boolean isFromStart = true;
+	private String startDate = "";
+	private String endDate = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,12 +88,12 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 		orderAmountView.setText(String.format(Locale.CHINA, getResources()
 				.getString(R.string.order_total_price_text), "0"));// 初始化总金额
 
-		String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(
+		startDate = new SimpleDateFormat("yy-MM-dd").format(
 				new Date()).toString();
 		startBtn = (Button) findViewById(R.id.order_history_query_begin_btn);
-		startBtn.setText(currentDate);
+		startBtn.setText(startDate);
 		endBtn = (Button) findViewById(R.id.order_history_query_end_btn);
-		endBtn.setText(currentDate);
+		endBtn.setText(startDate);
 		queryBtn = (ImageButton) findViewById(R.id.order_history_query_btn);
 		startBtn.setOnClickListener(this);
 		endBtn.setOnClickListener(this);
@@ -138,8 +140,8 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 				Constants.ORDER_QUERY_TYPE_HISTORY);
 		builder.appendQueryParameter("page", "00");
 		builder.appendQueryParameter("pageCount", "00");
-		builder.appendQueryParameter("startDate", startBtn.getText().toString());
-		builder.appendQueryParameter("endDate", endBtn.getText().toString());
+		builder.appendQueryParameter("startDate", startDate);
+		builder.appendQueryParameter("endDate", endDate);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -238,6 +240,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 	}
 
 	void showDatePicker() {
+		
 		DatePicker newView = new DatePicker(getActivity());
 		popPicker = new PopupWindow(newView, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, false);
@@ -260,9 +263,11 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 				mCalendar.set(Calendar.MONTH, mDatePicker.getMonth());
 				mCalendar.set(Calendar.DAY_OF_MONTH, mDatePicker.getDay());
 				if (isFromStart) {
-					startBtn.setText(mDatePicker.getDate());
+					startDate = mDatePicker.getDate();
+					startBtn.setText(startDate.substring(2));
 				} else {
-					endBtn.setText(mDatePicker.getDate());
+					endDate = mDatePicker.getDate();
+					endBtn.setText(endDate.substring(2));
 				}
 			}
 		});

@@ -83,14 +83,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		TopNavigationBar navi = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		navi.setLeftImg(R.drawable.order_phone_navi_left_btn_selector);
 		navi.setTitle("电话订餐");// 设置标题
-		countView = new BadgeView(this, navi.getLeftBtn());
-		
-		countView.setTextColor(Color.WHITE);
-		countView.setBackgroundColor(Color.RED);
-		countView.setTextSize(12); 
-		countView.setText("6");
-		countView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-		countView.show();
 		
 		addToComboList = (Button) findViewById(R.id.add_combolist_btn);
 		addToComboList.setOnClickListener(this);
@@ -368,9 +360,9 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		} else {
 			hasDish = true;
 			allComboList.add(comboList);
-			countView.setText(allComboList.size() + "");//
-			countView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-			countView.show();
+//			countView.setText(allComboList.size() + "");//
+//			countView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//			countView.show();
 			// comboList.clear();// 清空所选菜品
 			for (int i = 0; i < menuArray.size(); i++) {
 				tempFragment = getFragWithposition(i);
