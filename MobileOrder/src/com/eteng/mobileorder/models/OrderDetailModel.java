@@ -40,7 +40,7 @@ public class OrderDetailModel implements Parcelable {
 	/**
 	 * 主食产品ID
 	 */
-	private int goodsId;
+	private Long goodsId;
 	/**
 	 * 名称集合
 	 */
@@ -121,11 +121,11 @@ public class OrderDetailModel implements Parcelable {
 		this.totalPrice = totalPrice;
 	}
 
-	public int getGoodsId() {
+	public Long getGoodsId() {
 		return goodsId;
 	}
 
-	public void setGoodsId(int goodsId) {
+	public void setGoodsId(Long goodsId) {
 		this.goodsId = goodsId;
 	}
 
@@ -161,7 +161,7 @@ public class OrderDetailModel implements Parcelable {
 		dest.writeString(this.orderId);
 		dest.writeString(this.goodsName);
 		dest.writeDouble(this.totalPrice);
-		dest.writeInt(this.goodsId);
+		dest.writeLong(this.goodsId);
 		dest.writeString(this.comboName);
 		dest.writeString(this.remarkName);
 	}
@@ -186,7 +186,7 @@ public class OrderDetailModel implements Parcelable {
 		this.orderId = in.readString();
 		this.goodsName = in.readString();
 		this.totalPrice = in.readDouble();
-		this.goodsId = in.readInt();
+		this.goodsId = in.readLong();
 		this.comboName = in.readString();
 		this.remarkName = in.readString();
 	}

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.DishInfo;
 import com.eteng.mobileorder.utils.NetController;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
@@ -117,14 +117,14 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 			holder = (ViewHolder) convertView.getTag();
 		}
 		T item = getItem(position);
-		if (item instanceof MenuItemModel) {
-			holder.dishName.setText(((MenuItemModel) item).getName());
+		if (item instanceof DishInfo) {
+			holder.dishName.setText(((DishInfo) item).getDishName());
 			holder.dishPrice.setText("￥ "
-					+ String.valueOf(((MenuItemModel) item).getPrice()));
-			holder.dishImg.setImageUrl(((MenuItemModel) item).getImgUrl(),
+					+ String.valueOf(((DishInfo) item).getPrice()));
+			holder.dishImg.setImageUrl(((DishInfo) item).getDishImgPath(),
 					NetController.getInstance(mContext.getApplicationContext())
 							.getImageLoader());
-			if (((MenuItemModel) item).isChoiceState()) {
+			if (((DishInfo) item).isChoiceState()) {
 				holder.shadowImg.setBackgroundColor(Color
 						.parseColor("#49000000"));
 			} else {
@@ -174,14 +174,14 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 	 * @param position
 	 */
 	public void setChoiceState(int position) {
-		MenuItemModel temp = (MenuItemModel) getItem(position);
+		DishInfo temp = (DishInfo) getItem(position);
 		temp.setChoiceState(temp.isChoiceState() ? false : true);
-		if (isSingleSelect && temp.getType().equals("1")) {// 主餐单选 清除其他主餐选项
+		if (isSingleSelect && temp.getDishType().equals("1")) {// 主餐单选 清除其他主餐选项
 
 			isMainCheck = temp.isChoiceState() ? true : false;
 			for (int i = 0; i < mainItems.size(); i++) {
-				MenuItemModel item = (MenuItemModel) getItem(i);
-				if (item.getType().equals("1") && !item.equals(temp)) {
+				DishInfo item = (DishInfo) getItem(i);
+				if (item.getDishType().equals("1") && !item.equals(temp)) {
 					item.setChoiceState(false);
 				}
 			}
@@ -193,12 +193,12 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 	/**
 	 * 获取选中数据
 	 */
-	public ArrayList<MenuItemModel> getSelectList() {
-		ArrayList<MenuItemModel> selectList = new ArrayList<MenuItemModel>();
+	public ArrayList<DishInfo> getSelectList() {
+		ArrayList<DishInfo> selectList = new ArrayList<DishInfo>();
 		for (T temp : mItems) {
-			if (temp instanceof MenuItemModel) {
-				if (((MenuItemModel) temp).isChoiceState()) {
-					selectList.add((MenuItemModel) temp);
+			if (temp instanceof DishInfo) {
+				if (((DishInfo) temp).isChoiceState()) {
+					selectList.add((DishInfo) temp);
 				}
 
 			}
@@ -206,13 +206,13 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 		return selectList;
 	}
 
-	public ArrayList<MenuItemModel> getAttachList() {
-		ArrayList<MenuItemModel> attachList = new ArrayList<MenuItemModel>();
+	public ArrayList<DishInfo> getAttachList() {
+		ArrayList<DishInfo> attachList = new ArrayList<DishInfo>();
 		for (T temp : mItems) {
-			if (temp instanceof MenuItemModel) {
-				if (((MenuItemModel) temp).isChoiceState()
-						&& ((MenuItemModel) temp).getType().equals("2")) {
-					attachList.add((MenuItemModel) temp);
+			if (temp instanceof DishInfo) {
+				if (((DishInfo) temp).isChoiceState()
+						&& ((DishInfo) temp).getDishType().equals("2")) {
+					attachList.add((DishInfo) temp);
 				}
 			}
 		}
@@ -226,8 +226,8 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 	 */
 	public void resetDataDefault() {
 		for (T temp : mItems) {
-			if (temp instanceof MenuItemModel) {
-				((MenuItemModel) temp).setChoiceState(false);
+			if (temp instanceof DishInfo) {
+				((DishInfo) temp).setChoiceState(false);
 			}
 		}
 		this.notifyDataSetChanged();
@@ -235,9 +235,9 @@ public class MenuCategoryAdapter<T> extends BaseAdapter implements
 
 	int getHeaderIndex() {
 		for (int index = 1; index < mItems.size(); index++) {
-			MenuItemModel currentItem = (MenuItemModel) mItems.get(index);
-			MenuItemModel lastItem = (MenuItemModel) mItems.get(index - 1);
-			if (currentItem.getType().equals(lastItem.getType())) {
+			DishInfo currentItem = (DishInfo) mItems.get(index);
+			DishInfo lastItem = (DishInfo) mItems.get(index - 1);
+			if (currentItem.getDishType().equals(lastItem.getDishType())) {
 				return index;
 			}
 		}

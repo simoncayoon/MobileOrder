@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.cusomview.RemarkListInterface.RemarkNameAdapter;
-import com.eteng.mobileorder.models.RemarkModel;
+import com.eteng.mobileorder.models.RemarkInfo;
 
 public class RemarkListAdapter extends RemarkNameAdapter {
 
@@ -18,10 +18,10 @@ public class RemarkListAdapter extends RemarkNameAdapter {
 	private static final String TAG = "RemarkListAdapter";
 	
 	private Context mContext;
-	private ArrayList<RemarkModel> dataSrc;
+	private ArrayList<RemarkInfo> dataSrc;
 	private LayoutInflater mInflater;
 
-	public RemarkListAdapter(Context ctx, ArrayList<RemarkModel> dataSrc) {
+	public RemarkListAdapter(Context ctx, ArrayList<RemarkInfo> dataSrc) {
 		this.mContext = ctx;
 		this.dataSrc = dataSrc;
 		mInflater = LayoutInflater.from(mContext);
@@ -60,7 +60,7 @@ public class RemarkListAdapter extends RemarkNameAdapter {
 	 */
 	public void setChoiceState(int position) {
 
-		RemarkModel item = (RemarkModel) getItem(position);
+		RemarkInfo item = (RemarkInfo) getItem(position);
 		item.setSelectStat(item.isSelectStat() ? false : true);
 		this.notifyDataSetChanged();
 	}
@@ -76,7 +76,7 @@ public class RemarkListAdapter extends RemarkNameAdapter {
 	 */
 	public ArrayList<String> getSelectList() {
 		ArrayList<String> selectList = new ArrayList<String>();
-		for (RemarkModel temp : dataSrc) {
+		for (RemarkInfo temp : dataSrc) {
 			if (temp.isSelectStat()) {
 				selectList.add(temp.getRemarkName());
 			}
@@ -85,7 +85,7 @@ public class RemarkListAdapter extends RemarkNameAdapter {
 	}
 
 	public void resetDataDefault() {
-		for (RemarkModel temp : dataSrc) {
+		for (RemarkInfo temp : dataSrc) {
 			temp.setSelectStat(false);
 		}
 		this.notifyDataSetChanged();

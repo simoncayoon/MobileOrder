@@ -4,9 +4,12 @@ import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
 import com.android.volley.toolbox.ImageLoader.ImageCache;
+import com.eteng.mobileorder.debug.DebugFlags;
 
 public class LruBitmapCache extends LruCache<String, Bitmap> implements
 		ImageCache {
+	
+	private static final String TAG = LruBitmapCache.class.getSimpleName();
 
 	public static int getDefaultLruCacheSize() {
 		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -30,6 +33,7 @@ public class LruBitmapCache extends LruCache<String, Bitmap> implements
 
 	@Override
 	public Bitmap getBitmap(String url) {
+		DebugFlags.logD(TAG, "缓存中的Url " + url);
 		return get(url);
 	}
 

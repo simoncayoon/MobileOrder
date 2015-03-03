@@ -2,25 +2,24 @@ package com.eteng.mobileorder;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.models.SellerInfoDao;
 
 public class SettingOwnProfile extends Activity implements
 		TopNavigationBar.NaviBtnListener {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "SettingOwnProfile";
-	private static final String OWN_PROFILE_NAME = "own_profile_name";
-	private static final String OWN_PROFILE_TEL = "own_profile_tel";
-	private static final String OWN_PROFILE_DISH = "own_profile_dish";
-	private static final String OWN_PROFILE_SCOPE = "own_profile_scope";
-	private static final String OWN_PROFILE_ADDR = "own_profile_addr";
 
 	private EditText nameEdit, telEdit, dishEdit, scopeEdit, addrEdit;
 	private Button saveBtn;
@@ -46,22 +45,48 @@ public class SettingOwnProfile extends Activity implements
 		scopeEdit = (EditText) findViewById(R.id.setting_own_profile_scope_edit);
 		addrEdit = (EditText) findViewById(R.id.setting_own_profile_addr_edit);
 		saveBtn = (Button) findViewById(R.id.setting_own_profile_save_btn);
+		dishEdit.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.getParent().requestDisallowInterceptTouchEvent(true);
+				return false;
+			}
+		});
 	}
 
 	void initData() {
 		topBar.setTitle("我的资料");
 		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
-		nameEdit.setText(sp.getString(OWN_PROFILE_NAME, ""));
-		telEdit.setText(sp.getString(OWN_PROFILE_TEL, ""));
-		dishEdit.setText(sp.getString(OWN_PROFILE_DISH, ""));
-		scopeEdit.setText(sp.getString(OWN_PROFILE_SCOPE, ""));
-		addrEdit.setText(sp.getString(OWN_PROFILE_ADDR, ""));
+		getSellerInfo();
+		
 		saveBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				editRemoteInfo();
 			}
 		});
+	}
+
+	private void getSellerInfo() {
+		SellerInfoDao infoDao = MobileOrderApplication.getInstance().getDaoSession().getSellerInfoDao();
+		Cursor cursor = infoDao.getDatabase().query(infoDao.getTablename(), infoDao.getAllColumns(), null, null, null, null, null);
+		cursor.moveToFirst();
+		for(int i = 0; i < infoDao.getAllColumns().length; i++){
+			String columnName = cursor.getColumnName(cursor.getColumnIndex(infoDao.getAllColumns()[i]));
+			String content =  cursor.getString(cursor.getColumnIndex(infoDao.getAllColumns()[i]));
+			if(columnName.equals("SELLER_NAME")){
+				nameEdit.setText(content);
+			}else if(columnName.equals("SELLER_TEL")){
+				telEdit.setText(content);
+			}else if(columnName.equals("SELLER_DETAIL")){
+				dishEdit.setText(content);
+			}else if(columnName.equals("SELLER_SCOPE")){
+				scopeEdit.setText(content);
+			}else if(columnName.equals("SELLER_ADDR")){
+				addrEdit.setText(content);
+			}
+		}
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorViewPagerAdapter
 public class AppStart extends Activity {
 
 	private static final String TAG = "AppStart";
-	private static final String KEY_IS_FIRST_VISIT = "IS_FRIST_VISIT";
+	
 
 	private IndicatorViewPager indicatorViewPager;
 	private LayoutInflater inflate;
@@ -36,14 +36,15 @@ public class AppStart extends Activity {
 		setContentView(R.layout.activity_app_start);
 		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
 				Context.MODE_PRIVATE);
-		isFistVisit = sp.getBoolean(KEY_IS_FIRST_VISIT, false);
-		if (isFistVisit) {// 加载引导页面
-			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
-			Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
-			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
-			inflate = LayoutInflater.from(getApplicationContext());
-			indicatorViewPager.setAdapter(adapter);
-		} else {// 加载启动页面
+		isFistVisit = sp.getBoolean(Constants.KEY_IS_FIRST_VISIT, true);
+		
+//		if (isFistVisit) {// 加载引导页面
+//			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
+//			Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
+//			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
+//			inflate = LayoutInflater.from(getApplicationContext());
+//			indicatorViewPager.setAdapter(adapter);
+//		} else {// 加载启动页面
 			new Handler().postDelayed(new Runnable() {
 				public void run() {
 					/*
@@ -60,8 +61,9 @@ public class AppStart extends Activity {
 					AppStart.this.finish();
 				}
 			}, 2000); // 2900 for release
+			
 
-		}
+//		}
 
 	}
 	

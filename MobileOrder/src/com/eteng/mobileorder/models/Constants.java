@@ -174,6 +174,8 @@ public class Constants {
 	public static final String SP_LOGIN_PWD = "sp_login_pwd";//sharePreference 键值名称
 	public static final String SP_SELLER_ID = "sp_seller_id";
 	
+	public static final String KEY_IS_FIRST_VISIT = "IS_FRIST_VISIT";//是否第一次访问该APP键值
+	
 	/**
 	 * 粉面属性的ID
 	 */

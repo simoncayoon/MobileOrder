@@ -32,6 +32,9 @@ import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.models.SellerInfo;
+import com.eteng.mobileorder.models.SellerInfoDao;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
@@ -51,6 +54,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private boolean isExit = false;
 
 	private SharedPreferences sp;
+	private SellerInfoDao sellerInfoDao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +147,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
+								saveInfo(respon);
 								Editor inputSp = sp.edit();
 								inputSp.putString(Constants.SP_LOGIN_ACCOUNT,
 										accountName);
@@ -190,6 +195,28 @@ public class LoginActivity extends Activity implements OnClickListener {
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getMenuRequest, TAG);
+	}
+
+	void saveInfo(JSONObject respon) throws JSONException {
+		
+		JSONObject infoJson = new JSONObject(respon.getString("seller"));
+		int id = infoJson.getInt("sellerId");
+		DebugFlags.logD(TAG, "id======" + id);
+		String name = infoJson.getString("sellerName");
+		String tel = infoJson.getString("linkTel");
+		String detail = infoJson.getString("sellerDetail");
+		String scope = infoJson.getString("sellerCircle");
+		String addr = infoJson.getString("address");
+		String imgPath = infoJson.getString("sellerImg");
+		String account = infoJson.getString("sellerAacount");
+		SellerInfo sellerInfo = new SellerInfo(id, name, tel, detail, scope,
+				addr, imgPath, account);
+		try {
+			DbHelper.getInstance(this).saveSellerInfo(sellerInfo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

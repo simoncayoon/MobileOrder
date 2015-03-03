@@ -2,14 +2,8 @@ package com.eteng.mobileorder;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -18,19 +12,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ListView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.MenuCategoryAdapter;
 import com.eteng.mobileorder.adapter.RemarkListAdapter;
 import com.eteng.mobileorder.cusomview.RemarkListInterface.OnItemSelectedListener;
 import com.eteng.mobileorder.cusomview.RemarkListView;
-import com.eteng.mobileorder.debug.DebugFlags;
-import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuItemModel;
-import com.eteng.mobileorder.models.RemarkModel;
-import com.eteng.mobileorder.utils.JsonUTF8Request;
-import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.models.DishInfo;
+import com.eteng.mobileorder.models.RemarkInfo;
+import com.eteng.mobileorder.utils.DbHelper;
 
 public class OrderPhoneFragment extends BaseFragment implements
 		OnItemClickListener {
@@ -43,13 +31,13 @@ public class OrderPhoneFragment extends BaseFragment implements
 	private GridView mGridView;
 	private RemarkListView remarkListView;
 
-	public int categoryId;
+	public Long categoryId;
 	public boolean isSingleSelect;
 	private int mFirstVisible;
-	private ArrayList<MenuItemModel> mainList;
-	private ArrayList<MenuItemModel> attachList;
-	private ArrayList<RemarkModel> remarkList;
-	public MenuCategoryAdapter<MenuItemModel> mAdapter;
+	private ArrayList<DishInfo> mainList;
+	private ArrayList<DishInfo> attachList;
+	private ArrayList<RemarkInfo> remarkList;
+	public MenuCategoryAdapter<DishInfo> mAdapter;
 	public RemarkListAdapter mRemarkAdapter;
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -74,10 +62,10 @@ public class OrderPhoneFragment extends BaseFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mainList = new ArrayList<MenuItemModel>();
-		attachList = new ArrayList<MenuItemModel>();
-		remarkList = new ArrayList<RemarkModel>();
-		categoryId = getArguments().getInt(INTENT_INT_CATEGORY_ID);// 类型ID
+		mainList = new ArrayList<DishInfo>();
+		attachList = new ArrayList<DishInfo>();
+		remarkList = new ArrayList<RemarkInfo>();
+		categoryId = getArguments().getLong(INTENT_INT_CATEGORY_ID);// 类型ID
 		isSingleSelect = getArguments().getBoolean(INTENT_IS_NOODLE);
 	}
 
@@ -113,167 +101,31 @@ public class OrderPhoneFragment extends BaseFragment implements
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 		setHasOptionsMenu(true);
-		getDataList();
-		getOptions();
+		setDataAdapter();
 	}
 
-	/***
-	 * 获取相应种类下的所有数据
-	 */
-	private void getDataList() {
-		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
-		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
-		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
-		builder.appendQueryParameter("page", Constants.PAGE);
-		builder.appendQueryParameter("pageCount", Constants.PAGE_COUNT);
-		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
-				Request.Method.GET, builder.toString(), null,
-				new Response.Listener<JSONObject>() {
-
-					@Override
-					public void onResponse(JSONObject respon) {
-						try {
-							if (respon.getString("code").equals("0")) {// 查询成功
-								String jsonString = respon
-										.getString("goodsList");
-								parseJson(jsonString);
-								if (isSingleSelect) {
-									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
-											getApplicationContext(),
-											mainList,
-											attachList,
-											R.layout.header,
-											R.layout.order_phone_item_category_layout,
-											isSingleSelect);
-								} else {
-									mAdapter = new MenuCategoryAdapter<MenuItemModel>(
-											getApplicationContext(),
-											mainList,
-											R.layout.header,
-											R.layout.order_phone_item_category_layout,
-											false);
-								}
-								mGridView.setAdapter(mAdapter);
-							} else {
-								try {
-									throw new VolleyError();
-								} catch (VolleyError e) {
-									e.printStackTrace();
-								}
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}, new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-					}
-				});
-		NetController.getInstance(getApplicationContext()).addToRequestQueue(
-				getMenuRequest, TAG);
-	}
-
-	/***
-	 * 获取相应种类下的备注数据
-	 */
-	private void getOptions() {
-		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
-		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
-		builder.appendQueryParameter("classId", String.valueOf(categoryId));
-		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
-				Request.Method.GET, builder.toString(), null,
-				new Response.Listener<JSONObject>() {
-
-					@Override
-					public void onResponse(JSONObject respon) {
-						try {
-							if (respon.getString("code").equals("0")) {// 查询成功
-								JSONArray options = new JSONArray(
-										respon.getString("optionList"));
-								if (!(options.length() > 0)) {
-									return;
-								}
-								remarkList.clear();
-								for (int i = 0; i < options.length(); i++) {
-									String temp = options.getJSONObject(i)
-											.getString("optionName");
-									RemarkModel item = new RemarkModel();
-									item.setRemarkName(temp);
-									item.setSelectStat(false);// 默认不选中任何备注
-									remarkList.add(item);
-								}
-								remarkListView.setVisibility(View.VISIBLE);
-								mRemarkAdapter = new RemarkListAdapter(
-										getActivity(), remarkList);
-								remarkListView.setAdapter(mRemarkAdapter);
-							} else {
-								try {
-									throw new VolleyError();
-								} catch (VolleyError e) {
-									e.printStackTrace();
-								}
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}, new Response.ErrorListener() {
-
-					@Override
-					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-					}
-				});
-		NetController.getInstance(getApplicationContext()).addToRequestQueue(
-				getMenuRequest, TAG);
-	}
-
-	/**
-	 * 将JSON字符串数据解析到链表
-	 * 
-	 * @param jsonString
-	 * @throws JSONException
-	 */
-	protected void parseJson(String jsonString) throws JSONException {
-
-		JSONArray srcList = new JSONArray(jsonString);
-		for (int i = 0; i < srcList.length(); i++) {
-			JSONObject temp = new JSONObject(srcList.getString(i));
-			MenuItemModel item = new MenuItemModel();
-			if (!temp.getString("goodsStatus").equals("1")) {
-				continue;
-			}
-			item.setId(temp.getInt("goodsId"));
-			item.setSerial(temp.getString("goodsSerial"));
-			item.setName(temp.getString("goodsName"));
-			item.setPrice(temp.getDouble("goodsPrice"));
-			item.setDiscountPrice(temp.getDouble("discountPrice"));
-			item.setImgUrl(temp.getString("goodsImgPath"));
-			item.setType(temp.getString("goodsType"));
-			item.setStatus(temp.getString("goodsStatus"));
-			item.setOwnId(temp.getInt("goodsClass"));
-			if (item.getType().equals("1")) {
-				mainList.add(item);
-			} else {
-				attachList.add(item);
-			}
+	private void setDataAdapter() {
+		mainList = (ArrayList<DishInfo>) DbHelper.getInstance(getActivity()).getLocalDish(categoryId, "1");
+		if (isSingleSelect) {
+			attachList = (ArrayList<DishInfo>) DbHelper.getInstance(
+					getActivity()).getLocalDish(categoryId, "");
+			mAdapter = new MenuCategoryAdapter<DishInfo>(
+					getApplicationContext(), mainList, attachList,
+					R.layout.header, R.layout.order_phone_item_category_layout,
+					isSingleSelect);
+		} else {
+			mAdapter = new MenuCategoryAdapter<DishInfo>(
+					getApplicationContext(), mainList, R.layout.header,
+					R.layout.order_phone_item_category_layout, false);
+		}
+		mGridView.setAdapter(mAdapter);
+		
+		remarkList = (ArrayList<RemarkInfo>) DbHelper.getInstance(getActivity()).getRemarkInfos(categoryId);
+		if(remarkList.size() > 0){
+			remarkListView.setVisibility(View.VISIBLE);
+			mRemarkAdapter = new RemarkListAdapter(
+					getActivity(), remarkList);
+			remarkListView.setAdapter(mRemarkAdapter);
 		}
 	}
 
@@ -347,8 +199,9 @@ public class OrderPhoneFragment extends BaseFragment implements
 		}
 	}
 
-	public MenuCategoryAdapter<MenuItemModel> getAdapter() {
+	public MenuCategoryAdapter<DishInfo> getAdapter() {
 		if (this.mAdapter == null) {
+		
 		}
 		return mAdapter;
 	}

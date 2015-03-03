@@ -14,7 +14,6 @@ public class BootActionReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		DebugFlags.logD(TAG, "!@#$%^%^&*(  " + "开机！");
-//		PhoneCallListenerService inComingService = new PhoneCallListenerService();
 		
 		Intent service = new Intent(context, PhoneCallListenerService.class);
 		context.startService(service);

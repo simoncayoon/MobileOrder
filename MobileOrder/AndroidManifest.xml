@@ -44,7 +44,7 @@
         <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
         <activity android:name="com.eteng.mobileorder.SettingActivity" />
         <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
-        <activity android:name="com.eteng.mobileorder.SettingOwnProfile" />
+        <activity android:name="com.eteng.mobileorder.SettingOwnProfile" android:windowSoftInputMode="adjustPan|adjustNothing"/>
         <activity android:name="com.eteng.mobileorder.SettingUploadActivity" />
         <activity android:name="com.eteng.mobileorder.SettingMenuByCategory" />
         <activity android:name="com.eteng.mobileorder.SettingDishImgUpload" />

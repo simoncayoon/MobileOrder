@@ -2,13 +2,20 @@ package com.eteng.mobileorder;
 
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -28,15 +36,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
+import com.eteng.mobileorder.debug.DebugFlags;
+import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.models.DishInfo;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
 import com.eteng.mobileorder.service.BlueToothService.OnReceiveDataHandleEvent;
+import com.eteng.mobileorder.utils.DbHelper;
+import com.eteng.mobileorder.utils.JsonUTF8Request;
+import com.eteng.mobileorder.utils.NetController;
 import com.kyleduo.switchbutton.SwitchButton;
 
 public class SettingActivity extends Activity implements
-		OnCheckedChangeListener, OnItemClickListener,
+		OnCheckedChangeListener, OnItemClickListener, OnItemLongClickListener,
 		TopNavigationBar.NaviBtnListener, OnClickListener,
 		CustomBTStateListener {
 
@@ -106,6 +124,7 @@ public class SettingActivity extends Activity implements
 				.findViewById(R.id.scan_prompt_text);
 		settingFuncList = (ListView) findViewById(R.id.setting_func_list__view);
 		settingFuncList.setOnItemClickListener(this);
+		settingFuncList.setOnItemLongClickListener(this);
 		settingFuncList.setAdapter(new FuncListAdapter());
 		exitBtn = (Button) findViewById(R.id.exit_app_btn);
 		exitBtn.setOnClickListener(this);
@@ -445,5 +464,20 @@ public class SettingActivity extends Activity implements
 			}
 		}
 	};
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+//		DebugFlags.logD(TAG, "long click");
+//		if (menuList[position].equals("菜单上传")) {// 添加类目信息、菜品信息到本地
+//			loadCount = 0;
+//			getMenuCategory();
+//		}
+//		if (menuList[position].equals("备注信息")) {
+//
+//		}
+		return false;
+	}
+
 
 }
