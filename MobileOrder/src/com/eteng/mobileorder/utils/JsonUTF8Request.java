@@ -18,6 +18,7 @@ public class JsonUTF8Request extends JsonRequest<JSONObject> {
 
 	protected static final String TAG = "JsonUTF8Request";
 	protected static final String TYPE_UTF8_CHARSET = "charset=UTF-8";
+	private Priority mPriority = Priority.LOW;	
 
 	public JsonUTF8Request(int method, String url, JSONObject jsonRequest,
 			Listener<JSONObject> listener, ErrorListener errorListener) {
@@ -47,6 +48,16 @@ public class JsonUTF8Request extends JsonRequest<JSONObject> {
 		} catch (JSONException je) {
 			return Response.error(new ParseError(je));
 		}
+	}
+
+	@Override
+	public Priority getPriority() {
+		// TODO Auto-generated method stub
+		return super.getPriority();
+	}
+	
+	public void setPriority(Priority priority){
+		mPriority = priority;
 	}
 
 }

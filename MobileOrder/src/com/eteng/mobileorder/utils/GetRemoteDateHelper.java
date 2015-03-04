@@ -28,9 +28,20 @@ public class GetRemoteDateHelper {
 
 	private Context mContext = null;
 	private Context appContext = null;
-//	ProgressHUD mProgressHUD;
+	ProgressHUD mProgressHUD;
 	private static int loadCount = 0;
 	private static int maxCount = 0;
+
+	private ShowData mDummyCall = new ShowData() {
+
+		@Override
+		public void showData() {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	private ShowData callBack = mDummyCall;
 
 	public GetRemoteDateHelper(Context context, Context appContext) {
 		mContext = context;
@@ -38,6 +49,14 @@ public class GetRemoteDateHelper {
 	}
 
 	public void getRemoteDate() {
+		if (mContext instanceof ShowData) {
+			callBack = (ShowData) mContext;
+		} else {
+			return;
+		}
+		DbHelper.getInstance(mContext).clearAllDataAboutDish();
+		loadCount = 0;
+		maxCount = 0;
 		getMenuCategory();
 	}
 
@@ -50,15 +69,15 @@ public class GetRemoteDateHelper {
 			DebugFlags.logD(TAG, "存在数据！！！");
 		} else {
 			DebugFlags.logD(TAG, "不存在，在线加载");
-//			mProgressHUD = ProgressHUD.show(mContext, mContext.getResources()
-//					.getString(R.string.toast_remind_loading), true, false,
-//					new OnCancelListener() {
-//
-//						@Override
-//						public void onCancel(DialogInterface dialog) {
-//
-//						}
-//					});
+			mProgressHUD = ProgressHUD.show(mContext, mContext.getResources()
+					.getString(R.string.toast_remind_loading), true, false,
+					new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+
+						}
+					});
 			String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 			Uri.Builder builder = Uri.parse(url).buildUpon();
 			builder.appendQueryParameter(
@@ -73,17 +92,19 @@ public class GetRemoteDateHelper {
 
 						@Override
 						public void onResponse(JSONObject respon) {
+							loadCount++;
 							insertMenuList(respon);
-//							mProgressHUD.dismiss();
+							dismissHud();
 						}
 					}, new Response.ErrorListener() {
 						@Override
 						public void onErrorResponse(VolleyError arg0) {
+							loadCount++;
 							DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
-//							mProgressHUD.dismiss();
+							dismissHud();
 						}
 					});
-			NetController.getInstance(mContext).addToRequestQueue(
+			NetController.getInstance(appContext).addToRequestQueue(
 					getMenuRequest, TAG);
 		}
 
@@ -93,6 +114,7 @@ public class GetRemoteDateHelper {
 		try {
 			JSONArray jsonArray = new JSONArray(
 					JsonString.getString("classList"));
+			maxCount = jsonArray.length() * 2;
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject tmp = new JSONObject(jsonArray.getString(i));
 				// +++++++++++++++++++DB+++++++++
@@ -140,8 +162,10 @@ public class GetRemoteDateHelper {
 
 					@Override
 					public void onResponse(JSONObject respon) {
+						loadCount++;
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
+
 								String jsonString = respon
 										.getString("goodsList");
 								parseJson(jsonString);
@@ -155,15 +179,18 @@ public class GetRemoteDateHelper {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
+						dismissHud();
 					}
 				}, new Response.ErrorListener() {
 
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
+						loadCount++;
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						dismissHud();
 					}
 				});
-		NetController.getInstance(mContext).addToRequestQueue(getMenuRequest,
+		NetController.getInstance(appContext).addToRequestQueue(getMenuRequest,
 				TAG);
 
 	}
@@ -174,7 +201,7 @@ public class GetRemoteDateHelper {
 	 * @param jsonString
 	 * @throws JSONException
 	 */
-	protected void parseJson(String jsonString) throws JSONException{
+	protected void parseJson(String jsonString) throws JSONException {
 
 		JSONArray srcList = new JSONArray(jsonString);
 		for (int i = 0; i < srcList.length(); i++) {
@@ -183,24 +210,25 @@ public class GetRemoteDateHelper {
 			DishInfo testInfo = new DishInfo();
 			testInfo.setDishId(temp.getLong("goodsId"));
 			testInfo.setDishName(temp.getString("goodsName"));
-			
+
 			testInfo.setDishImgPath(temp.getString("goodsImgPath"));
 			testInfo.setCreatePerson(temp.getString("createPerson"));
 			testInfo.setCreateDate(temp.getString("createTime"));
-			
+
 			testInfo.setDishSummary(temp.getString("goodProduction"));
 			testInfo.setDishStock(temp.getString("goodsNumber"));
-			try{
-				testInfo.setDishOrder(Integer.valueOf(temp.getString("goodsOrder")));
+			try {
+				testInfo.setDishOrder(Integer.valueOf(temp
+						.getString("goodsOrder")));
 				testInfo.setPrice(Float.valueOf(temp.getString("goodsPrice")));
 				testInfo.setDishCategory(Long.valueOf(temp.getInt("goodsClass")));
 				testInfo.setDiscountPrice(Float.valueOf(temp
 						.getString("discountPrice")));
-			}catch(NumberFormatException e ){
+			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				continue;
 			}
-			
+
 			testInfo.setDishSerial(temp.getString("goodsSerial"));
 			testInfo.setDishStatus(temp.getString("goodsStatus"));
 			testInfo.setDishType(temp.getString("goodsType"));
@@ -213,6 +241,7 @@ public class GetRemoteDateHelper {
 	 * 获取相应种类下的备注数据
 	 */
 	private void getOptions(Long categoryId) {
+
 		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter(
@@ -227,6 +256,7 @@ public class GetRemoteDateHelper {
 
 					@Override
 					public void onResponse(JSONObject respon) {
+						loadCount++;
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								parseRemark(new JSONArray(
@@ -235,15 +265,18 @@ public class GetRemoteDateHelper {
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						dismissHud();
 					}
 				}, new Response.ErrorListener() {
 
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
+						loadCount++;
+						dismissHud();
 						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
-		NetController.getInstance(mContext).addToRequestQueue(getMenuRequest,
+		NetController.getInstance(appContext).addToRequestQueue(getMenuRequest,
 				TAG);
 	}
 
@@ -261,8 +294,18 @@ public class GetRemoteDateHelper {
 			DbHelper.getInstance(mContext).saveRemark(item);
 		}
 	}
-	
-	private void dismissHud(){
-		
+
+	void dismissHud() {
+		DebugFlags.logD(TAG, "loadCount " + loadCount);
+		if ((loadCount - 1) == maxCount) {
+			DebugFlags.logD(TAG, "xxxxxxxxxxxx");
+			mProgressHUD.dismiss();
+			callBack.showData();
+			callBack = mDummyCall;
+		}
+	}
+
+	public interface ShowData {
+		public void showData();
 	}
 }

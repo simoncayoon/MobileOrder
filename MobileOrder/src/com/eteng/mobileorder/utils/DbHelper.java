@@ -1,12 +1,17 @@
 package com.eteng.mobileorder.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import android.content.Context;
 
 import com.eteng.mobileorder.MobileOrderApplication;
 import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.CategoryInfoDao;
+import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.models.CustomerInfoDao;
 import com.eteng.mobileorder.models.DaoSession;
 import com.eteng.mobileorder.models.DishInfo;
@@ -54,7 +59,6 @@ public class DbHelper {
 	public void saveSellerInfo(SellerInfo info) throws Exception {
 
 		if (!isExist(info.getSellerId())) {
-			clearAllData();// 清空原来的数据
 			sellerDao.insert(info);
 		}
 	}
@@ -73,7 +77,12 @@ public class DbHelper {
 		qb.orderAsc(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryOrder);
 		qb.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryStatus
 				.eq("1"));
-		return qb.list();
+		try{
+			return qb.list();
+		} catch (Exception e){
+			return null;
+		}
+		
 	}
 
 	/** 添加菜单类目到本地 */
@@ -114,14 +123,42 @@ public class DbHelper {
 
 	public List<RemarkInfo> getRemarkInfos(Long categoryId) {
 		QueryBuilder<RemarkInfo> qb = remarkDao.queryBuilder();
-//		qb.where(com.eteng.mobileorder.models.RemarkInfoDao.Properties.RemarkStatus
-//				.eq("2"));
+		qb.where(com.eteng.mobileorder.models.RemarkInfoDao.Properties.RemarkStatus
+				.eq("2"));
 		qb.where(com.eteng.mobileorder.models.RemarkInfoDao.Properties.BelongsToId.eq(categoryId));
 		qb.orderAsc(com.eteng.mobileorder.models.RemarkInfoDao.Properties.Order);
 		return qb.list();
 	}
+	
+	public void saveCustomerInfo(CustomerInfo customerInfo){
+		customerDao.insertOrReplace(customerInfo);
+	}
+	
+	public void saveCustomerInfos(List<CustomerInfo> customerInfos){
+		customerDao.deleteAll();//清空数据库
+		customerDao.insertInTx(customerInfos);
+	}
+	
+	public List<CustomerInfo> getCustomerInfos(){
+		QueryBuilder<CustomerInfo> qb = customerDao.queryBuilder();
+		return qb.list();
+	}
+	
+	public String getIncomingAddr(String tel){
+		QueryBuilder<CustomerInfo> qb = customerDao.queryBuilder();
+		qb.where(com.eteng.mobileorder.models.CustomerInfoDao.Properties.CustomerTel.eq(tel));
+		try{
+			return qb.unique().getCustomerAddr();
+		}catch(Exception e){
+			return "";
+		}
+		
+	}
 
-	private void clearAllData() {
-
+	
+	public void clearAllDataAboutDish() {
+		categoryDao.deleteAll();
+		dishDao.deleteAll();
+		remarkDao.deleteAll();
 	}
 }

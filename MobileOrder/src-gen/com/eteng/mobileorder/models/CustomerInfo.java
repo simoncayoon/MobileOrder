@@ -9,51 +9,70 @@ package com.eteng.mobileorder.models;
  */
 public class CustomerInfo {
 
-    private Long id;
-    private String customerTel;
-    private String customerAddr;
+	private Long id;
+	private String customerTel;
+	private String customerAddr;
 
-    // KEEP FIELDS - put your custom fields here
-    // KEEP FIELDS END
+	// KEEP FIELDS - put your custom fields here
+	private String orderTimes;// 点单次数
+	private String totalConsumption;// 消费总额
 
-    public CustomerInfo() {
-    }
+	// KEEP FIELDS END
 
-    public CustomerInfo(Long id) {
-        this.id = id;
-    }
+	public CustomerInfo() {
+	}
 
-    public CustomerInfo(Long id, String customerTel, String customerAddr) {
-        this.id = id;
-        this.customerTel = customerTel;
-        this.customerAddr = customerAddr;
-    }
+	public CustomerInfo(Long id) {
+		this.id = id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public CustomerInfo(Long id, String customerTel, String customerAddr) {
+		this.id = id;
+		this.customerTel = customerTel;
+		this.customerAddr = customerAddr;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getCustomerTel() {
-        return customerTel;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCustomerTel(String customerTel) {
-        this.customerTel = customerTel;
-    }
+	public String getCustomerTel() {
+		return customerTel;
+	}
 
-    public String getCustomerAddr() {
-        return customerAddr;
-    }
+	public void setCustomerTel(String customerTel) {
+		this.customerTel = customerTel;
+	}
 
-    public void setCustomerAddr(String customerAddr) {
-        this.customerAddr = customerAddr;
-    }
+	public String getCustomerAddr() {
+		return customerAddr;
+	}
 
-    // KEEP METHODS - put your custom methods here
-    // KEEP METHODS END
+	public void setCustomerAddr(String customerAddr) {
+		this.customerAddr = customerAddr;
+	}
+
+	// KEEP METHODS - put your custom methods here
+	public String getOrderTimes() {
+		return orderTimes;
+	}
+
+	public void setOrderTimes(String orderTimes) {
+		this.orderTimes = orderTimes;
+	}
+
+	public String getTotalConsumption() {
+		return totalConsumption;
+	}
+
+	public void setTotalConsumption(String totalConsumption) {
+		this.totalConsumption = totalConsumption;
+	}
+
+	// KEEP METHODS END
 
 }

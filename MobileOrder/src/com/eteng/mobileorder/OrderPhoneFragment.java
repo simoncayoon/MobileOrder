@@ -205,4 +205,8 @@ public class OrderPhoneFragment extends BaseFragment implements
 		}
 		return mAdapter;
 	}
+	
+	public boolean hasData(){
+		return mainList.size() > 0 ? true : false;
+	}
 }

@@ -33,6 +33,7 @@ import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.PrintHelper;
 
 public class OrderDetailActivity extends Activity implements OnClickListener,
 		NaviBtnListener {
@@ -50,7 +51,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	// private LinearLayout confirmLayout;
 	private OrderInfoModel orderInfo;
 	private int orderID;
-	private String orderSn = "";
 	private boolean isFromWX = false;
 
 	@Override
@@ -128,6 +128,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
+								DebugFlags.logD(TAG, "订单详情JSON：" + respon.toString());
 								setHaderContent(new JSONObject(
 										respon.getString("orderInfo")));// 设置头部信息
 								setListContent(new JSONArray(
@@ -181,6 +182,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		for (int i = 0; i < jsonArray.length(); i++) {
 			OrderDetailModel temp = new OrderDetailModel();
 			JSONObject item = new JSONObject(jsonArray.getString(i));
+			DebugFlags.logD(TAG, "data list " + item.toString());
 			temp.setAttachName(item.getString("goodsAttachName"));
 			temp.setAskFor(item.getString("askFor"));
 			temp.setTotalPrice(item.getDouble("totalPrice"));
@@ -217,8 +219,10 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	void printAction() {
 		if (mApplication.getBTService().getState() == BlueToothService.STATE_CONNECTED) {
+			PrintHelper ph = new PrintHelper(this);
+			String printString = ph.getPrintString(orderInfo, dishCombo);
 			mApplication.getBTService().PrintCharacters(
-					getPrintString(dishCombo));
+					printString);
 		} else {
 			Toast.makeText(OrderDetailActivity.this, "请查看打印机状态!",
 					Toast.LENGTH_SHORT).show();
@@ -273,33 +277,5 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 	@Override
 	public void rightBtnListener() {
 
-	}
-
-	String getPrintString(ArrayList<OrderDetailModel> dataSrc) {
-		if (!(dataSrc.size() > 0)) {
-			return "";
-		}
-		String printString = "";
-		StringBuilder sb = new StringBuilder();
-		sb.append(getHeadString());
-		for (OrderDetailModel item : dataSrc) {
-			String temp = "";
-			temp = "配餐：" + item.getComboName() + "\n" + "小计："
-					+ item.getTotalPrice() + "\n" + "备注：" + "\r\n";
-			sb.append(temp);
-		}
-		sb.append("\r\n\r\n\r\n");
-		printString = sb.toString();
-		return printString;
-	}
-
-	private String getHeadString() {
-		String headerString = "";
-		String orderId = "订单编号:" + orderSn + "\n";
-		String tel = "电话：" + telEditView.getText() + "\n";
-		String date = "时间：" + dateView.getText() + "\n";
-		String addr = "地址：" + addrEditView.getText() + "\n";
-		headerString = orderId + tel + date + addr + "\r\n";
-		return headerString;
 	}
 }

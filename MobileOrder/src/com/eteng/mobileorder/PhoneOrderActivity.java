@@ -33,6 +33,7 @@ import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.GetRemoteDateHelper;
 import com.eteng.mobileorder.utils.StringMaker;
+import com.eteng.mobileorder.utils.GetRemoteDateHelper.ShowData;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
@@ -40,7 +41,8 @@ import com.shizhefei.view.indicator.slidebar.ColorBar;
 import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 
 public class PhoneOrderActivity extends FragmentActivity implements
-		OrderPhoneFragment.Callbacks, NaviBtnListener, OnClickListener {
+		OrderPhoneFragment.Callbacks, NaviBtnListener, OnClickListener,
+		ShowData {
 
 	private static final String TAG = "PhoneOrderActivity";
 	private IndicatorViewPager indicatorViewPager;
@@ -65,7 +67,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		menuArray = new ArrayList<CategoryInfo>();
 		comboList = new ArrayList<OrderDetailModel>();
 		allComboList = new LinkedHashSet<ArrayList<OrderDetailModel>>();
-		mAdapter = new MyAdapter(getSupportFragmentManager());
 		inflate = LayoutInflater.from(getApplicationContext());
 		getMenuCategory();// 获取菜单种类
 	}
@@ -81,7 +82,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	}
 
 	private void initMenuView() {
-		viewPager = (ViewPager) findViewById(R.id.moretab_viewPager);
+		
 		indicator = (ScrollIndicatorView) findViewById(R.id.moretab_indicator);
 
 		indicator.setScrollBar(new ColorBar(PhoneOrderActivity.this, Color.RED,
@@ -92,8 +93,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		indicator.setOnTransitionListener(new OnTransitionTextListener()
 				.setColorId(PhoneOrderActivity.this, selectColorId,
 						unSelectColorId));
-		viewPager.setOffscreenPageLimit(10);
-		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
 	}
 
 	private class MyAdapter extends IndicatorFragmentPagerAdapter {
@@ -125,7 +124,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 		@Override
 		public Fragment getFragmentForPage(int position) {
-
 			OrderPhoneFragment fragment = new OrderPhoneFragment();
 			Bundle bundle = new Bundle();
 			bundle.putLong(OrderPhoneFragment.INTENT_INT_CATEGORY_ID, menuArray
@@ -147,25 +145,35 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	}
 
 	void getMenuCategory() {
-		
+
 		if (getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
 				Context.MODE_PRIVATE).getBoolean(Constants.KEY_IS_FIRST_VISIT,
-				true)) {//第一次登陆，同步数据
+				true)) {// 第一次登陆，同步数据
 			DebugFlags.logD(TAG, "test第一次登陆，同步数据");
-			GetRemoteDateHelper getRemote = new GetRemoteDateHelper(this, getApplicationContext());
+			GetRemoteDateHelper getRemote = new GetRemoteDateHelper(this,
+					getApplicationContext());
 			getRemote.getRemoteDate();
-			SharedPreferences sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE);
+			SharedPreferences sp = getSharedPreferences(
+					Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE);
 			Editor editor = sp.edit();
 			editor.putBoolean(Constants.KEY_IS_FIRST_VISIT, false);
 			editor.commit();
-		} else {//加载本地数据
-			DebugFlags.logD(TAG, "test加载本地数据");
-			menuArray = (ArrayList<CategoryInfo>) DbHelper.getInstance(this).getLocalCategory();
+		} else {// 加载本地数据
+			refreshData();
 		}
-		if(menuArray.size() > 0){
+
+	}
+
+	void refreshData() {
+		menuArray = (ArrayList<CategoryInfo>) DbHelper.getInstance(this)
+				.getLocalCategory();
+		mAdapter = new MyAdapter(getSupportFragmentManager());
+		if (menuArray != null && menuArray.size() > 0) {
+			viewPager = (ViewPager) findViewById(R.id.moretab_viewPager);
+			viewPager.setOffscreenPageLimit(menuArray.size());
+			indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
 			indicatorViewPager.setAdapter(mAdapter);
 		}
-		
 	}
 
 	@Override
@@ -202,19 +210,20 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		for (int i = 0; i < menuArray.size(); i++) {// 遍历每个类目
 
 			tempFragment = getFragWithposition(i);
-			if(tempFragment == null){
+			if (tempFragment == null) {
 				DebugFlags.logD(TAG, "test wo de " + i);
 				continue;
 			}
-			if(tempFragment.categoryId == null){
+			if (tempFragment.categoryId == null) {
 				DebugFlags.logD(TAG, "categoryId wo de " + i);
 				continue;
 			}
-			if(tempFragment.mAdapter == null){
+			if (tempFragment.mAdapter == null) {
 				DebugFlags.logD(TAG, "mAdapter wo de " + i);
 				continue;
 			}
-			if (tempFragment.categoryId == 0 || tempFragment.mAdapter == null) {// 没有实例化
+			if (tempFragment.categoryId.equals(0)
+					|| tempFragment.mAdapter == null) {// 没有实例化
 				continue;
 			}
 			ArrayList<DishInfo> tempList = new ArrayList<DishInfo>();
@@ -249,8 +258,15 @@ public class PhoneOrderActivity extends FragmentActivity implements
 						sb = sb.append(tempList.get(j).getDishName());
 						totalPrice += tempList.get(j).getPrice();// 计算总价
 					}
-					orderItem.setAskFor(StringMaker.divWithSymbol(",",
-							tempFragment.mRemarkAdapter.getSelectList()));// 填充备注信息
+					if (tempFragment.mRemarkAdapter != null) {
+						orderItem.setAskFor(StringMaker.divWithSymbol(",",
+								tempFragment.mRemarkAdapter.getSelectList()));// 填充备注信息
+						orderItem.setRemarkName(StringMaker.divWithSymbol(
+								" + ",
+								tempFragment.mRemarkAdapter.getSelectList()));// 填充备注展示信息
+						tempFragment.mRemarkAdapter.resetDataDefault();
+					}
+
 					orderItem
 							.setGoodsDiscountPrice(mainDish.getDiscountPrice());
 					orderItem.setGoodsSinglePrice(mainDish.getPrice());
@@ -262,10 +278,9 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					orderItem.setGoodsName(mainDish.getDishName());
 					orderItem.setComboName(sb.toString());// 填充展示组合名称
 					orderItem.setTotalPrice(totalPrice);// 填充单项订单总价
-					orderItem.setRemarkName(StringMaker.divWithSymbol(" + ",
-							tempFragment.mRemarkAdapter.getSelectList()));// 填充备注展示信息
+
 					comboList.add(orderItem);
-					tempFragment.mRemarkAdapter.resetDataDefault();
+
 					continue;
 				}
 				for (DishInfo item : tempList) {
@@ -292,7 +307,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			allComboList.add(comboList);
 			for (int i = 0; i < menuArray.size(); i++) {
 				tempFragment = getFragWithposition(i);
-				if (tempFragment.categoryId == 0) {// 没有实例化
+				if (tempFragment.categoryId == null) {// 没有实例化
 					continue;
 				}
 				tempFragment.mAdapter.resetDataDefault();// 清除选中效果
@@ -305,5 +320,10 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				.getViewPager().getAdapter()
 				.instantiateItem(viewPager, position);
 		return mFragment;
+	}
+
+	@Override
+	public void showData() {
+		refreshData();
 	}
 }

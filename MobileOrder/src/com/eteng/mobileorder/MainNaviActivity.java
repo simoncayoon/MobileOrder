@@ -41,7 +41,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.FragmentMain.GetCallNum;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.DownloadHelper;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -54,7 +56,6 @@ import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeList
 public class MainNaviActivity extends FragmentActivity implements
 		TopNavigationBar.NaviBtnListener, GetCallNum {
 
-	@SuppressWarnings("unused")
 	private static final String TAG = "MainNaviActivity";
 
 	private IndicatorViewPager indicatorViewPager;
@@ -67,6 +68,7 @@ public class MainNaviActivity extends FragmentActivity implements
 	private boolean isExit = false;
 	private MyAdapter mAdapter;
 	private String callNum = "";
+	private String callAddr = "";
 	private boolean DIALOG_SHOW = false;
 
 	@Override
@@ -205,11 +207,19 @@ public class MainNaviActivity extends FragmentActivity implements
 
 	protected void onNewIntent(Intent intent) {
 		callNum = intent.getStringExtra("incoming_call_number");
+		callAddr = DbHelper.getInstance(this).getIncomingAddr(callNum);
+		DebugFlags.logD(TAG, "call addr is :" + callAddr);
 	}
 
 	@Override
 	public String getCallNum() {
 		return callNum;
+	}
+
+	@Override
+	public String getCallAddr() {
+		// TODO Auto-generated method stub
+		return callAddr;
 	}
 
 	/**

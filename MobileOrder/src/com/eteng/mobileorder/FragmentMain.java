@@ -31,11 +31,15 @@ import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
+import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.models.OrderDetailModel;
+import com.eteng.mobileorder.models.OrderInfoModel;
 import com.eteng.mobileorder.service.BlueToothService;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.PrintHelper;
 
 public class FragmentMain extends BaseFragment implements OnClickListener {
 
@@ -51,6 +55,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private ArrayList<OrderDetailModel> dishCombo;
 	private DishComboAdapter mAdapter;
 	private MobileOrderApplication mApplication;
+	private OrderInfoModel mOrderInfo;
 
 	private Double totalPriceNum = 0.0;
 	private String callNumber = "";
@@ -58,6 +63,12 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 		@Override
 		public String getCallNum() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getCallAddr() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -167,11 +178,16 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	private void printAction() {
 		String printString = "";
-		printString = getPrintString(dishCombo);
+		PrintHelper ph = new PrintHelper(getActivity());
+		printString = ph.getPrintString(mOrderInfo, dishCombo);
 		if (printString.equals("")) {
 			Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		CustomerInfo ci = new CustomerInfo();
+		ci.setCustomerTel(mOrderInfo.getOrderTel());
+		ci.setCustomerAddr(mOrderInfo.getAddress());
+		DbHelper.getInstance(getActivity()).saveCustomerInfo(ci);
 		BlueToothService btService = mApplication.getBTService();
 		if (btService.IsOpen()) {
 			if (btService.getState() == BlueToothService.STATE_CONNECTED) {
@@ -196,7 +212,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		} else {
 			Toast.makeText(getActivity(), "请查看蓝牙状态", Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 	private void pushOrderInfo() throws JSONException {
@@ -218,6 +233,9 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
+								DebugFlags.logD(TAG,
+										"返回的数据:" + respon.toString());
+								saveOrderInfo(respon.getString("order"));
 								printAction();
 							} else {
 								Toast.makeText(getActivity(), "提交失败!",
@@ -228,6 +246,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 						}
 						mProgressHUD.dismiss();
 					}
+
 				}, new Response.ErrorListener() {
 
 					@Override
@@ -239,6 +258,20 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 				}, params);
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
 				getOrderInfoRequest, TAG);
+	}
+
+	private void saveOrderInfo(String orderInfo) throws JSONException {
+		JSONObject orderJson = new JSONObject(orderInfo);
+		mOrderInfo = new OrderInfoModel();
+		mOrderInfo.setAddress(orderJson.getString("orderAddress"));
+		mOrderInfo.setAddrId(orderJson.getString("addressId"));
+		mOrderInfo.setCreateTime(orderJson.getString("createTime"));
+		mOrderInfo.setOrderAddr(orderJson.getString("orderAddress"));
+		mOrderInfo.setOrderId(orderJson.getString("orderId"));
+		mOrderInfo.setOrderSn(orderJson.getString("orderSn"));
+		mOrderInfo.setOrderStatus(orderJson.getString("orderStatus"));
+		mOrderInfo.setOrderTel(orderJson.getString("orderTel"));
+		mOrderInfo.setTotalPay(orderJson.getDouble("totalPay"));
 	}
 
 	/**
@@ -331,34 +364,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		// 列表加载数据
 	}
 
-	String getPrintString(ArrayList<OrderDetailModel> dataSrc) {
-		if (!(dataSrc.size() > 0)) {
-			return "";
-		}
-		String printString = "";
-		StringBuilder sb = new StringBuilder();
-		sb.append(getHeadString());
-		for (OrderDetailModel item : dataSrc) {
-			String temp = "";
-			temp = "配餐：" + item.getComboName() + "\n" + "小计："
-					+ item.getTotalPrice() + "\n" + "备注：" + "\r\n";
-			sb.append(temp);
-		}
-		sb.append("\r\n\r\n\r\n");
-		printString = sb.toString();
-		return printString;
-	}
-
-	private String getHeadString() {
-		String headerString = "";
-		String orderId = "订单编号:" + "LF1419915475819458157\n";
-		String tel = "电话：" + telEditView.getText() + "\n";
-		String date = "时间：" + dateView.getText() + "\n";
-		String addr = "地址：" + addrEditView.getText() + "\n";
-		headerString = orderId + tel + date + addr + "\r\n";
-		return headerString;
-	}
-
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -366,6 +371,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		DebugFlags.logD(TAG, "callNumber " + callNumber);
 		if (callNumber.length() > 0) {
 			telEditView.setText(callNumber);
+			addrEditView.setText(callback.getCallAddr());
 		}
 		if (!(dishCombo.size() > 0))
 			return;
@@ -387,5 +393,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	interface GetCallNum {
 		String getCallNum();
+		String getCallAddr();
 	}
 }
