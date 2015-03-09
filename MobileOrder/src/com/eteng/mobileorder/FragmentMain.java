@@ -11,14 +11,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,7 +51,8 @@ import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.PrintHelper;
 
-public class FragmentMain extends BaseFragment implements OnClickListener{
+public class FragmentMain extends BaseFragment implements OnClickListener,
+		OnItemLongClickListener {
 
 	private static final String TAG = "FragmentMain";
 
@@ -83,6 +92,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener{
 		mListView = (ListView) findViewById(R.id.phone_order_dish_combo_list_view);
 		mAdapter = new DishComboAdapter(getActivity());
 		mListView.setAdapter(mAdapter);
+		mListView.setOnItemLongClickListener(this);
 		confirmLayout = (LinearLayout) findViewById(R.id.confirm_layout);
 	}
 
@@ -127,47 +137,49 @@ public class FragmentMain extends BaseFragment implements OnClickListener{
 		if (!(dishCombo.size() > 0)) {
 			confirmLayout.setVisibility(View.INVISIBLE);
 		}
-		
+
 		telEditView.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 				callNumber = s.toString();
-				
+
 			}
-			
+
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
+
 		addrEditView.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 				callAddr = s.toString();
 			}
-			
+
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 	}
@@ -395,8 +407,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener{
 	@Override
 	public void onResume() {
 		super.onResume();
-		DebugFlags.logD(TAG, "-=-=-=-=-=-=callNumber "  + callNumber);
-		DebugFlags.logD(TAG, "-=-=-=-=-=-=callAddr "  + callAddr);
+		DebugFlags.logD(TAG, "-=-=-=-=-=-=callNumber " + callNumber);
+		DebugFlags.logD(TAG, "-=-=-=-=-=-=callAddr " + callAddr);
 		telEditView.setText(callNumber);
 		addrEditView.setText(callAddr);
 		if (!(dishCombo.size() > 0))
@@ -414,5 +426,51 @@ public class FragmentMain extends BaseFragment implements OnClickListener{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+		DebugFlags.logD(TAG, "LongClick");
+		showSelectDialog(position, "确定删除这道菜品吗？");
+		return true;
+	}
+
+	void showSelectDialog(final int position, String promptText) {
+		Builder builder = new android.app.AlertDialog.Builder(getActivity());
+		builder.create().requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// 0: 默认第一个单选按钮被选中
+		TextView promptView = new TextView(getActivity());
+		LinearLayout linearLayout = new LinearLayout(getActivity());
+		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		linearLayout.setLayoutParams(layoutParams);
+		android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+				android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+				android.widget.LinearLayout.LayoutParams.MATCH_PARENT);
+		lp.setMargins(0, DisplayMetrics.dip2px(getActivity(), 20), 0, DisplayMetrics.dip2px(getActivity(), 20));
+		promptView.setLayoutParams(lp);
+		promptView.setGravity(Gravity.CENTER);
+		promptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+		promptView.setText(promptText);
+		linearLayout.addView(promptView);
+		builder.setView(linearLayout);
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dishCombo.remove(position);
+				mAdapter.notifyDataSetChanged();
+			}
+		});
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		// 创建一个单选按钮对话框
+		builder.create().show();
 	}
 }

@@ -196,10 +196,11 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									e.printStackTrace();
 								}
 							}
-							mProgressHUD.dismiss();
+							
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 
