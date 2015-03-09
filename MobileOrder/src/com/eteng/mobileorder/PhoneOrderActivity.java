@@ -236,11 +236,12 @@ public class PhoneOrderActivity extends FragmentActivity implements
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
+					DebugFlags.logD(TAG, "test " + (tempFragment.getAdapter().isMainCheck ? "选中主食状态" : "未选中主食"));
 					OrderDetailModel orderItem = new OrderDetailModel();
 					StringBuilder sb = new StringBuilder();
 					Double totalPrice = 0.0;// 总价
 					double attachPrice = 0.0;// 附加价
-					DishInfo mainDish = null;// 主食（一个）
+					DishInfo mainDish = new DishInfo();// 主食（一个）
 					for (int j = 0; j < listSize; j++) {
 						if (!tempList.get(j).getDishType().equals("1")) {
 							attachStringList.add(tempList.get(j).getDishName());
@@ -277,9 +278,8 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					orderItem.setGoodsName(mainDish.getDishName());
 					orderItem.setComboName(sb.toString());// 填充展示组合名称
 					orderItem.setTotalPrice(totalPrice);// 填充单项订单总价
-
 					comboList.add(orderItem);
-
+					tempFragment.mAdapter.isMainCheck = false;//重置主食选择状态
 					continue;
 				}
 				for (DishInfo item : tempList) {
@@ -312,6 +312,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				tempFragment.mAdapter.resetDataDefault();// 清除选中效果
 			}
 		}
+		
 	}
 
 	private OrderPhoneFragment getFragWithposition(int position) {

@@ -144,7 +144,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				callNumber = s.toString();
-
 			}
 
 			@Override
@@ -203,6 +202,12 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 			}
 			if (addrEditView.getText().toString().length() == 0) {// 判断是否输入地址
 				Toast.makeText(getActivity(), "请输订单地址！", Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+
+			if (!(dishCombo.size() > 0)) {
+				Toast.makeText(getActivity(), "没有菜品！", Toast.LENGTH_SHORT)
 						.show();
 				return;
 			}
@@ -448,7 +453,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 		android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
 				android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
 				android.widget.LinearLayout.LayoutParams.MATCH_PARENT);
-		lp.setMargins(0, DisplayMetrics.dip2px(getActivity(), 20), 0, DisplayMetrics.dip2px(getActivity(), 20));
+		lp.setMargins(0, DisplayMetrics.dip2px(getActivity(), 20), 0,
+				DisplayMetrics.dip2px(getActivity(), 20));
 		promptView.setLayoutParams(lp);
 		promptView.setGravity(Gravity.CENTER);
 		promptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -461,6 +467,11 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 			public void onClick(DialogInterface dialog, int which) {
 				dishCombo.remove(position);
 				mAdapter.notifyDataSetChanged();
+				
+				if(dishCombo.size() == 0){
+					totalPriceNum = 0.0;
+					confirmLayout.setVisibility(View.GONE);
+				}
 			}
 		});
 		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
