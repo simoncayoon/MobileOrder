@@ -39,7 +39,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.eteng.mobileorder.FragmentMain.GetCallNum;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
@@ -54,11 +53,12 @@ import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAda
 import com.shizhefei.view.indicator.IndicatorViewPager.OnIndicatorPageChangeListener;
 
 public class MainNaviActivity extends FragmentActivity implements
-		TopNavigationBar.NaviBtnListener, GetCallNum {
+		TopNavigationBar.NaviBtnListener{
 
 	private static final String TAG = "MainNaviActivity";
 
 	private IndicatorViewPager indicatorViewPager;
+	ViewPager viewPager;
 	private TopNavigationBar naviTitleView;
 	private Dialog mDialog;
 	private TextView rateTextView;
@@ -67,8 +67,8 @@ public class MainNaviActivity extends FragmentActivity implements
 	private String[] tabNames;
 	private boolean isExit = false;
 	private MyAdapter mAdapter;
-	private String callNum = "";
-	private String callAddr = "";
+//	private String callNum = "";
+//	private String callAddr = "";
 	private boolean DIALOG_SHOW = false;
 
 	@Override
@@ -82,7 +82,7 @@ public class MainNaviActivity extends FragmentActivity implements
 
 	private void initView() {
 		naviTitleView = (TopNavigationBar) findViewById(R.id.general_navi_view);
-		ViewPager viewPager = (ViewPager) findViewById(R.id.tabmain_viewPager);
+		viewPager = (ViewPager) findViewById(R.id.tabmain_viewPager);
 		Indicator indicator = (Indicator) findViewById(R.id.tabmain_indicator);
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 		indicatorViewPager = new IndicatorViewPager(indicator, viewPager);
@@ -206,20 +206,15 @@ public class MainNaviActivity extends FragmentActivity implements
 	};
 
 	protected void onNewIntent(Intent intent) {
-		callNum = intent.getStringExtra("incoming_call_number");
-		callAddr = DbHelper.getInstance(this).getIncomingAddr(callNum);
-		DebugFlags.logD(TAG, "call addr is :" + callAddr);
-	}
-
-	@Override
-	public String getCallNum() {
-		return callNum;
-	}
-
-	@Override
-	public String getCallAddr() {
-		// TODO Auto-generated method stub
-		return callAddr;
+		DebugFlags.logD(TAG, "onNewIntent");
+		String callNum = intent.getStringExtra("incoming_call_number");
+		String callAddr = DbHelper.getInstance(this).getIncomingAddr(callNum);
+		indicatorViewPager.setCurrentItem(0, false);//将视图移至编辑页面
+		FragmentMain mFragment = (FragmentMain) indicatorViewPager
+				.getViewPager().getAdapter()
+				.instantiateItem(viewPager, 0);
+		mFragment.callNumber = callNum;
+		mFragment.callAddr = callAddr;
 	}
 
 	/**
@@ -336,7 +331,6 @@ public class MainNaviActivity extends FragmentActivity implements
 					return true;
 				}
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
-//					mDialog.dismiss();
 					arg0.dismiss();
 					return true;
 				}
@@ -371,5 +365,14 @@ public class MainNaviActivity extends FragmentActivity implements
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+//		DebugFlags.logD(TAG, "onResume");
+//		callNum = "";
+//		callAddr = "";
 	}
 }

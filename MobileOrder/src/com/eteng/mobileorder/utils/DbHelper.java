@@ -123,8 +123,6 @@ public class DbHelper {
 
 	public List<RemarkInfo> getRemarkInfos(Long categoryId) {
 		QueryBuilder<RemarkInfo> qb = remarkDao.queryBuilder();
-		qb.where(com.eteng.mobileorder.models.RemarkInfoDao.Properties.RemarkStatus
-				.eq("2"));
 		qb.where(com.eteng.mobileorder.models.RemarkInfoDao.Properties.BelongsToId.eq(categoryId));
 		qb.orderAsc(com.eteng.mobileorder.models.RemarkInfoDao.Properties.Order);
 		return qb.list();

@@ -15,6 +15,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -41,7 +43,7 @@ import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.PrintHelper;
 
-public class FragmentMain extends BaseFragment implements OnClickListener {
+public class FragmentMain extends BaseFragment implements OnClickListener{
 
 	private static final String TAG = "FragmentMain";
 
@@ -58,31 +60,14 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private OrderInfoModel mOrderInfo;
 
 	private Double totalPriceNum = 0.0;
-	private String callNumber = "";
-	private GetCallNum mDummyCall = new GetCallNum() {
-
-		@Override
-		public String getCallNum() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getCallAddr() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	};
-	private GetCallNum callback = mDummyCall;
+	public String callNumber = "";
+	public String callAddr = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		dishCombo = new ArrayList<OrderDetailModel>();
-		if (getActivity() instanceof GetCallNum) {
-			callback = (GetCallNum) getActivity();
-		}
 	}
 
 	@Override
@@ -142,6 +127,49 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 		if (!(dishCombo.size() > 0)) {
 			confirmLayout.setVisibility(View.INVISIBLE);
 		}
+		
+		telEditView.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				callNumber = s.toString();
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		addrEditView.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				callAddr = s.toString();
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@Override
@@ -263,7 +291,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	private void saveOrderInfo(String orderInfo) throws JSONException {
 		JSONObject orderJson = new JSONObject(orderInfo);
 		mOrderInfo = new OrderInfoModel();
-		mOrderInfo.setAddress(orderJson.getString("orderAddress"));
+		mOrderInfo.setAddress("");
 		mOrderInfo.setAddrId(orderJson.getString("addressId"));
 		mOrderInfo.setCreateTime(orderJson.getString("createTime"));
 		mOrderInfo.setOrderAddr(orderJson.getString("orderAddress"));
@@ -367,12 +395,10 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		callNumber = callback.getCallNum();
-		DebugFlags.logD(TAG, "callNumber " + callNumber);
-		if (callNumber.length() > 0) {
-			telEditView.setText(callNumber);
-			addrEditView.setText(callback.getCallAddr());
-		}
+		DebugFlags.logD(TAG, "-=-=-=-=-=-=callNumber "  + callNumber);
+		DebugFlags.logD(TAG, "-=-=-=-=-=-=callAddr "  + callAddr);
+		telEditView.setText(callNumber);
+		addrEditView.setText(callAddr);
 		if (!(dishCombo.size() > 0))
 			return;
 		double totalPrice = 0.0;
@@ -387,12 +413,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener {
 
 	@Override
 	public void onDestroy() {
-		callback = mDummyCall;
 		super.onDestroy();
-	}
-
-	interface GetCallNum {
-		String getCallNum();
-		String getCallAddr();
 	}
 }

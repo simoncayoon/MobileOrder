@@ -298,7 +298,6 @@ public class GetRemoteDateHelper {
 	void dismissHud() {
 		DebugFlags.logD(TAG, "loadCount " + loadCount);
 		if ((loadCount - 1) == maxCount) {
-			DebugFlags.logD(TAG, "xxxxxxxxxxxx");
 			mProgressHUD.dismiss();
 			callBack.showData();
 			callBack = mDummyCall;

@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eteng.mobileorder.cusomview.BadgeView;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.debug.DebugFlags;
@@ -32,8 +31,8 @@ import com.eteng.mobileorder.models.DishInfo;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.GetRemoteDateHelper;
-import com.eteng.mobileorder.utils.StringMaker;
 import com.eteng.mobileorder.utils.GetRemoteDateHelper.ShowData;
+import com.eteng.mobileorder.utils.StringMaker;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
@@ -50,7 +49,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	private ViewPager viewPager;
 	private ScrollIndicatorView indicator;
 	private Button addToComboList;
-	private BadgeView countView;
+//	private BadgeView countView;
 
 	private ArrayList<CategoryInfo> menuArray;
 	private ArrayList<OrderDetailModel> comboList;

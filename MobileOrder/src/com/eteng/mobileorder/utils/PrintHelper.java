@@ -29,7 +29,7 @@ public class PrintHelper {
 		String orderId = "订单编号:" + orderInfo.getOrderSn() + "\n";
 		String tel = "电话：" + orderInfo.getOrderTel() + "\n";
 		String date = "时间：" + orderInfo.getCreateTime() + "\n";
-		String addr = "地址：" + orderInfo.getAddress() + "\n";
+		String addr = "地址：" + orderInfo.getOrderAddr() + "\n";
 		headerString = orderId + tel + date + addr + "\r\n";
 		return headerString;
 	}
