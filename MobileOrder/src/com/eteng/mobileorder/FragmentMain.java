@@ -39,7 +39,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.models.OrderDetailModel;
@@ -257,6 +256,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 		} else {
 			Toast.makeText(getActivity(), "请查看蓝牙状态", Toast.LENGTH_SHORT).show();
 		}
+		clearDish();
 	}
 
 	private void pushOrderInfo() throws JSONException {
@@ -278,8 +278,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								DebugFlags.logD(TAG,
-										"返回的数据:" + respon.toString());
 								saveOrderInfo(respon.getString("order"));
 								printAction();
 							} else {
@@ -401,8 +399,9 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (data != null) {
-			dishCombo = data.getExtras().getParcelableArrayList(
-					Constants.DISH_COMBO_RESULT);
+			ArrayList<OrderDetailModel> transferData = data.getExtras()
+					.getParcelableArrayList(Constants.DISH_COMBO_RESULT);
+			dishCombo.addAll(transferData);
 			mAdapter.setDataSrc(dishCombo);
 			confirmLayout.setVisibility(View.VISIBLE);
 		}
@@ -412,8 +411,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 	@Override
 	public void onResume() {
 		super.onResume();
-		DebugFlags.logD(TAG, "-=-=-=-=-=-=callNumber " + callNumber);
-		DebugFlags.logD(TAG, "-=-=-=-=-=-=callAddr " + callAddr);
 		telEditView.setText(callNumber);
 		addrEditView.setText(callAddr);
 		if (!(dishCombo.size() > 0))
@@ -423,9 +420,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 			totalPrice += item.getTotalPrice();
 		}
 		totalPriceNum = totalPrice;
-		this.totalPrice.setText(String.format(
-				getResources().getString(R.string.total_price_text),
-				String.valueOf(totalPrice)));
+		setCurrentTotalPrice(totalPriceNum);
 	}
 
 	@Override
@@ -436,8 +431,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		DebugFlags.logD(TAG, "LongClick");
-		showSelectDialog(position, "确定删除这道菜品吗？");
+		showSelectDialog(position, "真的要删除这道菜品吗？");
 		return true;
 	}
 
@@ -465,13 +459,15 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				totalPriceNum -= dishCombo.get(position).getTotalPrice();
+				setCurrentTotalPrice(totalPriceNum);
 				dishCombo.remove(position);
-				mAdapter.notifyDataSetChanged();
-				
-				if(dishCombo.size() == 0){
+				if (dishCombo.size() == 0) {
 					totalPriceNum = 0.0;
 					confirmLayout.setVisibility(View.GONE);
+					return;
 				}
+				mAdapter.notifyDataSetChanged();
 			}
 		});
 		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -483,5 +479,28 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 		});
 		// 创建一个单选按钮对话框
 		builder.create().show();
+	}
+
+	/**
+	 * 设置当前菜单的总价
+	 * 
+	 * @param total
+	 */
+	void setCurrentTotalPrice(Double total) {
+		totalPrice.setText(String.format(
+				getResources().getString(R.string.total_price_text),
+				String.valueOf(total)));
+	}
+
+	/**
+	 * 清空当前已点菜品
+	 */
+	public void clearDish() {
+		try {
+			dishCombo.clear();// 清空点单数据
+			mAdapter.notifyDataSetChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

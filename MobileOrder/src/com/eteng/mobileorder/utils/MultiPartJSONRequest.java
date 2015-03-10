@@ -15,12 +15,11 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class MultiPartJSONRequest extends Request<JSONObject> implements
 		MultiPartRequest {
@@ -56,7 +55,7 @@ public class MultiPartJSONRequest extends Request<JSONObject> implements
 
 			@Override
 			public void retry(VolleyError arg0) throws VolleyError {
-			
+
 			}
 
 			@Override
@@ -123,15 +122,12 @@ public class MultiPartJSONRequest extends Request<JSONObject> implements
 		try {
 			String jsonString = new String(response.data,
 					HttpHeaderParser.parseCharset(response.headers));
-			DebugFlags.logD(TAG, "方法里获得的JSON   " + jsonString);
 			return Response.success(new JSONObject(jsonString),
 					HttpHeaderParser.parseCacheHeaders(response));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			DebugFlags.logD(TAG, "UnsupportedEncodingException " );
 			return Response.error(new ParseError(e));
 		} catch (JSONException je) {
-			DebugFlags.logD(TAG, "JSONException" );
 			return Response.error(new ParseError(je));
 		}
 	}

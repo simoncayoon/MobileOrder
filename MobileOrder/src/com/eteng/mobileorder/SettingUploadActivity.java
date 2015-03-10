@@ -19,7 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuCategoryModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -175,7 +174,6 @@ public class SettingUploadActivity extends FragmentActivity implements
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(

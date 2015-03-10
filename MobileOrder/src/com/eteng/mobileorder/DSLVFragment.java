@@ -32,7 +32,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuCategoryModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -239,7 +238,6 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						mProgressHUD.dismiss();
 					}
 				});
@@ -360,7 +358,6 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						showToast(getResources().getString(
 								R.string.toast_remind_commit_failed));
 						mProgressHUD.dismiss();

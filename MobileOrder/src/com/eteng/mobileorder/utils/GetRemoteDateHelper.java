@@ -16,7 +16,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.DishInfo;
@@ -66,9 +65,8 @@ public class GetRemoteDateHelper {
 	public void getMenuCategory() {
 		if (((ArrayList<CategoryInfo>) DbHelper.getInstance(mContext)
 				.getLocalCategory()).size() > 0) {// 存在本地数据
-			DebugFlags.logD(TAG, "存在数据！！！");
+			
 		} else {
-			DebugFlags.logD(TAG, "不存在，在线加载");
 			mProgressHUD = ProgressHUD.show(mContext, mContext.getResources()
 					.getString(R.string.toast_remind_loading), true, false,
 					new OnCancelListener() {
@@ -100,7 +98,6 @@ public class GetRemoteDateHelper {
 						@Override
 						public void onErrorResponse(VolleyError arg0) {
 							loadCount++;
-							DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 							dismissHud();
 						}
 					});
@@ -186,7 +183,6 @@ public class GetRemoteDateHelper {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						loadCount++;
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						dismissHud();
 					}
 				});
@@ -273,7 +269,6 @@ public class GetRemoteDateHelper {
 					public void onErrorResponse(VolleyError arg0) {
 						loadCount++;
 						dismissHud();
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
 		NetController.getInstance(appContext).addToRequestQueue(getMenuRequest,
@@ -296,7 +291,6 @@ public class GetRemoteDateHelper {
 	}
 
 	void dismissHud() {
-		DebugFlags.logD(TAG, "loadCount " + loadCount);
 		if ((loadCount - 1) == maxCount) {
 			mProgressHUD.dismiss();
 			callBack.showData();

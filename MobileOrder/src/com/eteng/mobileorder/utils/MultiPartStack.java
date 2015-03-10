@@ -31,7 +31,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.toolbox.HurlStack;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class MultiPartStack extends HurlStack {
 
@@ -140,8 +139,6 @@ public class MultiPartStack extends HurlStack {
 			throws AuthFailureError {
 		// Return if Request is not MultiPartRequest
 		if (!(request instanceof MultiPartRequest)) {
-			DebugFlags.logD(TAG,
-					"oops~~ request must be implement MultiPartRequest!");
 			return;
 		}
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();

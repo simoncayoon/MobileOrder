@@ -40,7 +40,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
@@ -69,6 +68,7 @@ public class MainNaviActivity extends FragmentActivity implements
 	private MyAdapter mAdapter;
 //	private String callNum = "";
 //	private String callAddr = "";
+	@SuppressWarnings("unused")
 	private boolean DIALOG_SHOW = false;
 
 	@Override
@@ -206,7 +206,6 @@ public class MainNaviActivity extends FragmentActivity implements
 	};
 
 	protected void onNewIntent(Intent intent) {
-		DebugFlags.logD(TAG, "onNewIntent");
 		String callNum = intent.getStringExtra("incoming_call_number");
 		String callAddr = DbHelper.getInstance(this).getIncomingAddr(callNum);
 		indicatorViewPager.setCurrentItem(0, false);//将视图移至编辑页面
@@ -215,6 +214,7 @@ public class MainNaviActivity extends FragmentActivity implements
 				.instantiateItem(viewPager, 0);
 		mFragment.callNumber = callNum;
 		mFragment.callAddr = callAddr;
+		mFragment.clearDish();
 	}
 
 	/**

@@ -8,7 +8,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import com.eteng.mobileorder.MainNaviActivity;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class PhoneCallListenerService extends Service {
 
@@ -36,7 +35,6 @@ public class PhoneCallListenerService extends Service {
 		public void onCallStateChanged(int state, String incomingNumber) {
 			// TODO Auto-generated method stub
 			if (state == TelephonyManager.CALL_STATE_RINGING) {// 来电
-				DebugFlags.logD(TAG, "来电啦!" + incomingNumber); 
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_LAUNCHER);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -52,5 +50,5 @@ public class PhoneCallListenerService extends Service {
 			}
 			super.onCallStateChanged(state, incomingNumber);
 		}
-	}   
+	}
 }

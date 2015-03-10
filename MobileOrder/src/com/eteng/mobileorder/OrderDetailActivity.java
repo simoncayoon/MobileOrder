@@ -25,7 +25,6 @@ import com.eteng.mobileorder.adapter.DishComboAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.models.OrderInfoModel;
@@ -128,18 +127,11 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								DebugFlags.logD(TAG, "订单详情JSON：" + respon.toString());
 								setHaderContent(new JSONObject(
 										respon.getString("orderInfo")));// 设置头部信息
 								setListContent(new JSONArray(
 										respon.getString("orderDetailsList")));// 设置订单详情内容
-							} else {
-								DebugFlags.logD(
-										TAG,
-										"oops! the server msg is :"
-												+ respon.getString("msg"));
-							}
-
+							} 
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -149,7 +141,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
+						mProgressHUD.dismiss();
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -182,7 +174,6 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		for (int i = 0; i < jsonArray.length(); i++) {
 			OrderDetailModel temp = new OrderDetailModel();
 			JSONObject item = new JSONObject(jsonArray.getString(i));
-			DebugFlags.logD(TAG, "data list " + item.toString());
 			temp.setAttachName(item.getString("goodsAttachName"));
 			temp.setAskFor(item.getString("askFor"));
 			temp.setTotalPrice(item.getDouble("totalPrice"));

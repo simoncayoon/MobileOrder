@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="com.eteng.mobileorder.MobileOrderApplication"
@@ -35,24 +35,45 @@
         </activity>
         <activity
             android:name="com.eteng.mobileorder.MainNaviActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"
-            android:windowSoftInputMode="adjustPan" android:launchMode="singleTask">
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
-                <action android:name="android.intent.action.ANSWER"/>
+                <action android:name="android.intent.action.ANSWER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.eteng.mobileorder.PhoneOrderActivity" />
-        <activity android:name="com.eteng.mobileorder.SettingActivity" />
-        <activity android:name="com.eteng.mobileorder.OrderDetailActivity" />
-        <activity android:name="com.eteng.mobileorder.SettingOwnProfile" android:windowSoftInputMode="adjustPan|adjustNothing"/>
-        <activity android:name="com.eteng.mobileorder.SettingUploadActivity" />
-        <activity android:name="com.eteng.mobileorder.SettingMenuByCategory" />
-        <activity android:name="com.eteng.mobileorder.SettingDishImgUpload" />
+        <activity
+            android:name="com.eteng.mobileorder.PhoneOrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.OrderDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.SettingOwnProfile"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|adjustNothing" />
+        <activity
+            android:name="com.eteng.mobileorder.SettingUploadActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.SettingMenuByCategory"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.SettingDishImgUpload"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.eteng.mobileorder.LoginActivity"
             android:launchMode="singleTop" />
-        <activity android:name="com.eteng.mobileorder.CustomerInfoActivity" />
-        <activity android:name="com.eteng.mobileorder.RemarkEditActivity" />
+        <activity
+            android:name="com.eteng.mobileorder.CustomerInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.eteng.mobileorder.RemarkEditActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name="com.eteng.mobileorder.server.PhoneCallListenerService" />
 

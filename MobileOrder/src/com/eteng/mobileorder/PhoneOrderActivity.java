@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.DishInfo;
@@ -43,6 +42,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		OrderPhoneFragment.Callbacks, NaviBtnListener, OnClickListener,
 		ShowData {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "PhoneOrderActivity";
 	private IndicatorViewPager indicatorViewPager;
 	private LayoutInflater inflate;
@@ -148,7 +148,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 		if (getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
 				Context.MODE_PRIVATE).getBoolean(Constants.KEY_IS_FIRST_VISIT,
 				true)) {// 第一次登陆，同步数据
-			DebugFlags.logD(TAG, "test第一次登陆，同步数据");
 			GetRemoteDateHelper getRemote = new GetRemoteDateHelper(this,
 					getApplicationContext());
 			getRemote.getRemoteDate();
@@ -210,15 +209,12 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 			tempFragment = getFragWithposition(i);
 			if (tempFragment == null) {
-				DebugFlags.logD(TAG, "test wo de " + i);
 				continue;
 			}
 			if (tempFragment.categoryId == null) {
-				DebugFlags.logD(TAG, "categoryId wo de " + i);
 				continue;
 			}
 			if (tempFragment.mAdapter == null) {
-				DebugFlags.logD(TAG, "mAdapter wo de " + i);
 				continue;
 			}
 			if (tempFragment.categoryId.equals(0)
@@ -236,7 +232,6 @@ public class PhoneOrderActivity extends FragmentActivity implements
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					DebugFlags.logD(TAG, "test " + (tempFragment.getAdapter().isMainCheck ? "选中主食状态" : "未选中主食"));
 					OrderDetailModel orderItem = new OrderDetailModel();
 					StringBuilder sb = new StringBuilder();
 					Double totalPrice = 0.0;// 总价

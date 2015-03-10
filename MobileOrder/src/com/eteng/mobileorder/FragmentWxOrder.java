@@ -27,7 +27,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.OrderListAdapter;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderWXModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -104,12 +103,7 @@ public class FragmentWxOrder extends BaseFragment implements
 										.getString("orderList")));
 								mList.setAdapter(new OrderListAdapter(
 										getActivity(), orderDataList));
-							} else {
-								DebugFlags.logD(
-										TAG,
-										"oops! the server msg is :"
-												+ respon.getString("msg"));
-							}
+							} 
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -119,7 +113,6 @@ public class FragmentWxOrder extends BaseFragment implements
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						mList.onRefreshComplete();
 					}
 				});

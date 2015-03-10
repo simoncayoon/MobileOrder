@@ -26,7 +26,6 @@ import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.utils.DbHelper;
@@ -102,11 +101,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 									parseSrcData(respon
 											.getString("customerList"));
 									setAdapter();
-								} else {
-									DebugFlags.logD(TAG,
-											"oops! the server msg is :"
-													+ respon.getString("msg"));
-								}
+								} 
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
@@ -116,7 +111,6 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 					}, new Response.ErrorListener() {
 						@Override
 						public void onErrorResponse(VolleyError arg0) {
-							DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 							mProgressHUD.dismiss();
 						}
 					});

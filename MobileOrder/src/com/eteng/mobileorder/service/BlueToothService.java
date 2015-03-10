@@ -19,7 +19,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.eteng.mobileorder.MobileOrderApplication;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class BlueToothService {
 
@@ -139,7 +138,7 @@ public class BlueToothService {
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 		// �����������豸
 		if(context instanceof MobileOrderApplication){
-			DebugFlags.logD(TAG, "context instanceof MobileOrderApplication");
+			
 		}
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		context.startActivity(intent);

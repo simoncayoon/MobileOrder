@@ -42,7 +42,6 @@ import com.android.volley.toolbox.Volley;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.MultiPartJSONRequest;
@@ -197,9 +196,6 @@ public class SettingDishImgUpload extends Activity implements NaviBtnListener,
 
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						// TODO Auto-generated method stub
-						DebugFlags.logD(TAG,
-								"onErrorResponse " + error.getMessage());
 						Toast.makeText(
 								SettingDishImgUpload.this,
 								getResources().getString(

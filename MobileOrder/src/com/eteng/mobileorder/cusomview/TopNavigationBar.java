@@ -11,10 +11,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.debug.DebugFlags;
 
 public class TopNavigationBar extends RelativeLayout {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "TopNavigationBar";
 
 	private Button leftBtn, rightBtn, tempBtn;
@@ -91,7 +91,7 @@ public class TopNavigationBar extends RelativeLayout {
         try{
         	lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT); 
         } catch (IllegalArgumentException e){
-        	DebugFlags.logD(TAG, e.getMessage());
+        	e.printStackTrace();
         }
         lp.addRule(RelativeLayout.CENTER_VERTICAL);  
         lp.setMargins(10, 0, 10, 0);  
@@ -127,7 +127,7 @@ public class TopNavigationBar extends RelativeLayout {
         try{
         	lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT); 
         } catch (IllegalArgumentException e){
-        	DebugFlags.logD(TAG, e.getMessage());
+        	e.printStackTrace();
         }
         lp.addRule(RelativeLayout.CENTER_VERTICAL);  
         lp.setMargins(10, 0, 10, 0);  

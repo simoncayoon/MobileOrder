@@ -2,20 +2,13 @@ package com.eteng.mobileorder;
 
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,21 +29,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.debug.DebugFlags;
-import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.DishInfo;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
 import com.eteng.mobileorder.service.BlueToothService.OnReceiveDataHandleEvent;
-import com.eteng.mobileorder.utils.DbHelper;
-import com.eteng.mobileorder.utils.JsonUTF8Request;
-import com.eteng.mobileorder.utils.NetController;
 import com.kyleduo.switchbutton.SwitchButton;
 
 public class SettingActivity extends Activity implements

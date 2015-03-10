@@ -39,7 +39,6 @@ import com.android.volley.VolleyError;
 import com.eteng.mobileorder.adapter.OrderListAdapter;
 import com.eteng.mobileorder.cusomview.DatePicker;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderWXModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -162,13 +161,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 										.getString("orderList")));
 								mListView.setAdapter(new OrderListAdapter(
 										getActivity(), orderDataList));
-							} else {
-								DebugFlags.logD(
-										TAG,
-										"oops! the server msg is :"
-												+ respon.getString("msg"));
-							}
-
+							} 
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -178,7 +171,6 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						mProgressHUD.dismiss();
 					}
 				});

@@ -23,6 +23,7 @@ import com.eteng.mobileorder.utils.DbHelper;
 public class OrderPhoneFragment extends BaseFragment implements
 		OnItemClickListener {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "OrderPhoneFragment";
 	private static final String KEY_LIST_POSITION = "key_list_position";
 	public static final String INTENT_INT_CATEGORY_ID = "intent_int_category_id";

@@ -35,7 +35,6 @@ import com.eteng.mobileorder.adapter.SettingMenuCategoryAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
@@ -169,7 +168,6 @@ public class SettingMenuByCategory extends ListActivity implements
 
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						mProgressHUD.dismiss();
 					}
 				});
@@ -313,7 +311,6 @@ public class SettingMenuByCategory extends ListActivity implements
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						showToast(getResources().getString(
 								R.string.toast_remind_delete_failed));
 						mProgressHUD.dismiss();
@@ -358,7 +355,7 @@ public class SettingMenuByCategory extends ListActivity implements
 				"sellerId",
 				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
 						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
-						""));// 测试ID，以后用shareperference保存
+						""));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		builder.appendQueryParameter("className", newName);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
@@ -383,7 +380,6 @@ public class SettingMenuByCategory extends ListActivity implements
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(

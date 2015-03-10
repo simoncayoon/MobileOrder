@@ -30,7 +30,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.SellerInfo;
 import com.eteng.mobileorder.models.SellerInfoDao;
@@ -184,7 +183,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						Toast.makeText(
 								LoginActivity.this,
 								getResources().getString(
@@ -201,7 +199,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 		
 		JSONObject infoJson = new JSONObject(respon.getString("seller"));
 		int id = infoJson.getInt("sellerId");
-		DebugFlags.logD(TAG, "id======" + id);
 		String name = infoJson.getString("sellerName");
 		String tel = infoJson.getString("linkTel");
 		String detail = infoJson.getString("sellerDetail");

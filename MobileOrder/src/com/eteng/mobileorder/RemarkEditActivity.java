@@ -32,7 +32,6 @@ import com.eteng.mobileorder.cusomview.RemarkListInterface.RemarkNameAdapter;
 import com.eteng.mobileorder.cusomview.RemarkListView;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
-import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.RemarkModel;
 import com.eteng.mobileorder.utils.JsonPostRequest;
@@ -122,7 +121,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -207,7 +205,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
 						mProgressHUD.dismiss();
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 					}
 				});
 		NetController.getInstance(getApplicationContext()).addToRequestQueue(
@@ -309,7 +306,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						DebugFlags.logD(TAG, "oops!!! " + arg0.getMessage());
 						Toast.makeText(RemarkEditActivity.this, "更改失败",
 								Toast.LENGTH_SHORT).show();
 						mProgressHUD.dismiss();
