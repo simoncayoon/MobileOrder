@@ -31,6 +31,7 @@ import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderWXModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -73,13 +74,8 @@ public class FragmentWxOrder extends BaseFragment implements
 	private void getData() {
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(getActivity()).getSellerId()));
 		builder.appendQueryParameter("queryType", Constants.ORDER_QUERY_TYPE_WX);
 		builder.appendQueryParameter("page", "00");
 		builder.appendQueryParameter("pageCount", "00");
@@ -103,7 +99,7 @@ public class FragmentWxOrder extends BaseFragment implements
 										.getString("orderList")));
 								mList.setAdapter(new OrderListAdapter(
 										getActivity(), orderDataList));
-							} 
+							}
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

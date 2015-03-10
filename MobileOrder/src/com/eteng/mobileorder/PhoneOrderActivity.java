@@ -3,10 +3,7 @@ package com.eteng.mobileorder;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +29,7 @@ import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.GetRemoteDateHelper;
 import com.eteng.mobileorder.utils.GetRemoteDateHelper.ShowData;
 import com.eteng.mobileorder.utils.StringMaker;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorFragmentPagerAdapter;
 import com.shizhefei.view.indicator.ScrollIndicatorView;
@@ -49,7 +47,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	private ViewPager viewPager;
 	private ScrollIndicatorView indicator;
 	private Button addToComboList;
-//	private BadgeView countView;
+	// private BadgeView countView;
 
 	private ArrayList<CategoryInfo> menuArray;
 	private ArrayList<OrderDetailModel> comboList;
@@ -81,7 +79,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 	}
 
 	private void initMenuView() {
-		
+
 		indicator = (ScrollIndicatorView) findViewById(R.id.moretab_indicator);
 
 		indicator.setScrollBar(new ColorBar(PhoneOrderActivity.this, Color.RED,
@@ -130,32 +128,21 @@ public class PhoneOrderActivity extends FragmentActivity implements
 			bundle.putBoolean(OrderPhoneFragment.INTENT_IS_NOODLE, menuArray
 					.get(position).getIsNoodle());
 			if (menuArray.get(position).getIsNoodle()) {// 保存粉面的ID
-				Editor editor = getSharedPreferences(
-						Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE)
-						.edit();
-				editor.putString(Constants.NOODLE_ID,
-						String.valueOf(menuArray.get(position).getCategoryId()));
-				editor.commit();
+				TempDataManager.getInstance(PhoneOrderActivity.this)
+						.saveNoodleid(menuArray.get(position).getCategoryId());
 			}
 			fragment.setArguments(bundle);
 			return fragment;
 		}
-
 	}
 
 	void getMenuCategory() {
 
-		if (getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE).getBoolean(Constants.KEY_IS_FIRST_VISIT,
-				true)) {// 第一次登陆，同步数据
+		if (TempDataManager.getInstance(this).getIsFirstVisit()) {// 第一次登陆，同步数据
 			GetRemoteDateHelper getRemote = new GetRemoteDateHelper(this,
 					getApplicationContext());
 			getRemote.getRemoteDate();
-			SharedPreferences sp = getSharedPreferences(
-					Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE);
-			Editor editor = sp.edit();
-			editor.putBoolean(Constants.KEY_IS_FIRST_VISIT, false);
-			editor.commit();
+			TempDataManager.getInstance(this).setIsFirstVisit(false);
 		} else {// 加载本地数据
 			refreshData();
 		}
@@ -274,7 +261,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 					orderItem.setComboName(sb.toString());// 填充展示组合名称
 					orderItem.setTotalPrice(totalPrice);// 填充单项订单总价
 					comboList.add(orderItem);
-					tempFragment.mAdapter.isMainCheck = false;//重置主食选择状态
+					tempFragment.mAdapter.isMainCheck = false;// 重置主食选择状态
 					continue;
 				}
 				for (DishInfo item : tempList) {
@@ -307,7 +294,7 @@ public class PhoneOrderActivity extends FragmentActivity implements
 				tempFragment.mAdapter.resetDataDefault();// 清除选中效果
 			}
 		}
-		
+
 	}
 
 	private OrderPhoneFragment getFragWithposition(int position) {

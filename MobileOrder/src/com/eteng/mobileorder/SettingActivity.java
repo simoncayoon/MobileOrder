@@ -34,6 +34,7 @@ import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
 import com.eteng.mobileorder.service.BlueToothService.OnReceiveDataHandleEvent;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.kyleduo.switchbutton.SwitchButton;
 
 public class SettingActivity extends Activity implements
@@ -257,14 +258,7 @@ public class SettingActivity extends Activity implements
 			}
 		}
 		if (id == R.id.exit_app_btn) {
-			SharedPreferences sp = getSharedPreferences(
-					Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE);
-			Editor editor = sp.edit();
-			editor.putBoolean(Constants.SP_SAVE_PWD_STATE, false);
-			editor.putString(Constants.SP_LOGIN_ACCOUNT, "");
-			editor.putString(Constants.SP_LOGIN_PWD, "");
-			editor.putString(Constants.SP_SELLER_ID, "");
-			editor.commit();
+			TempDataManager.getInstance(this).clearCurrentTemp();
 			startActivity(new Intent(SettingActivity.this, LoginActivity.class));
 			finish();
 		}
@@ -451,16 +445,15 @@ public class SettingActivity extends Activity implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-//		DebugFlags.logD(TAG, "long click");
-//		if (menuList[position].equals("菜单上传")) {// 添加类目信息、菜品信息到本地
-//			loadCount = 0;
-//			getMenuCategory();
-//		}
-//		if (menuList[position].equals("备注信息")) {
-//
-//		}
+		// DebugFlags.logD(TAG, "long click");
+		// if (menuList[position].equals("菜单上传")) {// 添加类目信息、菜品信息到本地
+		// loadCount = 0;
+		// getMenuCategory();
+		// }
+		// if (menuList[position].equals("备注信息")) {
+		//
+		// }
 		return false;
 	}
-
 
 }

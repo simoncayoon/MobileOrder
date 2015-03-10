@@ -9,54 +9,63 @@ package com.eteng.mobileorder.models;
  */
 public class CustomerInfo {
 
-	private Long id;
-	private String customerTel;
-	private String customerAddr;
+    private Long id;
+    private String customerTel;
+    private String customerAddr;
+    private Long sellerId;
 
-	// KEEP FIELDS - put your custom fields here
+    // KEEP FIELDS - put your custom fields here
 	private String orderTimes;// 点单次数
 	private String totalConsumption;// 消费总额
+    // KEEP FIELDS END
 
-	// KEEP FIELDS END
+    public CustomerInfo() {
+    }
 
-	public CustomerInfo() {
-	}
+    public CustomerInfo(Long id) {
+        this.id = id;
+    }
 
-	public CustomerInfo(Long id) {
-		this.id = id;
-	}
+    public CustomerInfo(Long id, String customerTel, String customerAddr, Long sellerId) {
+        this.id = id;
+        this.customerTel = customerTel;
+        this.customerAddr = customerAddr;
+        this.sellerId = sellerId;
+    }
 
-	public CustomerInfo(Long id, String customerTel, String customerAddr) {
-		this.id = id;
-		this.customerTel = customerTel;
-		this.customerAddr = customerAddr;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getCustomerTel() {
+        return customerTel;
+    }
 
-	public String getCustomerTel() {
-		return customerTel;
-	}
+    public void setCustomerTel(String customerTel) {
+        this.customerTel = customerTel;
+    }
 
-	public void setCustomerTel(String customerTel) {
-		this.customerTel = customerTel;
-	}
+    public String getCustomerAddr() {
+        return customerAddr;
+    }
 
-	public String getCustomerAddr() {
-		return customerAddr;
-	}
+    public void setCustomerAddr(String customerAddr) {
+        this.customerAddr = customerAddr;
+    }
 
-	public void setCustomerAddr(String customerAddr) {
-		this.customerAddr = customerAddr;
-	}
+    public Long getSellerId() {
+        return sellerId;
+    }
 
-	// KEEP METHODS - put your custom methods here
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    // KEEP METHODS - put your custom methods here
 	public String getOrderTimes() {
 		return orderTimes;
 	}
@@ -72,7 +81,6 @@ public class CustomerInfo {
 	public void setTotalConsumption(String totalConsumption) {
 		this.totalConsumption = totalConsumption;
 	}
-
-	// KEEP METHODS END
+    // KEEP METHODS END
 
 }

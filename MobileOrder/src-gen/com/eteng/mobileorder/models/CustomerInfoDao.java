@@ -1,5 +1,6 @@
 package com.eteng.mobileorder.models;
 
+import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -7,6 +8,8 @@ import android.database.sqlite.SQLiteStatement;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
+import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.query.QueryBuilder;
 
 import com.eteng.mobileorder.models.CustomerInfo;
 
@@ -26,8 +29,10 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property CustomerTel = new Property(1, String.class, "customerTel", false, "CUSTOMER_TEL");
         public final static Property CustomerAddr = new Property(2, String.class, "customerAddr", false, "CUSTOMER_ADDR");
+        public final static Property SellerId = new Property(3, Long.class, "sellerId", false, "SELLER_ID");
     };
 
+    private Query<CustomerInfo> sellerInfo_CustomersQuery;
 
     public CustomerInfoDao(DaoConfig config) {
         super(config);
@@ -43,7 +48,8 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'CUSTOMER_INFO' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'CUSTOMER_TEL' TEXT UNIQUE ," + // 1: customerTel
-                "'CUSTOMER_ADDR' TEXT);"); // 2: customerAddr
+                "'CUSTOMER_ADDR' TEXT," + // 2: customerAddr
+                "'SELLER_ID' INTEGER);"); // 3: sellerId
     }
 
     /** Drops the underlying database table. */
@@ -71,6 +77,11 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         if (customerAddr != null) {
             stmt.bindString(3, customerAddr);
         }
+ 
+        Long sellerId = entity.getSellerId();
+        if (sellerId != null) {
+            stmt.bindLong(4, sellerId);
+        }
     }
 
     /** @inheritdoc */
@@ -85,7 +96,8 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         CustomerInfo entity = new CustomerInfo( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // customerTel
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // customerAddr
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // customerAddr
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3) // sellerId
         );
         return entity;
     }
@@ -96,6 +108,7 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setCustomerTel(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setCustomerAddr(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setSellerId(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
      }
     
     /** @inheritdoc */
@@ -121,4 +134,18 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         return true;
     }
     
+    /** Internal query to resolve the "customers" to-many relationship of SellerInfo. */
+    public List<CustomerInfo> _querySellerInfo_Customers(Long sellerId) {
+        synchronized (this) {
+            if (sellerInfo_CustomersQuery == null) {
+                QueryBuilder<CustomerInfo> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.SellerId.eq(null));
+                sellerInfo_CustomersQuery = queryBuilder.build();
+            }
+        }
+        Query<CustomerInfo> query = sellerInfo_CustomersQuery.forCurrentThread();
+        query.setParameter(0, sellerId);
+        return query.list();
+    }
+
 }

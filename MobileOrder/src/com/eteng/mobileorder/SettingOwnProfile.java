@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.SellerInfoDao;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class SettingOwnProfile extends Activity implements
 		TopNavigationBar.NaviBtnListener {
@@ -23,7 +24,6 @@ public class SettingOwnProfile extends Activity implements
 
 	private EditText nameEdit, telEdit, dishEdit, scopeEdit, addrEdit;
 	private Button saveBtn;
-	private SharedPreferences sp;
 	private TopNavigationBar topBar;
 
 	@Override
@@ -31,8 +31,6 @@ public class SettingOwnProfile extends Activity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_own_profile_layout);
-		sp = getSharedPreferences(Constants.SP_OWN_PROFILE_NAME,
-				Activity.MODE_PRIVATE);
 		initView();
 		initData();
 	}
@@ -46,7 +44,7 @@ public class SettingOwnProfile extends Activity implements
 		addrEdit = (EditText) findViewById(R.id.setting_own_profile_addr_edit);
 		saveBtn = (Button) findViewById(R.id.setting_own_profile_save_btn);
 		dishEdit.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				v.getParent().requestDisallowInterceptTouchEvent(true);
@@ -59,7 +57,7 @@ public class SettingOwnProfile extends Activity implements
 		topBar.setTitle("我的资料");
 		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
 		getSellerInfo();
-		
+
 		saveBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -69,24 +67,34 @@ public class SettingOwnProfile extends Activity implements
 	}
 
 	private void getSellerInfo() {
-		SellerInfoDao infoDao = MobileOrderApplication.getInstance().getDaoSession().getSellerInfoDao();
-		Cursor cursor = infoDao.getDatabase().query(infoDao.getTablename(), infoDao.getAllColumns(), null, null, null, null, null);
+		SellerInfoDao infoDao = MobileOrderApplication.getInstance()
+				.getDaoSession().getSellerInfoDao();
+		Cursor cursor = infoDao.getDatabase().query(
+				infoDao.getTablename(),
+				infoDao.getAllColumns(),
+				"SELLER_ID = "
+						+ String.valueOf(TempDataManager.getInstance(this)
+								.getSellerId()), null, null, null, null);
 		cursor.moveToFirst();
-		for(int i = 0; i < infoDao.getAllColumns().length; i++){
-			String columnName = cursor.getColumnName(cursor.getColumnIndex(infoDao.getAllColumns()[i]));
-			String content =  cursor.getString(cursor.getColumnIndex(infoDao.getAllColumns()[i]));
-			if(columnName.equals("SELLER_NAME")){
+		for (int i = 0; i < infoDao.getAllColumns().length; i++) {
+			String columnName = cursor.getColumnName(cursor
+					.getColumnIndex(infoDao.getAllColumns()[i]));
+			String content = cursor.getString(cursor.getColumnIndex(infoDao
+					.getAllColumns()[i]));
+			if (columnName.equals("SELLER_NAME")) {
 				nameEdit.setText(content);
-			}else if(columnName.equals("SELLER_TEL")){
+			} else if (columnName.equals("SELLER_TEL")) {
 				telEdit.setText(content);
-			}else if(columnName.equals("SELLER_DETAIL")){
+			} else if (columnName.equals("SELLER_DETAIL")) {
 				dishEdit.setText(content);
-			}else if(columnName.equals("SELLER_SCOPE")){
+			} else if (columnName.equals("SELLER_SCOPE")) {
 				scopeEdit.setText(content);
-			}else if(columnName.equals("SELLER_ADDR")){
+			} else if (columnName.equals("SELLER_ADDR")) {
 				addrEdit.setText(content);
 			}
 		}
+		
+		cursor.close();
 	}
 
 	@Override

@@ -7,29 +7,29 @@ import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 // KEEP INCLUDES END
 /**
  * Entity mapped to table DISH_INFO.
  */
 public class DishInfo implements Parcelable {
 
-	private long dishId;
-	private String dishName;
-	private Float price;
-	private String dishImgPath;
-	private String createPerson;
-	private String createDate;
-	private Float discountPrice;
-	private String dishSummary;
-	private Long dishCategory;
-	private String dishStock;
-	private Integer dishOrder;
-	private String dishSerial;
-	private String dishStatus;
-	private String dishType;
+    private long dishId;
+    private String dishName;
+    private Float price;
+    private String dishImgPath;
+    private String createPerson;
+    private String createDate;
+    private Float discountPrice;
+    private String dishSummary;
+    private Long dishCategory;
+    private String dishStock;
+    private Integer dishOrder;
+    private String dishSerial;
+    private String dishStatus;
+    private String dishType;
+    private Long seller_id;
 
-	// KEEP FIELDS - put your custom fields here
+    // KEEP FIELDS - put your custom fields here
 	/**
 	 * 备注信息
 	 */
@@ -39,150 +39,154 @@ public class DishInfo implements Parcelable {
 	 * 选择状态
 	 */
 	private boolean choiceState = false;
+    // KEEP FIELDS END
 
-	// KEEP FIELDS END
+    public DishInfo() {
+    }
 
-	public DishInfo() {
-	}
+    public DishInfo(long dishId) {
+        this.dishId = dishId;
+    }
 
-	public DishInfo(long dishId) {
-		this.dishId = dishId;
-	}
+    public DishInfo(long dishId, String dishName, Float price, String dishImgPath, String createPerson, String createDate, Float discountPrice, String dishSummary, Long dishCategory, String dishStock, Integer dishOrder, String dishSerial, String dishStatus, String dishType, Long seller_id) {
+        this.dishId = dishId;
+        this.dishName = dishName;
+        this.price = price;
+        this.dishImgPath = dishImgPath;
+        this.createPerson = createPerson;
+        this.createDate = createDate;
+        this.discountPrice = discountPrice;
+        this.dishSummary = dishSummary;
+        this.dishCategory = dishCategory;
+        this.dishStock = dishStock;
+        this.dishOrder = dishOrder;
+        this.dishSerial = dishSerial;
+        this.dishStatus = dishStatus;
+        this.dishType = dishType;
+        this.seller_id = seller_id;
+    }
 
-	public DishInfo(long dishId, String dishName, Float price,
-			String dishImgPath, String createPerson, String createDate,
-			Float discountPrice, String dishSummary, Long dishCategory,
-			String dishStock, Integer dishOrder, String dishSerial,
-			String dishStatus, String dishType) {
-		this.dishId = dishId;
-		this.dishName = dishName;
-		this.price = price;
-		this.dishImgPath = dishImgPath;
-		this.createPerson = createPerson;
-		this.createDate = createDate;
-		this.discountPrice = discountPrice;
-		this.dishSummary = dishSummary;
-		this.dishCategory = dishCategory;
-		this.dishStock = dishStock;
-		this.dishOrder = dishOrder;
-		this.dishSerial = dishSerial;
-		this.dishStatus = dishStatus;
-		this.dishType = dishType;
-	}
+    public long getDishId() {
+        return dishId;
+    }
 
-	public long getDishId() {
-		return dishId;
-	}
+    public void setDishId(long dishId) {
+        this.dishId = dishId;
+    }
 
-	public void setDishId(long dishId) {
-		this.dishId = dishId;
-	}
+    public String getDishName() {
+        return dishName;
+    }
 
-	public String getDishName() {
-		return dishName;
-	}
+    public void setDishName(String dishName) {
+        this.dishName = dishName;
+    }
 
-	public void setDishName(String dishName) {
-		this.dishName = dishName;
-	}
+    public Float getPrice() {
+        return price;
+    }
 
-	public Float getPrice() {
-		return price;
-	}
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
-	public void setPrice(Float price) {
-		this.price = price;
-	}
+    public String getDishImgPath() {
+        return dishImgPath;
+    }
 
-	public String getDishImgPath() {
-		return dishImgPath;
-	}
+    public void setDishImgPath(String dishImgPath) {
+        this.dishImgPath = dishImgPath;
+    }
 
-	public void setDishImgPath(String dishImgPath) {
-		this.dishImgPath = dishImgPath;
-	}
+    public String getCreatePerson() {
+        return createPerson;
+    }
 
-	public String getCreatePerson() {
-		return createPerson;
-	}
+    public void setCreatePerson(String createPerson) {
+        this.createPerson = createPerson;
+    }
 
-	public void setCreatePerson(String createPerson) {
-		this.createPerson = createPerson;
-	}
+    public String getCreateDate() {
+        return createDate;
+    }
 
-	public String getCreateDate() {
-		return createDate;
-	}
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
 
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
+    public Float getDiscountPrice() {
+        return discountPrice;
+    }
 
-	public Float getDiscountPrice() {
-		return discountPrice;
-	}
+    public void setDiscountPrice(Float discountPrice) {
+        this.discountPrice = discountPrice;
+    }
 
-	public void setDiscountPrice(Float discountPrice) {
-		this.discountPrice = discountPrice;
-	}
+    public String getDishSummary() {
+        return dishSummary;
+    }
 
-	public String getDishSummary() {
-		return dishSummary;
-	}
+    public void setDishSummary(String dishSummary) {
+        this.dishSummary = dishSummary;
+    }
 
-	public void setDishSummary(String dishSummary) {
-		this.dishSummary = dishSummary;
-	}
+    public Long getDishCategory() {
+        return dishCategory;
+    }
 
-	public Long getDishCategory() {
-		return dishCategory;
-	}
+    public void setDishCategory(Long dishCategory) {
+        this.dishCategory = dishCategory;
+    }
 
-	public void setDishCategory(Long dishCategory) {
-		this.dishCategory = dishCategory;
-	}
+    public String getDishStock() {
+        return dishStock;
+    }
 
-	public String getDishStock() {
-		return dishStock;
-	}
+    public void setDishStock(String dishStock) {
+        this.dishStock = dishStock;
+    }
 
-	public void setDishStock(String dishStock) {
-		this.dishStock = dishStock;
-	}
+    public Integer getDishOrder() {
+        return dishOrder;
+    }
 
-	public Integer getDishOrder() {
-		return dishOrder;
-	}
+    public void setDishOrder(Integer dishOrder) {
+        this.dishOrder = dishOrder;
+    }
 
-	public void setDishOrder(Integer dishOrder) {
-		this.dishOrder = dishOrder;
-	}
+    public String getDishSerial() {
+        return dishSerial;
+    }
 
-	public String getDishSerial() {
-		return dishSerial;
-	}
+    public void setDishSerial(String dishSerial) {
+        this.dishSerial = dishSerial;
+    }
 
-	public void setDishSerial(String dishSerial) {
-		this.dishSerial = dishSerial;
-	}
+    public String getDishStatus() {
+        return dishStatus;
+    }
 
-	public String getDishStatus() {
-		return dishStatus;
-	}
+    public void setDishStatus(String dishStatus) {
+        this.dishStatus = dishStatus;
+    }
 
-	public void setDishStatus(String dishStatus) {
-		this.dishStatus = dishStatus;
-	}
+    public String getDishType() {
+        return dishType;
+    }
 
-	public String getDishType() {
-		return dishType;
-	}
+    public void setDishType(String dishType) {
+        this.dishType = dishType;
+    }
 
-	public void setDishType(String dishType) {
-		this.dishType = dishType;
-	}
+    public Long getSeller_id() {
+        return seller_id;
+    }
 
-	// KEEP METHODS - put your custom methods here
+    public void setSeller_id(Long seller_id) {
+        this.seller_id = seller_id;
+    }
+
+    // KEEP METHODS - put your custom methods here
 
 	public ArrayList<String> getRemark() {
 		return remark;
@@ -218,6 +222,7 @@ public class DishInfo implements Parcelable {
 		dest.writeString(this.dishType);
 		dest.writeList(this.remark);
 		dest.writeByte(this.choiceState ? (byte) 1 : (byte) 0);
+		dest.writeLong(this.seller_id);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -238,6 +243,7 @@ public class DishInfo implements Parcelable {
 		this.dishType = in.readString();
 		this.remark = in.readArrayList(String.class.getClassLoader());
 		this.choiceState = (in.readByte() == 1 ? true : false);
+		this.seller_id = in.readLong();
 	}
 
 	public static final Parcelable.Creator<DishInfo> CREATOR = new Creator<DishInfo>() {
@@ -257,6 +263,6 @@ public class DishInfo implements Parcelable {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	// KEEP METHODS END
+    // KEEP METHODS END
 
 }

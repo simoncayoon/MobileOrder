@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.R;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.DishInfo;
@@ -65,7 +66,7 @@ public class GetRemoteDateHelper {
 	public void getMenuCategory() {
 		if (((ArrayList<CategoryInfo>) DbHelper.getInstance(mContext)
 				.getLocalCategory()).size() > 0) {// 存在本地数据
-			
+
 		} else {
 			mProgressHUD = ProgressHUD.show(mContext, mContext.getResources()
 					.getString(R.string.toast_remind_loading), true, false,
@@ -78,12 +79,9 @@ public class GetRemoteDateHelper {
 					});
 			String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 			Uri.Builder builder = Uri.parse(url).buildUpon();
-			builder.appendQueryParameter(
-					"sellerId",
-					mContext.getSharedPreferences(
-							Constants.SP_GENERAL_PROFILE_NAME,
-							Context.MODE_PRIVATE).getString(
-							Constants.SP_SELLER_ID, ""));
+			builder.appendQueryParameter("sellerId", String
+					.valueOf(TempDataManager.getInstance(mContext)
+							.getSellerId()));
 			JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 					Request.Method.GET, builder.toString(), null,
 					new Response.Listener<JSONObject>() {
@@ -145,11 +143,8 @@ public class GetRemoteDateHelper {
 	public void insertDishInfo(Long categoryId) {
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				mContext.getSharedPreferences(
-						Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE)
-						.getString(Constants.SP_SELLER_ID, ""));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(mContext).getSellerId()));
 		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
 		builder.appendQueryParameter("page", Constants.PAGE);
 		builder.appendQueryParameter("pageCount", Constants.PAGE_COUNT);
@@ -200,6 +195,7 @@ public class GetRemoteDateHelper {
 	protected void parseJson(String jsonString) throws JSONException {
 
 		JSONArray srcList = new JSONArray(jsonString);
+		DebugFlags.logD(TAG, "菜品JSON " + srcList.toString());
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
 			// **************DB****************//
@@ -214,8 +210,8 @@ public class GetRemoteDateHelper {
 			testInfo.setDishSummary(temp.getString("goodProduction"));
 			testInfo.setDishStock(temp.getString("goodsNumber"));
 			try {
-				testInfo.setDishOrder(Integer.valueOf(temp
-						.getString("goodsOrder")));
+//				testInfo.setDishOrder(Integer.valueOf(temp
+//						.getString("goodsOrder")));
 				testInfo.setPrice(Float.valueOf(temp.getString("goodsPrice")));
 				testInfo.setDishCategory(Long.valueOf(temp.getInt("goodsClass")));
 				testInfo.setDiscountPrice(Float.valueOf(temp
@@ -228,6 +224,7 @@ public class GetRemoteDateHelper {
 			testInfo.setDishSerial(temp.getString("goodsSerial"));
 			testInfo.setDishStatus(temp.getString("goodsStatus"));
 			testInfo.setDishType(temp.getString("goodsType"));
+			testInfo.setSeller_id(temp.getLong("goodsOwnerId"));
 			DbHelper.getInstance(mContext).saveDish(testInfo);
 			// **************DB****************//
 		}
@@ -242,9 +239,7 @@ public class GetRemoteDateHelper {
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter(
 				"sellerId",
-				mContext.getSharedPreferences(
-						Constants.SP_GENERAL_PROFILE_NAME, Context.MODE_PRIVATE)
-						.getString(Constants.SP_SELLER_ID, ""));
+				String.valueOf(TempDataManager.getInstance(mContext).getSellerId()));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -283,7 +278,7 @@ public class GetRemoteDateHelper {
 			item.setSellerId(temp.getLong("sellerId"));
 			item.setRemarkName(temp.getString("optionName"));
 			item.setRemarkStatus(temp.getString("optionStatus"));
-			item.setOrder(temp.getInt("optionOrder"));
+//			item.setOrder(temp.getInt("optionOrder"));
 			item.setBelongsToId(temp.getLong("classId"));
 			item.setSelectStat(false);
 			DbHelper.getInstance(mContext).saveRemark(item);

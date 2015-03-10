@@ -23,6 +23,7 @@ import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuCategoryModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.mobeta.android.dslv.DragSortController;
 
 public class SettingUploadActivity extends FragmentActivity implements
@@ -145,11 +146,8 @@ public class SettingUploadActivity extends FragmentActivity implements
 	private void postCategoryName(String newName) {
 		String url = Constants.HOST_HEAD + Constants.ADD_CATEGORY_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
-						""));
+		builder.appendQueryParameter("sellerId",
+				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("className", newName);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.POST, builder.toString(), null,

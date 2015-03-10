@@ -36,6 +36,7 @@ import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuCategoryModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -218,13 +219,8 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(getActivity()).getSellerId()));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -326,13 +322,8 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 		String url = Constants.HOST_HEAD
 				+ Constants.CHANGE_CATEGORY_SHOWN_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(getActivity()).getSellerId()));
 		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_CATEGORY);
 		builder.appendQueryParameter("classId",
 				String.valueOf(menuArray.get(position).getCategoryId()));

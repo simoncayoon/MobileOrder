@@ -49,6 +49,7 @@ import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.PrintHelper;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class FragmentMain extends BaseFragment implements OnClickListener,
 		OnItemLongClickListener {
@@ -371,13 +372,8 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 	private String comboOrderInfo() throws JSONException {
 
 		JSONObject infoJson = new JSONObject();
-		infoJson.put(
-				"sellerUserId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
+		infoJson.put("sellerUserId", String.valueOf(TempDataManager
+				.getInstance(getActivity()).getSellerId()));
 		infoJson.put("orderSn", "");
 		infoJson.put("shouldPay", totalPriceNum);
 		infoJson.put("buyerUserId", "");

@@ -9,84 +9,82 @@ package com.eteng.mobileorder.models;
  */
 public class RemarkInfo {
 
-	private long id;
-	private Long sellerId;
-	private String remarkName;
-	private String remarkStatus;
-	private Integer order;
-	private Long belongsToId;
+    private long id;
+    private Long sellerId;
+    private String remarkName;
+    private String remarkStatus;
+    private Integer order;
+    private Long belongsToId;
 
-	// KEEP FIELDS - put your custom fields here
+    // KEEP FIELDS - put your custom fields here
 	private boolean isSelectStat;
+    // KEEP FIELDS END
 
-	// KEEP FIELDS END
+    public RemarkInfo() {
+    }
 
-	public RemarkInfo() {
-	}
+    public RemarkInfo(long id) {
+        this.id = id;
+    }
 
-	public RemarkInfo(long id) {
-		this.id = id;
-	}
+    public RemarkInfo(long id, Long sellerId, String remarkName, String remarkStatus, Integer order, Long belongsToId) {
+        this.id = id;
+        this.sellerId = sellerId;
+        this.remarkName = remarkName;
+        this.remarkStatus = remarkStatus;
+        this.order = order;
+        this.belongsToId = belongsToId;
+    }
 
-	public RemarkInfo(long id, Long sellerId, String remarkName,
-			String remarkStatus, Integer order, Long belongsToId) {
-		this.id = id;
-		this.sellerId = sellerId;
-		this.remarkName = remarkName;
-		this.remarkStatus = remarkStatus;
-		this.order = order;
-		this.belongsToId = belongsToId;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public long getId() {
-		return id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public Long getSellerId() {
+        return sellerId;
+    }
 
-	public Long getSellerId() {
-		return sellerId;
-	}
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
 
-	public void setSellerId(Long sellerId) {
-		this.sellerId = sellerId;
-	}
+    public String getRemarkName() {
+        return remarkName;
+    }
 
-	public String getRemarkName() {
-		return remarkName;
-	}
+    public void setRemarkName(String remarkName) {
+        this.remarkName = remarkName;
+    }
 
-	public void setRemarkName(String remarkName) {
-		this.remarkName = remarkName;
-	}
+    public String getRemarkStatus() {
+        return remarkStatus;
+    }
 
-	public String getRemarkStatus() {
-		return remarkStatus;
-	}
+    public void setRemarkStatus(String remarkStatus) {
+        this.remarkStatus = remarkStatus;
+    }
 
-	public void setRemarkStatus(String remarkStatus) {
-		this.remarkStatus = remarkStatus;
-	}
+    public Integer getOrder() {
+        return order;
+    }
 
-	public Integer getOrder() {
-		return order;
-	}
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
+    public Long getBelongsToId() {
+        return belongsToId;
+    }
 
-	public Long getBelongsToId() {
-		return belongsToId;
-	}
+    public void setBelongsToId(Long belongsToId) {
+        this.belongsToId = belongsToId;
+    }
 
-	public void setBelongsToId(Long belongsToId) {
-		this.belongsToId = belongsToId;
-	}
-
-	// KEEP METHODS - put your custom methods here
+    // KEEP METHODS - put your custom methods here
 	public boolean isSelectStat() {
 		return isSelectStat;
 	}
@@ -94,7 +92,6 @@ public class RemarkInfo {
 	public void setSelectStat(boolean isSelectStat) {
 		this.isSelectStat = isSelectStat;
 	}
-
-	// KEEP METHODS END
+    // KEEP METHODS END
 
 }

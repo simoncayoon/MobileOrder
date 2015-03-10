@@ -38,6 +38,7 @@ import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.MenuItemModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.eteng.mobileorder.utils.MyClickListener.PutAction;
 import com.eteng.mobileorder.utils.NetController;
 import com.mobeta.android.dslv.DragSortController;
@@ -130,11 +131,8 @@ public class SettingMenuByCategory extends ListActivity implements
 				});
 		String url = Constants.HOST_HEAD + Constants.GOODS_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
-						""));
+		builder.appendQueryParameter("sellerId",
+				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("goodsClass", String.valueOf(categoryId));
 		builder.appendQueryParameter("page", Constants.PAGE);
 		builder.appendQueryParameter("pageCount", Constants.PAGE_COUNT);
@@ -353,9 +351,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter(
 				"sellerId",
-				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
-						""));
+				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		builder.appendQueryParameter("className", newName);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
@@ -425,9 +421,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter(
 				"sellerId",
-				getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-						Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID,
-						""));
+				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_DISH);
 		builder.appendQueryParameter("goodsId",
 				String.valueOf(dataList.get(position).getId()));

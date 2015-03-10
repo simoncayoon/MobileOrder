@@ -1,7 +1,6 @@
 package com.eteng.mobileorder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
-import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.server.PhoneCallListenerService;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorViewPagerAdapter;
@@ -32,9 +31,7 @@ public class AppStart extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_start);
-		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE);
-		isFistVisit = sp.getBoolean(Constants.KEY_IS_FIRST_VISIT, true);
+		isFistVisit = TempDataManager.getInstance(this).getIsFirstVisit();;
 		
 //		if (isFistVisit) {// 加载引导页面
 //			ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);

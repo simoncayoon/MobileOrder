@@ -40,6 +40,7 @@ public class DishInfoDao extends AbstractDao<DishInfo, Long> {
         public final static Property DishSerial = new Property(11, String.class, "dishSerial", false, "DISH_SERIAL");
         public final static Property DishStatus = new Property(12, String.class, "dishStatus", false, "DISH_STATUS");
         public final static Property DishType = new Property(13, String.class, "dishType", false, "DISH_TYPE");
+        public final static Property Seller_id = new Property(14, Long.class, "seller_id", false, "SELLER_ID");
     };
 
     private Query<DishInfo> categoryInfo_DishesQuery;
@@ -69,7 +70,8 @@ public class DishInfoDao extends AbstractDao<DishInfo, Long> {
                 "'DISH_ORDER' INTEGER," + // 10: dishOrder
                 "'DISH_SERIAL' TEXT," + // 11: dishSerial
                 "'DISH_STATUS' TEXT," + // 12: dishStatus
-                "'DISH_TYPE' TEXT);"); // 13: dishType
+                "'DISH_TYPE' TEXT," + // 13: dishType
+                "'SELLER_ID' INTEGER);"); // 14: seller_id
     }
 
     /** Drops the underlying database table. */
@@ -148,6 +150,11 @@ public class DishInfoDao extends AbstractDao<DishInfo, Long> {
         if (dishType != null) {
             stmt.bindString(14, dishType);
         }
+ 
+        Long seller_id = entity.getSeller_id();
+        if (seller_id != null) {
+            stmt.bindLong(15, seller_id);
+        }
     }
 
     /** @inheritdoc */
@@ -173,7 +180,8 @@ public class DishInfoDao extends AbstractDao<DishInfo, Long> {
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // dishOrder
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // dishSerial
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // dishStatus
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // dishType
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // dishType
+            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14) // seller_id
         );
         return entity;
     }
@@ -195,6 +203,7 @@ public class DishInfoDao extends AbstractDao<DishInfo, Long> {
         entity.setDishSerial(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setDishStatus(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setDishType(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setSeller_id(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
      }
     
     /** @inheritdoc */

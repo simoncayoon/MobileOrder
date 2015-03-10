@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.net.Uri;
@@ -31,6 +30,7 @@ import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 
@@ -87,9 +87,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 			Uri.Builder builder = Uri.parse(url).buildUpon();
 			builder.appendQueryParameter(
 					"sellerId",
-					getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-							Context.MODE_PRIVATE).getString(
-							Constants.SP_SELLER_ID, ""));
+					String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 			JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 					Request.Method.GET, builder.toString(), null,
 					new Response.Listener<JSONObject>() {

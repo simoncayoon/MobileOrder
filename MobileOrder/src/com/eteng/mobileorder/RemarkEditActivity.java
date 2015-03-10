@@ -37,6 +37,7 @@ import com.eteng.mobileorder.models.RemarkModel;
 import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class RemarkEditActivity extends Activity implements NaviBtnListener {
 
@@ -59,8 +60,8 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_remark_info_layout);
-		sellerId = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE).getString(Constants.SP_SELLER_ID, "");
+		sellerId = String.valueOf(TempDataManager.getInstance(this)
+				.getSellerId());
 		topBar = (TopNavigationBar) findViewById(R.id.general_navi_view);
 		topBar.setTitle("备注信息");
 		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
@@ -99,7 +100,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 				});
 		String url = Constants.HOST_HEAD + Constants.MENU_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", sellerId);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter("sellerId", sellerId);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -150,7 +151,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 	private void getOptions() {
 		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("sellerId", sellerId);// 测试ID，以后用shareperference保存
+		builder.appendQueryParameter("sellerId", sellerId);
 		builder.appendQueryParameter("classId", categoryId);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -158,7 +159,7 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 
 					@Override
 					public void onResponse(JSONObject respon) {
-
+						mProgressHUD.dismiss();
 						try {
 							if (respon.getString("code").equals("0")) {// 查询成功
 								JSONArray options = new JSONArray(
@@ -172,8 +173,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									RemarkModel item = new RemarkModel();
 									item.setCategoryId(temp.getInt("classId"));
 									item.setId(temp.getInt("id"));
-									item.setOrderInList(temp
-											.getInt("optionOrder"));
 									item.setRemarkName(temp
 											.getString("optionName"));
 									item.setSellarId(temp.getInt("sellerId"));
@@ -182,7 +181,6 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									item.setSelectStat(false);// 默认不选中任何备注
 									remarkList.add(item);
 								}
-
 								remarkListView.setVisibility(View.VISIBLE);
 								mAdapter = new RemarkAdapter();
 								remarkListView.setAdapter(mAdapter);
@@ -194,11 +192,10 @@ public class RemarkEditActivity extends Activity implements NaviBtnListener {
 									e.printStackTrace();
 								}
 							}
-							
+
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-						mProgressHUD.dismiss();
 					}
 				}, new Response.ErrorListener() {
 

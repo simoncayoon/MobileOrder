@@ -43,6 +43,7 @@ import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.OrderWXModel;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class FragmentHistory extends BaseFragment implements OnClickListener,
 		OnItemClickListener {
@@ -87,8 +88,8 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 		orderAmountView.setText(String.format(Locale.CHINA, getResources()
 				.getString(R.string.order_total_price_text), "0"));// 初始化总金额
 
-		startDate = new SimpleDateFormat("yy-MM-dd").format(
-				new Date()).toString();
+		startDate = new SimpleDateFormat("yy-MM-dd").format(new Date())
+				.toString();
 		startBtn = (Button) findViewById(R.id.order_history_query_begin_btn);
 		startBtn.setText(startDate);
 		endBtn = (Button) findViewById(R.id.order_history_query_end_btn);
@@ -128,13 +129,8 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 				.getString(R.string.toast_remind_loading), true, false, null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				getActivity()
-						.getSharedPreferences(
-								Constants.SP_GENERAL_PROFILE_NAME,
-								Context.MODE_PRIVATE).getString(
-								Constants.SP_SELLER_ID, ""));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(getActivity()).getSellerId()));
 		builder.appendQueryParameter("queryType",
 				Constants.ORDER_QUERY_TYPE_HISTORY);
 		builder.appendQueryParameter("page", "00");
@@ -161,7 +157,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 										.getString("orderList")));
 								mListView.setAdapter(new OrderListAdapter(
 										getActivity(), orderDataList));
-							} 
+							}
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -232,7 +228,7 @@ public class FragmentHistory extends BaseFragment implements OnClickListener,
 	}
 
 	void showDatePicker() {
-		
+
 		DatePicker newView = new DatePicker(getActivity());
 		popPicker = new PopupWindow(newView, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, false);

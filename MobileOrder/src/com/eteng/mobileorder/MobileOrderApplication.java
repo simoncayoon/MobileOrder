@@ -1,6 +1,7 @@
 package com.eteng.mobileorder;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.eteng.mobileorder.models.DaoMaster;
@@ -15,8 +16,10 @@ public class MobileOrderApplication extends Application{
 
 	private BlueToothService mBTService = null;
 	private DaoMaster daoMaster = null;
+	private DaoSession mDaoSession = null;
 	private SQLiteDatabase db;
 	private static MobileOrderApplication mAppInstance = null;
+	private static Context mContext;
 
 
 	@Override
@@ -24,9 +27,7 @@ public class MobileOrderApplication extends Application{
 		super.onCreate();
 		mAppInstance = this;
 		mBTService = new BlueToothService(this);
-		DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "mobileorder-db", null);
-        db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
+		mContext = this;
 	}
 
 	public static MobileOrderApplication getInstance() {
@@ -37,8 +38,23 @@ public class MobileOrderApplication extends Application{
 		return mBTService;
 	}
 	
+	public DaoMaster getDaoMaster(){
+		if(daoMaster == null){
+			DevOpenHelper helper = new DaoMaster.DevOpenHelper(mContext, "mobileorder-db", null);
+	        db = helper.getWritableDatabase();
+			daoMaster = new DaoMaster(db);
+		}
+		return daoMaster;
+	}
+	
 	public DaoSession getDaoSession(){
-		return daoMaster.newSession();
+		if(mDaoSession == null){
+			if(daoMaster == null){
+				mDaoSession = getDaoMaster().newSession();
+			}
+			mDaoSession = daoMaster.newSession();
+		}
+		return mDaoSession;
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class LoginActivity extends Activity implements OnClickListener {
 
@@ -51,8 +52,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private String pwd = "";
 	private boolean isSaveState = false;
 	private boolean isExit = false;
-
-	private SharedPreferences sp;
+	
 	private SellerInfoDao sellerInfoDao;
 
 	@Override
@@ -92,14 +92,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 		saveCheck.setCompoundDrawables(check, null, null, null);// 设置密码图标
 		loginBtn.setOnClickListener(this);
 
-		sp = getSharedPreferences(Constants.SP_GENERAL_PROFILE_NAME,
-				Context.MODE_PRIVATE);
-		isSaveState = sp.getBoolean(Constants.SP_SAVE_PWD_STATE, false);
-		accountName = sp.getString(Constants.SP_LOGIN_ACCOUNT, "");
-		pwd = sp.getString(Constants.SP_LOGIN_PWD, "");
-		if (isSaveState) {
+		isSaveState = TempDataManager.getInstance(this).getPwdSaveState();
+		accountName = TempDataManager.getInstance(this).getAccountName();
+		pwd = TempDataManager.getInstance(this).getPwd();
+		if (isSaveState && !accountName.equals("") && !pwd.equals("")) {
 			accountEdit.setText(accountName);
-			pwd = sp.getString(Constants.SP_LOGIN_PWD, "");
 			pwdEdit.setText(pwd);
 			saveCheck.setChecked(true);
 		}
@@ -147,23 +144,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 						try {
 							if (respon.getString("code").equals("0")) {
 								saveInfo(respon);
-								Editor inputSp = sp.edit();
-								inputSp.putString(Constants.SP_LOGIN_ACCOUNT,
-										accountName);
-								inputSp.putString(Constants.SP_LOGIN_PWD, pwd);
-								inputSp.putString(
-										Constants.SP_SELLER_ID,
-										new JSONObject(respon
+								
+								TempDataManager.getInstance(LoginActivity.this).setCurrentInfo(new JSONObject(respon
 												.getString("seller"))
-												.getString("sellerId"));
+												.getLong("sellerId"), accountName, pwd);;
 								if (saveCheck.isChecked()) {// 添加保存状态
-									inputSp.putBoolean(
-											Constants.SP_SAVE_PWD_STATE, true);
+									TempDataManager.getInstance(LoginActivity.this).setPwdSaveState(true);
 								} else {
-									inputSp.putBoolean(
-											Constants.SP_SAVE_PWD_STATE, false);
+									TempDataManager.getInstance(LoginActivity.this).setPwdSaveState(false);
 								}
-								inputSp.commit();
 								startActivity(new Intent(LoginActivity.this,
 										MainNaviActivity.class));
 								finish();
