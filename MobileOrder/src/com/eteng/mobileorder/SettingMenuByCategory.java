@@ -35,12 +35,14 @@ import com.eteng.mobileorder.adapter.SettingMenuCategoryAdapter;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.DishInfo;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
-import com.eteng.mobileorder.utils.TempDataManager;
 import com.eteng.mobileorder.utils.MyClickListener.PutAction;
 import com.eteng.mobileorder.utils.NetController;
+import com.eteng.mobileorder.utils.TempDataManager;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
@@ -57,9 +59,9 @@ public class SettingMenuByCategory extends ListActivity implements
 	private LinearLayout categoryEdit;
 
 	private SettingMenuCategoryAdapter mAdapter;
-	private ArrayList<MenuItemModel> dataList = null;
+	private ArrayList<DishInfo> dataList = null;
 	DragSortController mController = null;
-	private int categoryId;
+	private Long categoryId;
 	private String menuName = "";
 
 	private boolean isEditState = false;
@@ -69,7 +71,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setting_menu_by_category_layout);
-		categoryId = getIntent().getIntExtra("test", -1);
+		categoryId = getIntent().getLongExtra("category_id", -1);
 		menuName = getIntent().getStringExtra("menu_name");
 		initView();
 		initData();
@@ -95,7 +97,7 @@ public class SettingMenuByCategory extends ListActivity implements
 	}
 
 	private void initData() {
-		dataList = new ArrayList<MenuItemModel>();
+		dataList = new ArrayList<DishInfo>();
 		topBar.setTitle(menuName);
 		nameView.setText(menuName);
 
@@ -182,17 +184,39 @@ public class SettingMenuByCategory extends ListActivity implements
 	protected void parseJson(String jsonString) throws JSONException {
 
 		JSONArray srcList = new JSONArray(jsonString);
+		DebugFlags.logD(TAG, "菜品JSON " + srcList.toString());
 		for (int i = 0; i < srcList.length(); i++) {
 			JSONObject temp = new JSONObject(srcList.getString(i));
-			MenuItemModel item = new MenuItemModel();
-			item.setId(temp.getInt("goodsId"));
-			item.setDiscountPrice(temp.getDouble("discountPrice"));
-			item.setImgUrl(temp.getString("goodsImgPath"));
-			item.setPrice(temp.getDouble("goodsPrice"));
-			item.setName(temp.getString("goodsName"));
-			item.setType(temp.getString("goodsType"));
-			item.setStatus(temp.getString("goodsStatus"));
-			dataList.add(item);
+			DishInfo dishInfo = new DishInfo();
+			dishInfo.setDishId(temp.getLong("goodsId"));
+			dishInfo.setDishName(temp.getString("goodsName"));
+
+			dishInfo.setDishImgPath(temp.getString("goodsImgPath"));
+			dishInfo.setCreatePerson(temp.getString("createPerson"));
+			dishInfo.setCreateDate(temp.getString("createTime"));
+
+			dishInfo.setDishSummary(temp.getString("goodProduction"));
+			dishInfo.setDishStock(temp.getString("goodsNumber"));
+			try {
+				dishInfo.setDishOrder(Integer.valueOf(temp
+						.getString("goodsOrder")));
+			} catch (Exception e) {
+				dishInfo.setDishOrder(0);
+			}
+			try {
+				dishInfo.setPrice(Float.valueOf(temp.getString("goodsPrice")));
+				dishInfo.setDishCategory(Long.valueOf(temp.getInt("goodsClass")));
+				dishInfo.setDiscountPrice(Float.valueOf(temp
+						.getString("discountPrice")));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				continue;
+			}
+			dishInfo.setDishSerial(temp.getString("goodsSerial"));
+			dishInfo.setDishStatus(temp.getString("goodsStatus"));
+			dishInfo.setDishType(temp.getString("goodsType"));
+			dishInfo.setSeller_id(temp.getLong("goodsOwnerId"));
+			dataList.add(dishInfo);
 		}
 	}
 
@@ -284,7 +308,7 @@ public class SettingMenuByCategory extends ListActivity implements
 		String url = Constants.HOST_HEAD + Constants.DISH_DELETE;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("goodsId",
-				String.valueOf(dataList.get(position).getId()));
+				String.valueOf(dataList.get(position).getDishId()));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
 				new Response.Listener<JSONObject>() {
@@ -295,6 +319,10 @@ public class SettingMenuByCategory extends ListActivity implements
 							if (respon.getString("code").equals("0")) {
 								showToast(getResources().getString(
 										R.string.toast_remind_delete_succeed));
+								DbHelper.getInstance(SettingMenuByCategory.this)
+										.deleteDishById(
+												dataList.get(position)
+														.getDishId());
 								dataList.remove(position);
 								mAdapter.notifyDataSetChanged();
 							} else {
@@ -349,8 +377,7 @@ public class SettingMenuByCategory extends ListActivity implements
 	private void postCategoryName(final String newName) {
 		String url = Constants.HOST_HEAD + Constants.UPDATE_CATEGORY_NAME;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
+		builder.appendQueryParameter("sellerId",
 				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		builder.appendQueryParameter("className", newName);
@@ -365,6 +392,8 @@ public class SettingMenuByCategory extends ListActivity implements
 								menuName = newName;
 								topBar.setTitle(menuName);
 								nameView.setText(menuName);
+								DbHelper.getInstance(SettingMenuByCategory.this)
+										.categoryNameEdit(categoryId, newName);
 							} else {
 								Toast.makeText(SettingMenuByCategory.this,
 										"提交失败", Toast.LENGTH_SHORT).show();
@@ -392,9 +421,9 @@ public class SettingMenuByCategory extends ListActivity implements
 
 	@Override
 	public void postDishState(int position) {
-		MenuItemModel item = dataList.get(position);
+		DishInfo item = dataList.get(position);
 		String postState = "";
-		if (item.getStatus().equals("1")) {// 将进行下架操作
+		if (item.getDishStatus().equals("1")) {// 将进行下架操作
 			postState = "2";
 		} else {// 将进行上架操作
 			postState = "1";
@@ -419,12 +448,11 @@ public class SettingMenuByCategory extends ListActivity implements
 		String url = Constants.HOST_HEAD
 				+ Constants.CHANGE_CATEGORY_SHOWN_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
+		builder.appendQueryParameter("sellerId",
 				String.valueOf(TempDataManager.getInstance(this).getSellerId()));
 		builder.appendQueryParameter("type", Constants.SHOWN_TYPE_DISH);
 		builder.appendQueryParameter("goodsId",
-				String.valueOf(dataList.get(position).getId()));
+				String.valueOf(dataList.get(position).getDishId()));
 		builder.appendQueryParameter("status", status);
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -436,7 +464,7 @@ public class SettingMenuByCategory extends ListActivity implements
 							if (respon.getString("code").equals("0")) {
 								showToast(getResources().getString(
 										R.string.toast_remind_commit_succeed));
-								dataList.get(position).setStatus(status);
+								dataList.get(position).setDishStatus(status);
 								mAdapter.notifyDataSetChanged();
 							}
 						} catch (JSONException e) {
@@ -479,10 +507,10 @@ public class SettingMenuByCategory extends ListActivity implements
 		String url = Constants.HOST_HEAD + Constants.SORT_DISH;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("downGoodsId",
-				String.valueOf(dataList.get(to).getId()));
+				String.valueOf(dataList.get(to).getDishId()));
 		builder.appendQueryParameter("downGoodsOrder", String.valueOf(to));
 		builder.appendQueryParameter("upGoodsId",
-				String.valueOf(dataList.get(from).getId()));
+				String.valueOf(dataList.get(from).getDishId()));
 		builder.appendQueryParameter("upGoodsOrder", String.valueOf(from));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -492,7 +520,11 @@ public class SettingMenuByCategory extends ListActivity implements
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								MenuItemModel temp = dataList.get(from);
+								DbHelper.getInstance(SettingMenuByCategory.this)
+										.exchangeDishOrder(
+												dataList.get(from).getDishId(),
+												dataList.get(to).getDishId());
+								DishInfo temp = dataList.get(from);
 								dataList.remove(from);
 								dataList.add(to, temp);
 								mAdapter.notifyDataSetChanged();

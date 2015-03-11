@@ -19,8 +19,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
+import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuCategoryModel;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.TempDataManager;
@@ -33,7 +34,7 @@ public class SettingUploadActivity extends FragmentActivity implements
 
 	private TopNavigationBar topBar;
 
-	private MenuCategoryModel menuCategory;
+	private CategoryInfo menuCategory;
 	private DSLVFragment fragment;
 
 	private int mDragStartMode = DragSortController.ON_DRAG;
@@ -82,7 +83,7 @@ public class SettingUploadActivity extends FragmentActivity implements
 	 * 初始化数据
 	 */
 	private void initData() {
-		menuCategory = new MenuCategoryModel();
+		menuCategory = new CategoryInfo();
 		topBar.setTitle("菜品编辑");
 		topBar.setLeftImg(R.drawable.setting_back_btn_bg);
 		topBar.setRightBtnEnable();
@@ -105,8 +106,6 @@ public class SettingUploadActivity extends FragmentActivity implements
 			isEditStat = true;
 			mController.setDragInitMode(DragSortController.ON_DRAG);
 			mController.setSortEnabled(true);// 开启滑动排序功能
-			// mController.setRemoveEnabled(true);
-			// mController.setRemoveMode(DragSortController.FLING_REMOVE);
 			fragment.setTapbarAction();
 		}
 	}
@@ -126,7 +125,7 @@ public class SettingUploadActivity extends FragmentActivity implements
 								String newName = categoryEdit.getText()
 										.toString();
 								if (newName.length() > 0) {
-									for (MenuCategoryModel item : fragment.menuArray) {
+									for (CategoryInfo item : fragment.menuArray) {
 										if (newName.equals(item
 												.getCategoryName())) {// 判断已有列表是否有同样名称
 											Toast.makeText(
@@ -183,12 +182,15 @@ public class SettingUploadActivity extends FragmentActivity implements
 		menuCategory.setCategoryId(json.getInt("classId"));
 		menuCategory.setCategoryName(json.getString("className"));
 		menuCategory.setCategoryOrder(json.getInt("classOrder"));
+		menuCategory.setCategoryStatus(json.getString("classStatus"));
 		menuCategory.setCreateDate(json.getString("createDate"));
+		menuCategory.setCreatePerson(json.getString("createPerson"));
 		if (json.getString("isNoodle").equals("")) {
-			menuCategory.setNoodle(false);
+			menuCategory.setIsNoodle(false);
 		} else if (json.getString("isNoodle").equals("1")) {
-			menuCategory.setNoodle(true);
+			menuCategory.setIsNoodle(true);
 		}
-		menuCategory.setSellerId(json.getInt("sellerId"));
+		menuCategory.setSellerId(json.getLong("sellerId"));
+		DbHelper.getInstance(this).insertCategory(menuCategory);
 	}
 }

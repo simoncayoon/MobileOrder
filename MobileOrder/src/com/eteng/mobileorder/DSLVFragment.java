@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -32,8 +31,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
+import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.Constants;
-import com.eteng.mobileorder.models.MenuCategoryModel;
+import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.TempDataManager;
@@ -54,7 +54,7 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	public boolean dragEnabled = true;
 
 	public MenuOrderAdapter adapter = null;
-	public ArrayList<MenuCategoryModel> menuArray = null;
+	public ArrayList<CategoryInfo> menuArray = null;
 	private boolean isEditable = false;
 
 	private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
@@ -105,7 +105,12 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								MenuCategoryModel temp = menuArray.get(from);
+								CategoryInfo temp = menuArray.get(from);
+								DbHelper.getInstance(getActivity())
+										.exchangeCategorySort(
+												temp.getCategoryId(),
+												menuArray.get(to)
+														.getCategoryId());
 								menuArray.remove(from);
 								menuArray.add(to, temp);
 								adapter.notifyDataSetChanged();
@@ -179,7 +184,7 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		menuArray = new ArrayList<MenuCategoryModel>();
+		menuArray = new ArrayList<CategoryInfo>();
 		mDslv = (DragSortListView) inflater.inflate(getLayout(), container,
 				false);
 		mController = buildController(mDslv);
@@ -241,17 +246,27 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 				.addToRequestQueue(getMenuRequest, TAG);
 	}
 
-	void getMenuList(JSONObject JsonString) {
+	public void getMenuList(JSONObject JsonString) {
 		menuArray.clear();
 		try {
 			JSONArray jsonArray = new JSONArray(
 					JsonString.getString("classList"));
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject tmp = new JSONObject(jsonArray.getString(i));
-				MenuCategoryModel item = new MenuCategoryModel();
+				CategoryInfo item = new CategoryInfo();
+				item.setCategoryId(tmp.getLong("classId"));
+				item.setCategoryCode(tmp.getString("classCode"));
 				item.setCategoryName(tmp.getString("className"));
-				item.setCategoryId(tmp.getInt("classId"));
-				item.setStatus(tmp.getString("classStatus"));
+				item.setCategoryOrder(tmp.getInt("classOrder"));
+				item.setCategoryStatus(tmp.getString("classStatus"));
+				item.setCreateDate(tmp.getString("createDate"));
+				item.setCreatePerson(tmp.getString("createPerson"));
+				if (tmp.getString("isNoodle").equals("0")) {
+					item.setIsNoodle(false);
+				} else {
+					item.setIsNoodle(true);
+				}
+				item.setSellerId(tmp.getLong("sellerId"));
 				menuArray.add(item);
 			}
 		} catch (JSONException e) {
@@ -264,7 +279,7 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 			int position, long id) {
 		String putState = "";
 		String promptText = "";
-		if (menuArray.get(position).getStatus().equals("1")) {
+		if (menuArray.get(position).getCategoryStatus().equals("1")) {
 			putState = "0";// 下架状态
 			promptText = getResources().getString(R.string.dialog_put_off_text);
 		} else {
@@ -297,7 +312,6 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 		builder.setNegativeButton("取消", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.dismiss();
 			}
 		});
@@ -308,7 +322,7 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	/**
 	 * 提交修改后的显示状态 0，下架；1， 上架
 	 */
-	private void postCategoryShownState(String status, int position) {
+	private void postCategoryShownState(final String status, final int position) {
 		final ProgressHUD mProgressHUD;
 		mProgressHUD = ProgressHUD.show(getActivity(), getResources()
 				.getString(R.string.toast_remind_loading), true, false,
@@ -338,6 +352,9 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 							if (respon.getString("code").equals("0")) {
 								showToast(getResources().getString(
 										R.string.toast_remind_commit_succeed));
+								CategoryInfo temp = menuArray.get(position);
+								temp.setCategoryStatus(status);
+								DbHelper.getInstance(getActivity()).changeShownState(temp);
 							}
 						} catch (JSONException e) {
 							showToast(getResources().getString(
@@ -363,7 +380,7 @@ public class DSLVFragment extends ListFragment implements OnItemClickListener,
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		Intent mIntent = new Intent(getActivity(), SettingMenuByCategory.class);
-		mIntent.putExtra("test", menuArray.get(position).getCategoryId());
+		mIntent.putExtra("category_id", menuArray.get(position).getCategoryId());
 		mIntent.putExtra("menu_name", menuArray.get(position).getCategoryName());
 		startActivity(mIntent);
 	}

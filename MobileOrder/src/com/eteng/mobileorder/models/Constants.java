@@ -77,6 +77,11 @@ public class Constants {
 	 */
 	public static final String UPDATE_REMARK_BY_CATEGORY = "updateOrDeleteOptions";
 	
+	/**
+	 * WS商户信息编辑接口
+	 */
+	public static final String SELLER_INFO_EDIT = "editSellerInfo";
+	
 	
 	/**
 	 * 上传新菜品接口名称

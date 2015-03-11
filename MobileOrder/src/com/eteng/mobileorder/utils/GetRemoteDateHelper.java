@@ -210,8 +210,12 @@ public class GetRemoteDateHelper {
 			testInfo.setDishSummary(temp.getString("goodProduction"));
 			testInfo.setDishStock(temp.getString("goodsNumber"));
 			try {
-//				testInfo.setDishOrder(Integer.valueOf(temp
-//						.getString("goodsOrder")));
+				testInfo.setDishOrder(Integer.valueOf(temp
+						.getString("goodsOrder")));
+			} catch (Exception e) {
+				testInfo.setDishOrder(0);//默认为0
+			}
+			try {
 				testInfo.setPrice(Float.valueOf(temp.getString("goodsPrice")));
 				testInfo.setDishCategory(Long.valueOf(temp.getInt("goodsClass")));
 				testInfo.setDiscountPrice(Float.valueOf(temp
@@ -220,7 +224,6 @@ public class GetRemoteDateHelper {
 				e.printStackTrace();
 				continue;
 			}
-
 			testInfo.setDishSerial(temp.getString("goodsSerial"));
 			testInfo.setDishStatus(temp.getString("goodsStatus"));
 			testInfo.setDishType(temp.getString("goodsType"));
@@ -237,9 +240,8 @@ public class GetRemoteDateHelper {
 
 		String url = Constants.HOST_HEAD + Constants.OPTION_REMARK;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter(
-				"sellerId",
-				String.valueOf(TempDataManager.getInstance(mContext).getSellerId()));
+		builder.appendQueryParameter("sellerId", String.valueOf(TempDataManager
+				.getInstance(mContext).getSellerId()));
 		builder.appendQueryParameter("classId", String.valueOf(categoryId));
 		JsonUTF8Request getMenuRequest = new JsonUTF8Request(
 				Request.Method.GET, builder.toString(), null,
@@ -278,7 +280,7 @@ public class GetRemoteDateHelper {
 			item.setSellerId(temp.getLong("sellerId"));
 			item.setRemarkName(temp.getString("optionName"));
 			item.setRemarkStatus(temp.getString("optionStatus"));
-//			item.setOrder(temp.getInt("optionOrder"));
+			// item.setOrder(temp.getInt("optionOrder"));
 			item.setBelongsToId(temp.getLong("classId"));
 			item.setSelectStat(false);
 			DbHelper.getInstance(mContext).saveRemark(item);

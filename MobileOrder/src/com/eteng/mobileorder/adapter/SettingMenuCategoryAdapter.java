@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.eteng.mobileorder.R;
-import com.eteng.mobileorder.models.MenuItemModel;
+import com.eteng.mobileorder.models.DishInfo;
 import com.eteng.mobileorder.utils.MyClickListener;
 import com.eteng.mobileorder.utils.NetController;
 
@@ -24,11 +24,11 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 			.getSimpleName();
 
 	private LayoutInflater mInflater;
-	private ArrayList<MenuItemModel> dataSrc;
+	private ArrayList<DishInfo> dataSrc;
 	private Context context;
 
 	public SettingMenuCategoryAdapter(Context context,
-			ArrayList<MenuItemModel> dataSrc) {
+			ArrayList<DishInfo> dataSrc) {
 		this.context = context;
 		this.dataSrc = dataSrc;
 		mInflater = LayoutInflater.from(context);
@@ -74,14 +74,14 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		MenuItemModel item = dataSrc.get(position);
-		holder.dishName.setText(((MenuItemModel) item).getName());
+		DishInfo item = dataSrc.get(position);
+		holder.dishName.setText(((DishInfo) item).getDishName());
 		holder.dishPrice.setText("￥ "
-				+ String.valueOf(((MenuItemModel) item).getPrice()));
-		holder.dishImg.setImageUrl(((MenuItemModel) item).getImgUrl(),
+				+ String.valueOf(((DishInfo) item).getPrice()));
+		holder.dishImg.setImageUrl(((DishInfo) item).getDishImgPath(),
 				NetController.getInstance(context.getApplicationContext())
 						.getImageLoader());
-		if (item.getStatus().equals("1")) {// 当前为可显示状态
+		if (item.getDishStatus().equals("1")) {// 当前为可显示状态
 			holder.putOnBtn
 					.setBackgroundResource(R.drawable.setting_general_corner_gray_frame);
 			holder.putOffBtn
@@ -96,7 +96,7 @@ public class SettingMenuCategoryAdapter extends BaseAdapter {
 			holder.putOffBtn.setClickable(false);
 			holder.putOnBtn.setOnClickListener(MyClickListener.getInstance(context));
 		}
-		if (((MenuItemModel) item).isChoiceState()) {
+		if (((DishInfo) item).isChoiceState()) {
 			holder.shadowImg.setBackgroundColor(Color.parseColor("#49000000"));
 		} else {
 			holder.shadowImg.setBackgroundColor(Color.parseColor("#00000000"));

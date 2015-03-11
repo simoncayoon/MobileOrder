@@ -1,10 +1,16 @@
 package com.eteng.mobileorder.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import android.R.integer;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.eteng.mobileorder.MobileOrderApplication;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.CategoryInfo;
 import com.eteng.mobileorder.models.CategoryInfoDao;
 import com.eteng.mobileorder.models.CustomerInfo;
@@ -54,8 +60,11 @@ public class DbHelper {
 
 	public void saveSellerInfo(SellerInfo info) throws Exception {
 
-		if (!isExist(info.getSellerId())) {
+		if (!isExist(info.getSellerId())) {// 不存在该用户
 			sellerDao.insert(info);
+		} else {
+			sellerDao.update(info);
+			;
 		}
 	}
 
@@ -81,9 +90,60 @@ public class DbHelper {
 		}
 	}
 
+	/**
+	 * 交换排序
+	 */
+	public void exchangeCategorySort(Long fromId, Long toId) {
+		Integer temp = -1;
+		QueryBuilder<CategoryInfo> qb_From = categoryDao.queryBuilder();
+		qb_From.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryId
+				.eq(fromId));
+		QueryBuilder<CategoryInfo> qb_To = categoryDao.queryBuilder();
+		qb_To.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryId
+				.eq(toId));
+		try {
+			CategoryInfo fromEntity = qb_From.list().get(0);
+			CategoryInfo toEntity = qb_To.list().get(0);
+			temp = fromEntity.getCategoryOrder();
+			fromEntity.setCategoryOrder(toEntity.getCategoryOrder());
+			toEntity.setCategoryOrder(temp);
+			categoryDao.update(toEntity);
+			categoryDao.update(fromEntity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void changeShownState(CategoryInfo item) {
+		try {
+			categoryDao.update(item);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/** 添加菜单类目到本地 */
 	public void insertCategory(CategoryInfo item) {
-		categoryDao.insert(item);
+		try {
+			categoryDao.insert(item);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void categoryNameEdit(Long categoryId, String newName){
+		try {
+			QueryBuilder<CategoryInfo> qb = categoryDao.queryBuilder();
+			qb.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.SellerId
+					.eq(TempDataManager.getInstance(mContext).getSellerId()));
+			qb.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryId
+					.eq(categoryId));
+			CategoryInfo temp = qb.list().get(0);
+			temp.setCategoryName(newName);
+			categoryDao.update(temp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/** 添加菜品到本地 */
@@ -110,6 +170,39 @@ public class DbHelper {
 		qb.orderAsc(com.eteng.mobileorder.models.DishInfoDao.Properties.DishOrder);
 		return qb.list();
 	}
+	
+	/**
+	 * 根据菜品ID删除本地数据
+	 * @param Id
+	 */
+	public void deleteDishById(Long Id){
+		try {
+			dishDao.deleteByKey(Id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void exchangeDishOrder(Long fromId, Long toId){
+		Integer temp = -1;
+		QueryBuilder<DishInfo> qb_From = dishDao.queryBuilder();
+		qb_From.where(com.eteng.mobileorder.models.DishInfoDao.Properties.DishId
+				.eq(fromId));
+		QueryBuilder<DishInfo> qb_To = dishDao.queryBuilder();
+		qb_To.where(com.eteng.mobileorder.models.DishInfoDao.Properties.DishId
+				.eq(toId));
+		try {
+			DishInfo fromEntity = qb_From.list().get(0);
+			DishInfo toEntity = qb_To.list().get(0);
+			temp = fromEntity.getDishOrder();
+			fromEntity.setDishOrder(toEntity.getDishOrder());
+			toEntity.setDishOrder(temp);
+			dishDao.update(toEntity);
+			dishDao.update(fromEntity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void saveRemark(RemarkInfo remarkItem) {
 		if (!isExist(remarkItem.getId())) {
@@ -130,13 +223,28 @@ public class DbHelper {
 	}
 
 	public void saveCustomerInfos(List<CustomerInfo> customerInfos) {
-		customerDao.deleteAll();// 清空数据库
-		customerDao.insertInTx(customerInfos);
+		// customerDao.deleteAll();// 清空数据库
+		Long currentSellerId = customerInfos.get(0).getSellerId();
+		try {
+			customerDao.getDatabase().delete("CUSTOMER_INFO", "SELLER_ID=?",
+					new String[] { String.valueOf(currentSellerId) });
+			customerDao.insertInTx(customerInfos);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public List<CustomerInfo> getCustomerInfos() {
+	public List<CustomerInfo> getCustomerInfos(Long sellerId) {
+		ArrayList<CustomerInfo> listCustomer = new ArrayList<CustomerInfo>();
 		QueryBuilder<CustomerInfo> qb = customerDao.queryBuilder();
-		return qb.list();
+		qb.where(com.eteng.mobileorder.models.CustomerInfoDao.Properties.SellerId
+				.eq(sellerId));
+		try {
+			listCustomer = (ArrayList<CustomerInfo>) qb.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return listCustomer;
 	}
 
 	public String getIncomingAddr(String tel) {

@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
 import com.eteng.mobileorder.cusomview.TopNavigationBar.NaviBtnListener;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.CustomerInfo;
 import com.eteng.mobileorder.utils.DbHelper;
@@ -126,6 +127,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 			CustomerInfo item = new CustomerInfo();
 			item.setCustomerTel(temp.getString("tel"));
 			item.setCustomerAddr(temp.getString("address"));
+			item.setSellerId(TempDataManager.getInstance(this).getSellerId());
 			dataList.add(item);
 		}
 		DbHelper.getInstance(this).saveCustomerInfos(dataList);// 保存客户信息
@@ -133,7 +135,7 @@ public class CustomerInfoActivity extends Activity implements NaviBtnListener {
 
 	void setAdapter() {
 		dataList = (ArrayList<CustomerInfo>) DbHelper.getInstance(this)
-				.getCustomerInfos();
+				.getCustomerInfos(TempDataManager.getInstance(this).getSellerId());
 		mAdapter = new CustomerAdapter();
 		contentList.setAdapter(mAdapter);
 	}

@@ -47,7 +47,7 @@ public class CustomerInfoDao extends AbstractDao<CustomerInfo, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'CUSTOMER_INFO' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'CUSTOMER_TEL' TEXT UNIQUE ," + // 1: customerTel
+                "'CUSTOMER_TEL' TEXT," + // 1: customerTel
                 "'CUSTOMER_ADDR' TEXT," + // 2: customerAddr
                 "'SELLER_ID' INTEGER);"); // 3: sellerId
     }

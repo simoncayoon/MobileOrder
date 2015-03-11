@@ -5,10 +5,7 @@ import java.util.Set;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eteng.mobileorder.cusomview.TopNavigationBar;
-import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.service.BlueToothService.CustomBTStateListener;
 import com.eteng.mobileorder.service.BlueToothService.OnReceiveDataHandleEvent;
