@@ -85,7 +85,7 @@ public class SettingOwnProfile extends Activity implements
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		int padding = (int) TypedValue.applyDimension(
 				TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-		
+
 		int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				22, metrics);
 		Drawable img_shop_name = getResources().getDrawable(
@@ -224,18 +224,19 @@ public class SettingOwnProfile extends Activity implements
 	void saveInfo(JSONObject respon) throws JSONException {
 
 		JSONObject infoJson = new JSONObject(respon.getString("seller"));
-		int id = infoJson.getInt("sellerId");
-		String name = infoJson.getString("sellerName");
-		String tel = infoJson.getString("linkTel");
-		String detail = infoJson.getString("sellerDetail");
-		String scope = infoJson.getString("sellerCircle");
-		String addr = infoJson.getString("address");
-		String imgPath = infoJson.getString("sellerImg");
-		String account = infoJson.getString("sellerAacount");
-		SellerInfo sellerInfo = new SellerInfo(id, name, tel, detail, scope,
-				addr, imgPath, account);
+		SellerInfo currentSellerInfo = new SellerInfo();
+		currentSellerInfo.setSellerId(infoJson.getLong("sellerId"));
+		currentSellerInfo.setSellerName(infoJson.getString("sellerName"));
+		currentSellerInfo.setSellerTel(infoJson.getString("linkTel"));
+		currentSellerInfo.setSellerDetail(infoJson.getString("sellerDetail"));
+		currentSellerInfo.setSellerScope(infoJson.getString("sellerCircle"));
+		currentSellerInfo.setSellerAddr(infoJson.getString("address"));
+		currentSellerInfo.setSellerImg(infoJson.getString("sellerImg"));
+		currentSellerInfo.setSellerAccount(infoJson.getString("sellerAacount"));
+		currentSellerInfo.setQrcodePath(infoJson.getString("qrcode"));
+		currentSellerInfo.setQrcodeText(infoJson.getString("qrcodejs"));
 		try {
-			DbHelper.getInstance(this).saveSellerInfo(sellerInfo);
+			DbHelper.getInstance(this).saveSellerInfo(currentSellerInfo);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

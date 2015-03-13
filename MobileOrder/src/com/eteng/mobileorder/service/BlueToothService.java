@@ -773,12 +773,13 @@ public class BlueToothService {
 	public void SendOrder(byte[] send) {
 		write(send);
 	}
+	
+	
 
 	public void PrintImage(Bitmap bitmapcode, int timeout) {
 		this.timeout = timeout;
 		PrintImageNew(bitmapcode);
 		// PrintImageOld(bitmapcode);
-
 	}
 
 	public void PrintImageOld(Bitmap bitmapCode) {

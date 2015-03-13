@@ -139,6 +139,11 @@ public class Constants {
 	public static final String EDIT_PROFILE = "editSellerInfo";
 	
 	/**
+	 * 获取商家二维码信息
+	 */
+	public static final String GET_QR_CODE = "querySellerById";
+	
+	/**
 	 * 显示状态修改类型：菜品
 	 */
 	public static final String SHOWN_TYPE_DISH = "1";
@@ -185,4 +190,6 @@ public class Constants {
 	 * 粉面属性的ID
 	 */
 	public static final String NOODLE_ID = "noodle_id";
+	
+	public static final String QRCODE_PATH = "code_path";
 }

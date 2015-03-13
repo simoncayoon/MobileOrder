@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -46,6 +45,7 @@ import com.eteng.mobileorder.models.OrderInfoModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.FileCacheManager;
 import com.eteng.mobileorder.utils.JsonPostRequest;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.PrintHelper;
@@ -130,6 +130,7 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 		totalPrice = (TextView) findViewById(R.id.phone_order_combo_count);// 显示总价
 		confirmBtn = (Button) findViewById(R.id.phone_order_commit_btn);
 		confirmBtn.setOnClickListener(this);
+
 	}
 
 	void initData() {
@@ -225,10 +226,6 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 		String printString = "";
 		PrintHelper ph = new PrintHelper(getActivity());
 		printString = ph.getPrintString(mOrderInfo, dishCombo);
-		if (printString.equals("")) {
-			Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
-			return;
-		}
 		CustomerInfo ci = new CustomerInfo();
 		ci.setCustomerTel(mOrderInfo.getOrderTel());
 		ci.setCustomerAddr(mOrderInfo.getAddress());
@@ -254,10 +251,19 @@ public class FragmentMain extends BaseFragment implements OnClickListener,
 				return;
 			}
 			btService.PrintCharacters(printString);
+			if (FileCacheManager.getInstance(getActivity()).isExists(
+					TempDataManager.getInstance(getActivity()).getQrCodePath())) {
+				btService.PrintImage(
+						FileCacheManager.getInstance(getActivity()).getImage(
+								TempDataManager.getInstance(getActivity())
+										.getQrCodePath()), 5000);
+			}
+			btService.PrintCharacters("\n\r\n\r\n\r");// 留白
 		} else {
 			Toast.makeText(getActivity(), "请查看蓝牙状态", Toast.LENGTH_SHORT).show();
 		}
 		clearDish();
+		confirmLayout.setVisibility(View.GONE);
 	}
 
 	private void pushOrderInfo() throws JSONException {

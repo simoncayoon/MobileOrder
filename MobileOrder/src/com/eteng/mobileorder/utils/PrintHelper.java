@@ -49,9 +49,9 @@ public class PrintHelper {
 			sb.append(temp);
 		}
 		String footing = "合计：" + "\t\t\t\t" + mOrderInfo.getTotalPay() + "元"
-				+ "\r\n\r\n";
+				+ "\r\n\r\n" + "\t关注微信，快捷点餐！";
 		sb.append(footing);
-		sb.append("\r\n\r\n\r\n\r\n");
+		sb.append("\r\n\r\n");
 
 		printString = sb.toString();
 		return printString;

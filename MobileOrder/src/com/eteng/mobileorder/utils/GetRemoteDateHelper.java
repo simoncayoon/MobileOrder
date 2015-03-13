@@ -54,7 +54,7 @@ public class GetRemoteDateHelper {
 		} else {
 			return;
 		}
-		DbHelper.getInstance(mContext).clearAllDataAboutDish();
+//		DbHelper.getInstance(mContext).clearAllDataAboutDish();
 		loadCount = 0;
 		maxCount = 0;
 		getMenuCategory();

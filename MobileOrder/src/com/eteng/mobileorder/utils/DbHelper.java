@@ -28,6 +28,8 @@ import de.greenrobot.dao.query.QueryBuilder;
 
 public class DbHelper {
 
+	private static final String TAG = DbHelper.class.getSimpleName();
+	
 	private static DbHelper instance = null;
 	private static Context mContext = null;
 	private static DaoSession daoSession;
@@ -68,7 +70,7 @@ public class DbHelper {
 		}
 	}
 
-	private boolean isExist(long id) {
+	public boolean isExist(long id) {
 		QueryBuilder<SellerInfo> qb = sellerDao.queryBuilder();
 		qb.where(Properties.SellerId.eq(id));
 		qb.buildCount().count();
@@ -77,6 +79,7 @@ public class DbHelper {
 
 	/** 查询本地的菜单类目 */
 	public List<CategoryInfo> getLocalCategory() {
+		DebugFlags.logD(TAG, "getLocalCategory   " + TempDataManager.getInstance(mContext).getSellerId());
 		QueryBuilder<CategoryInfo> qb = categoryDao.queryBuilder();
 		qb.orderAsc(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryOrder);
 		qb.where(com.eteng.mobileorder.models.CategoryInfoDao.Properties.CategoryStatus

@@ -5,12 +5,9 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -30,11 +27,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.eteng.mobileorder.cusomview.ProgressHUD;
+import com.eteng.mobileorder.debug.DebugFlags;
 import com.eteng.mobileorder.models.Constants;
 import com.eteng.mobileorder.models.SellerInfo;
-import com.eteng.mobileorder.models.SellerInfoDao;
 import com.eteng.mobileorder.utils.DbHelper;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.FileCacheManager;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.TempDataManager;
@@ -52,8 +50,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private String pwd = "";
 	private boolean isSaveState = false;
 	private boolean isExit = false;
-	
-	private SellerInfoDao sellerInfoDao;
+
+//	private SellerInfoDao sellerInfoDao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -143,18 +141,26 @@ public class LoginActivity extends Activity implements OnClickListener {
 					public void onResponse(JSONObject respon) {
 						try {
 							if (respon.getString("code").equals("0")) {
-								saveInfo(respon);
-								
-								TempDataManager.getInstance(LoginActivity.this).setCurrentInfo(new JSONObject(respon
-												.getString("seller"))
-												.getLong("sellerId"), accountName, pwd);;
+
+								TempDataManager.getInstance(LoginActivity.this)
+										.setCurrentInfo(
+												new JSONObject(respon
+														.getString("seller"))
+														.getLong("sellerId"),
+												accountName, pwd);
+								;
 								if (saveCheck.isChecked()) {// 添加保存状态
-									TempDataManager.getInstance(LoginActivity.this).setPwdSaveState(true);
+									TempDataManager.getInstance(
+											LoginActivity.this)
+											.setPwdSaveState(true);
 								} else {
-									TempDataManager.getInstance(LoginActivity.this).setPwdSaveState(false);
+									TempDataManager.getInstance(
+											LoginActivity.this)
+											.setPwdSaveState(false);
 								}
 								startActivity(new Intent(LoginActivity.this,
 										MainNaviActivity.class));
+								saveInfo(respon);
 								finish();
 							} else {
 								Toast.makeText(
@@ -184,25 +190,42 @@ public class LoginActivity extends Activity implements OnClickListener {
 				getMenuRequest, TAG);
 	}
 
+	/**
+	 * 获取二维码信息
+	 */
+	protected void getQrCodeInfo(String imgPath) {
+		TempDataManager.getInstance(this).setQrcodePath(imgPath);
+		DebugFlags.logD(TAG, "imagePath " + imgPath);
+		if (imgPath.equals("")) {// 远程没有二维码图片
+			// 删除本地原有的相关二维码图片
+			FileCacheManager.getInstance(this).deleteImgById(imgPath);
+			return;
+		}
+		if (!FileCacheManager.getInstance(this).isExists(imgPath)) {// 本地不存在二维码图片
+			FileCacheManager.getInstance(this).saveRemoteImg(imgPath);
+		}
+	}
+
 	void saveInfo(JSONObject respon) throws JSONException {
-		
+
 		JSONObject infoJson = new JSONObject(respon.getString("seller"));
-		int id = infoJson.getInt("sellerId");
-		String name = infoJson.getString("sellerName");
-		String tel = infoJson.getString("linkTel");
-		String detail = infoJson.getString("sellerDetail");
-		String scope = infoJson.getString("sellerCircle");
-		String addr = infoJson.getString("address");
-		String imgPath = infoJson.getString("sellerImg");
-		String account = infoJson.getString("sellerAacount");
-		SellerInfo sellerInfo = new SellerInfo(id, name, tel, detail, scope,
-				addr, imgPath, account);
+		SellerInfo currentSellerInfo = new SellerInfo();
+		currentSellerInfo.setSellerId(infoJson.getLong("sellerId"));
+		currentSellerInfo.setSellerName(infoJson.getString("sellerName"));
+		currentSellerInfo.setSellerTel(infoJson.getString("linkTel"));
+		currentSellerInfo.setSellerDetail(infoJson.getString("sellerDetail"));
+		currentSellerInfo.setSellerScope(infoJson.getString("sellerCircle"));
+		currentSellerInfo.setSellerAddr(infoJson.getString("address"));
+		currentSellerInfo.setSellerImg(infoJson.getString("sellerImg"));
+		currentSellerInfo.setSellerAccount(infoJson.getString("sellerAacount"));
+		currentSellerInfo.setQrcodePath(infoJson.getString("qrcode"));
+		currentSellerInfo.setQrcodeText(infoJson.getString("qrcodejs"));
 		try {
-			DbHelper.getInstance(this).saveSellerInfo(sellerInfo);
+			DbHelper.getInstance(this).saveSellerInfo(currentSellerInfo);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getQrCodeInfo(infoJson.getString("qrcode"));
 	}
 
 	@Override

@@ -85,6 +85,15 @@ public class TempDataManager {
 		mEditor.commit();
 	}
 	
+	public void setQrcodePath(String path){
+		mEditor.putString(Constants.QRCODE_PATH, path);
+		mEditor.commit();
+	}
+	
+	public String getQrCodePath(){
+		return sp.getString(Constants.QRCODE_PATH, "");
+	}
+	
 	/**
 	 * 清空当前临时信息
 	 */

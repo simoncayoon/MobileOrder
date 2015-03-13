@@ -30,9 +30,11 @@ import com.eteng.mobileorder.models.OrderDetailModel;
 import com.eteng.mobileorder.models.OrderInfoModel;
 import com.eteng.mobileorder.service.BlueToothService;
 import com.eteng.mobileorder.utils.DisplayMetrics;
+import com.eteng.mobileorder.utils.FileCacheManager;
 import com.eteng.mobileorder.utils.JsonUTF8Request;
 import com.eteng.mobileorder.utils.NetController;
 import com.eteng.mobileorder.utils.PrintHelper;
+import com.eteng.mobileorder.utils.TempDataManager;
 
 public class OrderDetailActivity extends Activity implements OnClickListener,
 		NaviBtnListener {
@@ -114,7 +116,8 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	private void getDishCombo() {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_loading), true,
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this,
+				getResources().getString(R.string.toast_remind_loading), true,
 				true, null);
 		String url = Constants.HOST_HEAD + Constants.ORDER_BY_ORDERID;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
@@ -131,7 +134,7 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 										respon.getString("orderInfo")));// 设置头部信息
 								setListContent(new JSONArray(
 										respon.getString("orderDetailsList")));// 设置订单详情内容
-							} 
+							}
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -212,8 +215,15 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 		if (mApplication.getBTService().getState() == BlueToothService.STATE_CONNECTED) {
 			PrintHelper ph = new PrintHelper(this);
 			String printString = ph.getPrintString(orderInfo, dishCombo);
-			mApplication.getBTService().PrintCharacters(
-					printString);
+			mApplication.getBTService().PrintCharacters(printString);
+			if (FileCacheManager.getInstance(this).isExists(
+					TempDataManager.getInstance(this).getQrCodePath())) {
+				mApplication.getBTService().PrintImage(
+						FileCacheManager.getInstance(this).getImage(
+								TempDataManager.getInstance(this)
+										.getQrCodePath()), 5000);
+			}
+			mApplication.getBTService().PrintCharacters("\n\r\n\r\n\r");// 留白
 		} else {
 			Toast.makeText(OrderDetailActivity.this, "请查看打印机状态!",
 					Toast.LENGTH_SHORT).show();
@@ -222,8 +232,9 @@ public class OrderDetailActivity extends Activity implements OnClickListener,
 
 	void updateOrderState() throws JSONException {
 		final ProgressHUD mProgressHUD;
-		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this, getResources().getString(R.string.toast_remind_commiting), true,
-				true, null);
+		mProgressHUD = ProgressHUD.show(OrderDetailActivity.this,
+				getResources().getString(R.string.toast_remind_commiting),
+				true, true, null);
 		String url = Constants.HOST_HEAD + Constants.UPDATE_ORDER_STATUS;
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("orderId", orderInfo.getOrderId());

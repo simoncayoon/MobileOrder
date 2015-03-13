@@ -21,6 +21,8 @@ public class SellerInfo {
     private String sellerAddr;
     private String sellerImg;
     private String sellerAccount;
+    private String qrcodePath;
+    private String qrcodeText;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -41,7 +43,7 @@ public class SellerInfo {
         this.sellerId = sellerId;
     }
 
-    public SellerInfo(long sellerId, String sellerName, String sellerTel, String sellerDetail, String sellerScope, String sellerAddr, String sellerImg, String sellerAccount) {
+    public SellerInfo(long sellerId, String sellerName, String sellerTel, String sellerDetail, String sellerScope, String sellerAddr, String sellerImg, String sellerAccount, String qrcodePath, String qrcodeText) {
         this.sellerId = sellerId;
         this.sellerName = sellerName;
         this.sellerTel = sellerTel;
@@ -50,6 +52,8 @@ public class SellerInfo {
         this.sellerAddr = sellerAddr;
         this.sellerImg = sellerImg;
         this.sellerAccount = sellerAccount;
+        this.qrcodePath = qrcodePath;
+        this.qrcodeText = qrcodeText;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -120,6 +124,22 @@ public class SellerInfo {
 
     public void setSellerAccount(String sellerAccount) {
         this.sellerAccount = sellerAccount;
+    }
+
+    public String getQrcodePath() {
+        return qrcodePath;
+    }
+
+    public void setQrcodePath(String qrcodePath) {
+        this.qrcodePath = qrcodePath;
+    }
+
+    public String getQrcodeText() {
+        return qrcodeText;
+    }
+
+    public void setQrcodeText(String qrcodeText) {
+        this.qrcodeText = qrcodeText;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

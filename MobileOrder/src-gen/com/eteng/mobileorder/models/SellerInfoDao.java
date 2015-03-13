@@ -31,6 +31,8 @@ public class SellerInfoDao extends AbstractDao<SellerInfo, Long> {
         public final static Property SellerAddr = new Property(5, String.class, "sellerAddr", false, "SELLER_ADDR");
         public final static Property SellerImg = new Property(6, String.class, "sellerImg", false, "SELLER_IMG");
         public final static Property SellerAccount = new Property(7, String.class, "sellerAccount", false, "SELLER_ACCOUNT");
+        public final static Property QrcodePath = new Property(8, String.class, "qrcodePath", false, "QRCODE_PATH");
+        public final static Property QrcodeText = new Property(9, String.class, "qrcodeText", false, "QRCODE_TEXT");
     };
 
     private DaoSession daoSession;
@@ -56,7 +58,9 @@ public class SellerInfoDao extends AbstractDao<SellerInfo, Long> {
                 "'SELLER_SCOPE' TEXT," + // 4: sellerScope
                 "'SELLER_ADDR' TEXT," + // 5: sellerAddr
                 "'SELLER_IMG' TEXT," + // 6: sellerImg
-                "'SELLER_ACCOUNT' TEXT);"); // 7: sellerAccount
+                "'SELLER_ACCOUNT' TEXT," + // 7: sellerAccount
+                "'QRCODE_PATH' TEXT," + // 8: qrcodePath
+                "'QRCODE_TEXT' TEXT);"); // 9: qrcodeText
     }
 
     /** Drops the underlying database table. */
@@ -105,6 +109,16 @@ public class SellerInfoDao extends AbstractDao<SellerInfo, Long> {
         if (sellerAccount != null) {
             stmt.bindString(8, sellerAccount);
         }
+ 
+        String qrcodePath = entity.getQrcodePath();
+        if (qrcodePath != null) {
+            stmt.bindString(9, qrcodePath);
+        }
+ 
+        String qrcodeText = entity.getQrcodeText();
+        if (qrcodeText != null) {
+            stmt.bindString(10, qrcodeText);
+        }
     }
 
     @Override
@@ -130,7 +144,9 @@ public class SellerInfoDao extends AbstractDao<SellerInfo, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sellerScope
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // sellerAddr
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // sellerImg
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // sellerAccount
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // sellerAccount
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // qrcodePath
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // qrcodeText
         );
         return entity;
     }
@@ -146,6 +162,8 @@ public class SellerInfoDao extends AbstractDao<SellerInfo, Long> {
         entity.setSellerAddr(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setSellerImg(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setSellerAccount(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setQrcodePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setQrcodeText(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */

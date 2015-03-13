@@ -138,11 +138,11 @@ public class PhoneOrderActivity extends FragmentActivity implements
 
 	void getMenuCategory() {
 
-		if (TempDataManager.getInstance(this).getIsFirstVisit()) {// 第一次登陆，同步数据
+		if (!(DbHelper.getInstance(this).getLocalCategory().size() > 0)) {// 没有该用户ID的数据
 			GetRemoteDateHelper getRemote = new GetRemoteDateHelper(this,
 					getApplicationContext());
 			getRemote.getRemoteDate();
-			TempDataManager.getInstance(this).setIsFirstVisit(false);
+			// TempDataManager.getInstance(this).setIsFirstVisit(false);
 		} else {// 加载本地数据
 			refreshData();
 		}
