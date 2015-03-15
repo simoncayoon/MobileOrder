@@ -57,7 +57,7 @@ public class FileCacheManager {
 		DebugFlags.logD(TAG, "原始图片的宽：" + w);
 		DebugFlags.logD(TAG, "原始图片的高：" + w);
 		
-		return resizeImage(bmp, 48 * 8, h);
+		return resizeImage(bmp, 40 * 8, h);
 	}
 
 	public void deleteImgById(String imgPath) {
